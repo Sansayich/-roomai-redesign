@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  roomai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: roomai-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - REPLICATE_API_TOKEN=${REPLICATE_API_TOKEN}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+    env_file:
+      - .env
+    networks:
+      - roomai-network
+
+networks:
+  roomai-network:
+    driver: bridge
+

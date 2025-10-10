@@ -1,0 +1,133 @@
+#cloud-config
+
+# RoomAI - Cloud-init скрипт для автоматической установки
+# Timeweb Cloud - Ubuntu 22.04
+
+# Обновление пакетов
+package_update: true
+package_upgrade: true
+
+# Установка необходимых пакетов
+packages:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg
+  - lsb-release
+  - git
+  - nginx
+  - certbot
+  - python3-certbot-nginx
+
+# Создание пользователя для приложения
+users:
+  - name: deploy
+    groups: sudo, docker
+    shell: /bin/bash
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+
+# Запуск команд после установки пакетов
+runcmd:
+  # Установка Docker
+  - curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
+  - sh /tmp/get-docker.sh
+  - systemctl enable docker
+  - systemctl start docker
+  
+  # Установка Docker Compose
+  - curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  - chmod +x /usr/local/bin/docker-compose
+  
+  # Создание директории проекта
+  - mkdir -p /opt/roomai
+  - cd /opt/roomai
+  
+  # Клонирование проекта (ЗАМЕНИТЕ НА ВАШ РЕПОЗИТОРИЙ!)
+  # Вариант 1: Если проект в Git
+  # - git clone https://github.com/username/roomai-redesign.git /opt/roomai
+  
+  # Вариант 2: Загрузка через wget (если загрузили в интернет)
+  # - wget https://ваш-сайт.com/roomai-redesign.zip
+  # - unzip roomai-redesign.zip
+  
+  # Создание .env файла (ОБЯЗАТЕЛЬНО ЗАМЕНИТЕ ТОКЕНЫ!)
+  - |
+    cat > /opt/roomai/.env << 'EOF'
+    # ВАЖНО: Замените эти значения на свои!
+    REPLICATE_API_TOKEN=r8_ваш_токен_здесь
+    NEXTAUTH_SECRET=сгенерируйте_секрет_openssl_rand_base64_32
+    NEXTAUTH_URL=http://ваш-ip-или-домен
+    EOF
+  
+  # Настройка прав
+  - chown -R deploy:deploy /opt/roomai
+  
+  # Сборка и запуск Docker контейнеров
+  # (раскомментируйте после загрузки проекта)
+  # - cd /opt/roomai
+  # - docker-compose build
+  # - docker-compose up -d
+  
+  # Настройка Nginx
+  - |
+    cat > /etc/nginx/sites-available/roomai << 'EOF'
+    server {
+        listen 80;
+        server_name _;
+        
+        location / {
+            proxy_pass http://localhost:3000;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+        
+        client_max_body_size 10M;
+    }
+    EOF
+  
+  # Активация Nginx конфига
+  - ln -sf /etc/nginx/sites-available/roomai /etc/nginx/sites-enabled/
+  - rm -f /etc/nginx/sites-enabled/default
+  - nginx -t
+  - systemctl restart nginx
+  
+  # Настройка firewall
+  - ufw allow 22/tcp
+  - ufw allow 80/tcp
+  - ufw allow 443/tcp
+  - ufw --force enable
+
+# Финальное сообщение
+final_message: |
+  ========================================
+  RoomAI установка завершена!
+  ========================================
+  
+  IP адрес: $(curl -s ifconfig.me)
+  
+  СЛЕДУЮЩИЕ ШАГИ:
+  
+  1. Подключитесь к серверу:
+     ssh root@$(curl -s ifconfig.me)
+  
+  2. Загрузите проект в /opt/roomai
+  
+  3. Настройте .env файл:
+     nano /opt/roomai/.env
+  
+  4. Запустите приложение:
+     cd /opt/roomai
+     docker-compose build
+     docker-compose up -d
+  
+  5. Откройте в браузере:
+     http://$(curl -s ifconfig.me)
+  
+  ========================================
+

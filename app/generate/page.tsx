@@ -1,0 +1,427 @@
+'use client'
+
+import { useState, useCallback } from 'react'
+import { useDropzone } from 'react-dropzone'
+import Link from 'next/link'
+
+type RoomStyle = {
+  id: string
+  name: string
+  prompt: string
+  imageUrl: string
+}
+
+type RoomType = {
+  id: string
+  name: string
+}
+
+type Quality = {
+  id: string
+  name: string
+  credits: number
+}
+
+const roomTypes: RoomType[] = [
+  { id: 'living_room', name: 'Гостиная' },
+  { id: 'bedroom', name: 'Спальня' },
+  { id: 'kitchen', name: 'Кухня' },
+  { id: 'bathroom', name: 'Ванная' },
+  { id: 'office', name: 'Офис' },
+  { id: 'dining_room', name: 'Столовая' },
+]
+
+const qualities: Quality[] = [
+  { id: 'best', name: 'Лучшее (Высокое качество)', credits: 2 },
+  { id: 'good', name: 'Хорошее (Среднее качество)', credits: 1 },
+]
+
+const roomStyles: RoomStyle[] = [
+  { id: 'modern', name: 'Modern', prompt: 'modern', imageUrl: '/themes/modern.jpg' },
+  { id: 'summer', name: 'Summer', prompt: 'summer', imageUrl: '/themes/summer.jpg' },
+  { id: 'professional', name: 'Professional', prompt: 'professional', imageUrl: '/themes/professional.jpg' },
+  { id: 'tropical', name: 'Tropical', prompt: 'tropical', imageUrl: '/themes/tropical.jpg' },
+  { id: 'coastal', name: 'Coastal', prompt: 'coastal', imageUrl: '/themes/coastal.jpg' },
+  { id: 'vintage', name: 'Vintage', prompt: 'vintage', imageUrl: '/themes/vintage.jpg' },
+  { id: 'industrial', name: 'Industrial', prompt: 'industrial', imageUrl: '/themes/industrial.jpg' },
+  { id: 'neoclassic', name: 'Neoclassic', prompt: 'neoclassic', imageUrl: '/themes/neoclassic.jpg' },
+  { id: 'tribal', name: 'Tribal', prompt: 'tribal', imageUrl: '/themes/tribal.jpg' },
+]
+
+export default function GeneratePage() {
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null)
+  const [selectedStyles, setSelectedStyles] = useState<string[]>([])
+  const [selectedRoomType, setSelectedRoomType] = useState<string>('living_room')
+  const [selectedQuality, setSelectedQuality] = useState<string>('best')
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [generatedImages, setGeneratedImages] = useState<string[]>([])
+  const [error, setError] = useState<string>('')
+  const [credits, setCredits] = useState<number>(1)
+
+  const toggleStyle = (styleId: string) => {
+    if (selectedStyles.includes(styleId)) {
+      setSelectedStyles(selectedStyles.filter(id => id !== styleId))
+    } else {
+      if (selectedStyles.length < 4) {
+        setSelectedStyles([...selectedStyles, styleId])
+      }
+    }
+  }
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = () => {
+        setUploadedImage(reader.result as string)
+        setGeneratedImages([])
+        setError('')
+      }
+      reader.readAsDataURL(file)
+    }
+  }, [])
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'image/*': ['.jpeg', '.jpg', '.png', '.webp']
+    },
+    maxFiles: 1
+  })
+
+  const handleGenerate = async () => {
+    if (!uploadedImage) {
+      setError('Пожалуйста, загрузите изображение')
+      return
+    }
+
+    if (selectedStyles.length === 0) {
+      setError('Пожалуйста, выберите хотя бы одну тему')
+      return
+    }
+
+    const quality = qualities.find(q => q.id === selectedQuality)
+    if (!quality) return
+
+    if (credits < quality.credits * selectedStyles.length) {
+      setError(`Недостаточно кредитов. Требуется ${quality.credits * selectedStyles.length} кредитов.`)
+      return
+    }
+
+    setIsGenerating(true)
+    setError('')
+
+    try {
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          image: uploadedImage,
+          styles: selectedStyles,
+          roomType: selectedRoomType,
+          quality: selectedQuality,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Ошибка при генерации изображения')
+      }
+
+      const data = await response.json()
+      setGeneratedImages(data.outputs || [])
+      setCredits(prev => prev - (quality.credits * selectedStyles.length))
+    } catch (err) {
+      setError('Произошла ошибка при генерации. Попробуйте еще раз.')
+      console.error(err)
+    } finally {
+      setIsGenerating(false)
+    }
+  }
+
+  const selectedQualityObj = qualities.find(q => q.id === selectedQuality)
+  const totalCost = selectedQualityObj ? selectedQualityObj.credits * selectedStyles.length : 0
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      {/* Навигация */}
+      <nav className="w-full px-6 py-5 bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <Link href="/" className="text-2xl font-bold text-blue-600">
+            roomGPT
+          </Link>
+          <div className="flex items-center gap-6">
+            <Link href="/generate" className="text-gray-700 hover:text-gray-900">
+              Redesign
+            </Link>
+            <Link href="/pricing" className="text-gray-700 hover:text-gray-900">
+              Pricing
+            </Link>
+            <div className="text-gray-700 font-medium">
+              {credits} credits
+            </div>
+            <div className="w-10 h-10 rounded-full bg-pink-500 flex items-center justify-center text-white font-bold">
+              A
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        {/* Заголовок */}
+        <div className="text-center mb-8">
+          <h1 className="text-5xl md:text-6xl font-bold mb-4">
+            Redesign your <span className="text-blue-600">room</span> in seconds
+          </h1>
+          <p className="text-lg text-gray-600">
+            Upload a room, specify the room type, and select your room theme to redesign.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-[380px_1fr] gap-8 mb-12">
+          {/* Левая панель - Форма */}
+          <div className="space-y-6">
+            {/* Уведомление о кредитах */}
+            {credits === 0 && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+                <p className="text-gray-700 font-medium mb-2">
+                  У вас не осталось кредитов.
+                </p>
+                <Link href="/pricing" className="text-blue-600 font-semibold hover:underline">
+                  Купите ещё здесь
+                </Link>
+                <span className="text-gray-700"> чтобы сгенерировать вашу комнату.</span>
+              </div>
+            )}
+
+            {/* Загрузка фото */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h3 className="font-bold text-gray-900 mb-4">Загрузите фото вашей комнаты</h3>
+              {!uploadedImage ? (
+                <div
+                  {...getRootProps()}
+                  className={`
+                    border-2 border-dashed rounded-lg p-8 text-center cursor-pointer
+                    transition-all duration-200
+                    ${isDragActive 
+                      ? 'border-blue-500 bg-blue-50' 
+                      : 'border-gray-300 hover:border-gray-400'
+                    }
+                  `}
+                >
+                  <input {...getInputProps()} />
+                  <button className="px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors mb-3">
+                    Upload an Image
+                  </button>
+                  <p className="text-sm text-gray-600">
+                    ...or drag and drop an image.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="relative rounded-lg overflow-hidden border border-gray-200">
+                    <img
+                      src={uploadedImage}
+                      alt="Uploaded"
+                      className="w-full h-32 object-cover"
+                    />
+                  </div>
+                  <button
+                    onClick={() => setUploadedImage(null)}
+                    className="text-sm text-red-600 hover:text-red-700"
+                  >
+                    Удалить
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Выбор типа комнаты */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h3 className="font-bold text-gray-900 mb-3">Select Room Type</h3>
+              <select
+                value={selectedRoomType}
+                onChange={(e) => setSelectedRoomType(e.target.value)}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {roomTypes.map(type => (
+                  <option key={type.id} value={type.id}>
+                    {type.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Выбор качества */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h3 className="font-bold text-gray-900 mb-3">Select Quality</h3>
+              <select
+                value={selectedQuality}
+                onChange={(e) => setSelectedQuality(e.target.value)}
+                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {qualities.map(quality => (
+                  <option key={quality.id} value={quality.id}>
+                    {quality.name} – {quality.credits} credits
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Выбор тем */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h3 className="font-bold text-gray-900 mb-3">
+                Select Room Themes (до 4)
+              </h3>
+              <div className="grid grid-cols-3 gap-3">
+                {roomStyles.map((style) => (
+                  <button
+                    key={style.id}
+                    onClick={() => toggleStyle(style.id)}
+                    className={`
+                      relative rounded-lg overflow-hidden border-2 transition-all
+                      ${selectedStyles.includes(style.id)
+                        ? 'border-blue-500 ring-2 ring-blue-200'
+                        : 'border-gray-200 hover:border-gray-300'
+                      }
+                    `}
+                  >
+                    <div className="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                      <span className="text-xs font-medium text-gray-500">
+                        {style.name}
+                      </span>
+                    </div>
+                    {selectedStyles.includes(style.id) && (
+                      <div className="absolute top-1 right-1 w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Кнопка генерации */}
+            <button
+              onClick={handleGenerate}
+              disabled={!uploadedImage || selectedStyles.length === 0 || isGenerating || credits === 0}
+              className={`
+                w-full py-3 rounded-lg font-semibold text-base transition-all
+                ${!uploadedImage || selectedStyles.length === 0 || isGenerating || credits === 0
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
+                }
+              `}
+            >
+              {isGenerating ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  Генерация...
+                </span>
+              ) : (
+                `Render designs`
+              )}
+            </button>
+
+            <div className="text-center text-sm text-gray-600">
+              Cost: <span className="font-bold">{totalCost} credit{totalCost !== 1 ? 's' : ''}</span>
+            </div>
+
+            {error && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+                {error}
+              </div>
+            )}
+          </div>
+
+          {/* Правая панель - Превью */}
+          <div className="bg-gray-600 rounded-xl flex items-center justify-center min-h-[500px]">
+            {uploadedImage ? (
+              <img
+                src={uploadedImage}
+                alt="Preview"
+                className="w-full h-full object-contain rounded-xl"
+              />
+            ) : (
+              <div className="text-center">
+                <div className="w-24 h-24 mx-auto mb-4 bg-gray-500 rounded-lg flex items-center justify-center">
+                  <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Результаты */}
+        {generatedImages.length > 0 && (
+          <div className="mt-12 animate-fadeIn">
+            <h2 className="text-3xl font-bold mb-8 text-center">
+              ✨ Ваши дизайны
+            </h2>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {generatedImages.map((image, index) => (
+                <div key={index} className="bg-white rounded-xl shadow-lg overflow-hidden">
+                  <div className="aspect-square bg-gray-100">
+                    <img
+                      src={image}
+                      alt={`Дизайн ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-4">
+                    <button
+                      onClick={() => {
+                        const link = document.createElement('a')
+                        link.href = image
+                        link.download = `room-design-${index + 1}.png`
+                        link.click()
+                      }}
+                      className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                      Скачать
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 text-center">
+              <button
+                onClick={() => {
+                  setUploadedImage(null)
+                  setGeneratedImages([])
+                  setSelectedStyles([])
+                }}
+                className="px-8 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-all"
+              >
+                Создать новый дизайн
+              </button>
+            </div>
+          </div>
+        )}
+      </main>
+    </div>
+  )
+}
+
