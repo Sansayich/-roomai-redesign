@@ -45,20 +45,17 @@ export async function POST(request: NextRequest) {
       try {
         // Используем модель для редизайна интерьеров
         // Можно использовать разные модели в зависимости от качества
-        const model = quality === 'best' 
-          ? 'jagilley/controlnet-hough:854e8727697a057c525cdb45ab037f64ecca770a1769cc52287c2e56472a247b'
-          : 'jagilley/controlnet-scribble:435061a1b5a4c1e26740464bf786efdfa9cb3a3ac488595a2de23e143fdb0117'
+        const model = 'timbrooks/instruct-pix2pix:30c1d0b916a6f1e75d640987b3e1c7f0c3f8b6e5e0a2e7b6f2b5e5c4d3a2b1c0'
 
         const output = await replicate.run(
           model as any,
           {
             input: {
               image: image,
-              prompt: `A ${getStylePrompt(styleId)} ${getRoomTypePrompt(roomType)}, professional interior design, high quality, detailed, well-lit, modern photography`,
-              num_outputs: 1,
+              prompt: `Transform this room into a ${getStylePrompt(styleId)} ${getRoomTypePrompt(roomType)}, professional interior design, high quality, detailed, well-lit, modern photography`,
               num_inference_steps: quality === 'best' ? 50 : 30,
+              image_guidance_scale: 1.5,
               guidance_scale: 7.5,
-              negative_prompt: 'lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry',
             },
           }
         )
