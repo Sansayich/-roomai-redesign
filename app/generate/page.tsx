@@ -56,7 +56,7 @@ export default function GeneratePage() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedImages, setGeneratedImages] = useState<string[]>([])
   const [error, setError] = useState<string>('')
-  const [credits, setCredits] = useState<number>(1)
+  const [credits, setCredits] = useState<number>(100)
 
   const toggleStyle = (styleId: string) => {
     if (selectedStyles.includes(styleId)) {
