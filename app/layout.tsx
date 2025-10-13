@@ -5,7 +5,7 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin', 'cyrillic'] })
 
 export const metadata: Metadata = {
-  title: 'RoomAI - Редизайн вашей комнаты за секунды',
+  title: 'roomGPT - Редизайн вашей комнаты за секунды',
   description: 'Используйте искусственный интеллект для создания нового дизайна вашей комнаты',
 }
 

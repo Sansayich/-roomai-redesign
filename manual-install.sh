@@ -66,3 +66,4 @@ echo "  scp -r /Users/alexstepygin/roomai-redesign/* root@$(curl -s ifconfig.me)
 echo ""
 echo "Выберите вариант и продолжим!"
 
+
