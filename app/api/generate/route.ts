@@ -45,17 +45,21 @@ export async function POST(request: NextRequest) {
       try {
         // Используем модель для редизайна интерьеров
         // Можно использовать разные модели в зависимости от качества
-        const model = 'timbrooks/instruct-pix2pix:30c1d0b916a6f1e75d640987b3e1c7f0c3f8b6e5e0a2e7b6f2b5e5c4d3a2b1c0'
+        const model = 'adirik/interior-design:76604baddc85b1b4616e1c6475eca080da339c8875bd4996705440484a6eac38'
 
         const output = await replicate.run(
           model as any,
           {
             input: {
               image: image,
-              prompt: `Transform this room into a ${getStylePrompt(styleId)} ${getRoomTypePrompt(roomType)}, professional interior design, high quality, detailed, well-lit, modern photography`,
-              num_inference_steps: quality === 'best' ? 50 : 30,
-              image_guidance_scale: 1.5,
-              guidance_scale: 7.5,
+              prompt: `${getStylePrompt(styleId)} ${getRoomTypePrompt(roomType)}`,
+              a_prompt: 'best quality, extremely detailed, professional interior design, high resolution',
+              n_prompt: 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality',
+              num_samples: 1,
+              image_resolution: '512',
+              ddim_steps: quality === 'best' ? 50 : 30,
+              scale: 7,
+              seed: Math.floor(Math.random() * 2147483647),
             },
           }
         )
