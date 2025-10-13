@@ -153,13 +153,13 @@ export default function GeneratePage() {
           </Link>
           <div className="flex items-center gap-6">
             <Link href="/generate" className="text-gray-700 hover:text-gray-900">
-              Redesign
+              Генерация
             </Link>
             <Link href="/pricing" className="text-gray-700 hover:text-gray-900">
-              Pricing
+              Тарифы
             </Link>
             <div className="text-gray-700 font-medium">
-              {credits} credits
+              {credits} {credits === 1 ? 'кредит' : credits < 5 ? 'кредита' : 'кредитов'}
             </div>
             <div className="w-10 h-10 rounded-full bg-pink-500 flex items-center justify-center text-white font-bold">
               A
@@ -172,10 +172,10 @@ export default function GeneratePage() {
         {/* Заголовок */}
         <div className="text-center mb-8">
           <h1 className="text-5xl md:text-6xl font-bold mb-4">
-            Redesign your <span className="text-blue-600">room</span> in seconds
+            Редизайн вашей <span className="text-blue-600">комнаты</span> за секунды
           </h1>
           <p className="text-lg text-gray-600">
-            Upload a room, specify the room type, and select your room theme to redesign.
+            Загрузите фото комнаты, выберите тип и стиль для редизайна
           </p>
         </div>
 
@@ -212,10 +212,10 @@ export default function GeneratePage() {
                 >
                   <input {...getInputProps()} />
                   <button className="px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors mb-3">
-                    Upload an Image
+                    Загрузить изображение
                   </button>
                   <p className="text-sm text-gray-600">
-                    ...or drag and drop an image.
+                    ...или перетащите изображение
                   </p>
                 </div>
               ) : (
@@ -239,7 +239,7 @@ export default function GeneratePage() {
 
             {/* Выбор типа комнаты */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="font-bold text-gray-900 mb-3">Select Room Type</h3>
+              <h3 className="font-bold text-gray-900 mb-3">Выберите тип комнаты</h3>
               <select
                 value={selectedRoomType}
                 onChange={(e) => setSelectedRoomType(e.target.value)}
@@ -255,7 +255,7 @@ export default function GeneratePage() {
 
             {/* Выбор качества */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="font-bold text-gray-900 mb-3">Select Quality</h3>
+              <h3 className="font-bold text-gray-900 mb-3">Выберите качество</h3>
               <select
                 value={selectedQuality}
                 onChange={(e) => setSelectedQuality(e.target.value)}
@@ -272,7 +272,7 @@ export default function GeneratePage() {
             {/* Выбор тем */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h3 className="font-bold text-gray-900 mb-3">
-                Select Room Themes (до 4)
+                Выберите темы комнаты (до 4)
               </h3>
               <div className="grid grid-cols-3 gap-3">
                 {roomStyles.map((style) => (
@@ -337,12 +337,12 @@ export default function GeneratePage() {
                   Генерация...
                 </span>
               ) : (
-                `Render designs`
+                `Создать дизайны`
               )}
             </button>
 
             <div className="text-center text-sm text-gray-600">
-              Cost: <span className="font-bold">{totalCost} credit{totalCost !== 1 ? 's' : ''}</span>
+              Стоимость: <span className="font-bold">{totalCost} {totalCost === 1 ? 'кредит' : totalCost < 5 ? 'кредита' : 'кредитов'}</span>
             </div>
 
             {error && (

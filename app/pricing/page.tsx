@@ -68,10 +68,10 @@ export default function PricingPage() {
           </Link>
           <div className="flex items-center gap-6">
             <Link href="/generate" className="text-gray-700 hover:text-gray-900">
-              Redesign
+              Генерация
             </Link>
             <Link href="/pricing" className="text-gray-900 font-medium">
-              Pricing
+              Тарифы
             </Link>
             <Link href="/generate" className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
               Начать
