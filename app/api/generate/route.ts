@@ -13,14 +13,14 @@ export async function POST(request: NextRequest) {
 
     if (!image) {
       return NextResponse.json(
-        { error: 'Изображение обязательно' },
+        { error: 'Image is required' },
         { status: 400 }
       )
     }
 
     if (!styles || styles.length === 0) {
       return NextResponse.json(
-        { error: 'Выберите хотя бы один стиль' },
+        { error: 'Please select at least one style' },
         { status: 400 }
       )
     }
@@ -73,14 +73,14 @@ export async function POST(request: NextRequest) {
         await new Promise(resolve => setTimeout(resolve, 1000))
 
       } catch (styleError) {
-        console.error(`Ошибка генерации для стиля ${styleId}:`, styleError)
-        // Продолжаем генерацию остальных стилей
+        console.error(`Generation error for style ${styleId}:`, styleError)
+        // Continue generating other styles
       }
     }
 
     if (outputs.length === 0) {
       return NextResponse.json(
-        { error: 'Не удалось сгенерировать изображения' },
+        { error: 'Failed to generate images' },
         { status: 500 }
       )
     }
@@ -88,9 +88,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ outputs })
 
   } catch (error) {
-    console.error('Ошибка API генерации:', error)
+    console.error('API generation error:', error)
     return NextResponse.json(
-      { error: 'Внутренняя ошибка сервера' },
+      { error: 'Internal server error' },
       { status: 500 }
     )
   }
