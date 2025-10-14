@@ -1,6 +1,24 @@
 version: '3.8'
 
 services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: roomai-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=roomgpt
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=roomgpt
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - roomai-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U roomgpt"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   roomai:
     build:
       context: .
@@ -11,14 +29,26 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+      - DATABASE_URL=postgresql://roomgpt:${DATABASE_PASSWORD}@postgres:5432/roomgpt
       - REPLICATE_API_TOKEN=${REPLICATE_API_TOKEN}
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
-      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - NEXTAUTH_URL=${NEXTAUTH_URL}
+      - EMAIL_SERVER=${EMAIL_SERVER}
+      - EMAIL_FROM=${EMAIL_FROM}
+      - YANDEX_CLIENT_ID=${YANDEX_CLIENT_ID}
+      - YANDEX_CLIENT_SECRET=${YANDEX_CLIENT_SECRET}
     env_file:
       - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - roomai-network
+    volumes:
+      - ./uploads:/app/uploads
+
+volumes:
+  postgres-data:
 
 networks:
   roomai-network:
