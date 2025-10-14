@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import UserMenu from '@/components/UserMenu'
 
 export default function PricingPage() {
   const plans = [
@@ -59,9 +60,9 @@ export default function PricingPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+    <div className="min-h-screen bg-white">
       {/* Навигация */}
-      <nav className="w-full px-6 py-5 bg-white border-b border-gray-200">
+      <nav className="w-full px-6 py-5 border-b border-gray-200">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <Link href="/" className="text-2xl font-bold text-blue-600">
             roomGPT
@@ -73,38 +74,36 @@ export default function PricingPage() {
             <Link href="/pricing" className="text-gray-900 font-medium">
               Тарифы
             </Link>
-            <Link href="/generate" className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-              Начать
-            </Link>
+            <UserMenu />
           </div>
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto px-6 py-16">
+      <main className="max-w-7xl mx-auto px-6 py-12">
         {/* Заголовок */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
             Выберите свой <span className="text-blue-600">план</span>
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Начните бесплатно или выберите план, который подходит для ваших потребностей
           </p>
         </div>
 
         {/* Тарифы */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {plans.map((plan, index) => (
             <div
               key={index}
               className={`
-                relative bg-white rounded-2xl shadow-lg p-8 
-                ${plan.popular ? 'ring-2 ring-blue-500 transform scale-105' : ''}
-                transition-all hover:shadow-xl
+                relative bg-gray-50 rounded-xl border p-6
+                ${plan.popular ? 'border-blue-600 border-2 bg-white' : 'border-gray-200'}
+                transition-all hover:border-blue-300 hover:bg-white
               `}
             >
               {plan.popular && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
                     Популярный
                   </span>
                 </div>
@@ -162,11 +161,11 @@ export default function PricingPage() {
         </div>
 
         {/* FAQ */}
-        <div className="mt-24">
-          <h2 className="text-3xl font-bold text-center mb-12">
+        <div className="mt-20">
+          <h2 className="text-3xl font-bold text-center mb-10 text-gray-900">
             Часто задаваемые вопросы
           </h2>
-          <div className="max-w-3xl mx-auto space-y-6">
+          <div className="max-w-3xl mx-auto space-y-4">
             {[
               {
                 q: 'Как работают кредиты?',
@@ -185,7 +184,7 @@ export default function PricingPage() {
                 a: 'Да, вы можете отменить подписку в любое время. Неиспользованные кредиты останутся доступными до конца расчетного периода.'
               }
             ].map((item, idx) => (
-              <div key={idx} className="bg-white rounded-lg p-6 shadow-sm">
+              <div key={idx} className="bg-gray-50 rounded-xl border border-gray-200 p-6 hover:bg-white hover:border-blue-200 transition-all">
                 <h3 className="font-bold text-lg text-gray-900 mb-2">
                   {item.q}
                 </h3>
@@ -197,9 +196,9 @@ export default function PricingPage() {
       </main>
 
       {/* Футер */}
-      <footer className="w-full py-8 border-t border-gray-200 bg-white/50 mt-16">
-        <div className="max-w-7xl mx-auto px-6 text-center text-gray-600">
-          <p>Создано с ❤️ для любителей красивого интерьера</p>
+      <footer className="w-full py-8 border-t border-gray-200 mt-16">
+        <div className="max-w-7xl mx-auto px-6 text-center text-gray-500 text-sm">
+          <p>© {new Date().getFullYear()} roomGPT. Все права защищены.</p>
         </div>
       </footer>
     </div>

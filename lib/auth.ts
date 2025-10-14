@@ -2,7 +2,7 @@ import { NextAuthOptions } from "next-auth"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "@/lib/prisma"
 import EmailProvider from "next-auth/providers/email"
-import YandexProvider from "next-auth/providers/yandex"
+import { emailTemplate, textTemplate } from "@/lib/email"
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as any,
@@ -10,10 +10,21 @@ export const authOptions: NextAuthOptions = {
     EmailProvider({
       server: process.env.EMAIL_SERVER,
       from: process.env.EMAIL_FROM,
-    }),
-    YandexProvider({
-      clientId: process.env.YANDEX_CLIENT_ID as string,
-      clientSecret: process.env.YANDEX_CLIENT_SECRET as string,
+      async sendVerificationRequest({ identifier: email, url, provider }) {
+        const { host } = new URL(url)
+        const { server, from } = provider
+        
+        const nodemailer = await import('nodemailer')
+        const transport = nodemailer.createTransport(server)
+        
+        await transport.sendMail({
+          to: email,
+          from: from,
+          subject: `roomGPT Ссылка для входа`,
+          text: textTemplate({ url, host }),
+          html: emailTemplate({ url, host }),
+        })
+      },
     }),
   ],
   callbacks: {
