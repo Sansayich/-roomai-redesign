@@ -41,7 +41,7 @@ export default function Home() {
           {/* Подзаголовок */}
           <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
             Загрузите фото вашей комнаты и позвольте искусственному интеллекту создать потрясающий новый дизайн. 
-            Получите <span className="font-semibold text-gray-900">1 бесплатную генерацию</span> после регистрации.
+            Получите <span className="font-semibold text-gray-900">3 бесплатных кредита</span> после регистрации.
           </p>
 
           {/* CTA кнопка */}

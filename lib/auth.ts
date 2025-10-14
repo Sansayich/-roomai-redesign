@@ -40,7 +40,7 @@ export const authOptions: NextAuthOptions = {
     async createUser({ user }: any) {
       await prisma.user.update({
         where: { id: user.id },
-        data: { credits: 1 },
+        data: { credits: 3 },
       });
     },
   },
