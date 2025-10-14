@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Jost } from 'next/font/google'
 import './globals.css'
+import SessionProvider from '@/components/SessionProvider'
 
 const jost = Jost({ 
   subsets: ['latin', 'cyrillic'],
@@ -19,7 +20,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ru">
-      <body className={jost.className}>{children}</body>
+      <body className={jost.className}>
+        <SessionProvider>
+          {children}
+        </SessionProvider>
+      </body>
     </html>
   )
 }

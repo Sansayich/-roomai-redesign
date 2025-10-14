@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import UserMenu from '@/components/UserMenu'
 
 export default function Home() {
   const [hoveredButton, setHoveredButton] = useState(false)
@@ -21,9 +22,7 @@ export default function Home() {
             >
               Генерация
             </Link>
-            <button className="px-6 py-2 bg-white rounded-lg text-gray-800 font-medium shadow-sm hover:shadow-md transition-all">
-              Войти
-            </button>
+            <UserMenu />
           </div>
         </div>
       </nav>

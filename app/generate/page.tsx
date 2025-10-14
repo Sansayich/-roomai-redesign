@@ -1,8 +1,11 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import UserMenu from '@/components/UserMenu'
 
 type RoomStyle = {
   id: string
@@ -49,6 +52,8 @@ const roomStyles: RoomStyle[] = [
 ]
 
 export default function GeneratePage() {
+  const { data: session, status } = useSession()
+  const router = useRouter()
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
   const [selectedStyles, setSelectedStyles] = useState<string[]>([])
   const [selectedRoomType, setSelectedRoomType] = useState<string>('living_room')
@@ -56,7 +61,19 @@ export default function GeneratePage() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedImages, setGeneratedImages] = useState<string[]>([])
   const [error, setError] = useState<string>('')
-  const [credits, setCredits] = useState<number>(100)
+  const [credits, setCredits] = useState<number>(session?.user?.credits || 0)
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/auth/signin')
+    }
+  }, [status, router])
+
+  useEffect(() => {
+    if (session?.user?.credits !== undefined) {
+      setCredits(session.user.credits)
+    }
+  }, [session])
 
   const toggleStyle = (styleId: string) => {
     if (selectedStyles.includes(styleId)) {
@@ -131,7 +148,11 @@ export default function GeneratePage() {
 
       const data = await response.json()
       setGeneratedImages(data.outputs || [])
-      setCredits(prev => prev - (quality.credits * selectedStyles.length))
+      
+      // Обновляем кредиты из ответа API
+      if (data.credits !== undefined) {
+        setCredits(data.credits)
+      }
     } catch (err) {
       setError('Произошла ошибка при генерации. Попробуйте еще раз.')
       console.error(err)
@@ -142,6 +163,21 @@ export default function GeneratePage() {
 
   const selectedQualityObj = qualities.find(q => q.id === selectedQuality)
   const totalCost = selectedQualityObj ? selectedQualityObj.credits * selectedStyles.length : 0
+
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Загрузка...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!session) {
+    return null
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -158,12 +194,7 @@ export default function GeneratePage() {
             <Link href="/pricing" className="text-gray-700 hover:text-gray-900">
               Тарифы
             </Link>
-            <div className="text-gray-700 font-medium">
-              {credits} {credits === 1 ? 'кредит' : credits < 5 ? 'кредита' : 'кредитов'}
-            </div>
-            <div className="w-10 h-10 rounded-full bg-pink-500 flex items-center justify-center text-white font-bold">
-              A
-            </div>
+            <UserMenu />
           </div>
         </div>
       </nav>

@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { prisma } from '@/lib/prisma'
 import Replicate from 'replicate'
 
 // Инициализация Replicate
@@ -6,8 +9,22 @@ const replicate = new Replicate({
   auth: process.env.REPLICATE_API_TOKEN || '',
 })
 
+const QUALITY_CREDITS: Record<string, number> = {
+  best: 2,
+  good: 1,
+}
+
 export async function POST(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions)
+
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
+
     const body = await request.json()
     const { image, styles, roomType, quality } = body
 
@@ -21,6 +38,22 @@ export async function POST(request: NextRequest) {
     if (!styles || styles.length === 0) {
       return NextResponse.json(
         { error: 'Please select at least one style' },
+        { status: 400 }
+      )
+    }
+
+    // Проверяем кредиты пользователя
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { credits: true }
+    })
+
+    const creditsPerStyle = QUALITY_CREDITS[quality] || 1
+    const totalCreditsNeeded = creditsPerStyle * styles.length
+
+    if (!user || user.credits < totalCreditsNeeded) {
+      return NextResponse.json(
+        { error: 'Not enough credits' },
         { status: 400 }
       )
     }
@@ -114,7 +147,42 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    return NextResponse.json({ outputs })
+    // Списываем кредиты и сохраняем генерацию в БД
+    await prisma.$transaction(async (tx) => {
+      // Списываем кредиты
+      await tx.user.update({
+        where: { id: session.user.id },
+        data: {
+          credits: {
+            decrement: totalCreditsNeeded
+          }
+        }
+      })
+
+      // Сохраняем генерацию
+      await tx.generation.create({
+        data: {
+          userId: session.user.id,
+          originalImageUrl: image,
+          generatedImages: outputs,
+          style: styles.join(','),
+          roomType,
+          quality,
+          creditsUsed: totalCreditsNeeded,
+        }
+      })
+    })
+
+    // Получаем обновленное количество кредитов
+    const updatedUser = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { credits: true }
+    })
+
+    return NextResponse.json({ 
+      outputs,
+      credits: updatedUser?.credits || 0
+    })
 
   } catch (error) {
     console.error('API generation error:', error)
