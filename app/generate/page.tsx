@@ -144,9 +144,9 @@ export default function GeneratePage() {
   const totalCost = selectedQualityObj ? selectedQualityObj.credits * selectedStyles.length : 0
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+    <div className="min-h-screen bg-white">
       {/* Навигация */}
-      <nav className="w-full px-6 py-5 bg-white border-b border-gray-200">
+      <nav className="w-full px-6 py-5 border-b border-gray-200">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <Link href="/" className="text-2xl font-bold text-blue-600">
             roomGPT
@@ -179,9 +179,9 @@ export default function GeneratePage() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-[380px_1fr] gap-8 mb-12">
+        <div className="grid md:grid-cols-[320px_1fr] gap-6 mb-12">
           {/* Левая панель - Форма */}
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Уведомление о кредитах */}
             {credits === 0 && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
@@ -196,8 +196,8 @@ export default function GeneratePage() {
             )}
 
             {/* Загрузка фото */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="font-bold text-gray-900 mb-4">Загрузите фото вашей комнаты</h3>
+            <div className="bg-white rounded-xl border border-gray-200 p-6">
+              <h3 className="font-semibold text-gray-900 mb-3 text-sm">Загрузите фото вашей комнаты</h3>
               {!uploadedImage ? (
                 <div
                   {...getRootProps()}
@@ -238,8 +238,8 @@ export default function GeneratePage() {
             </div>
 
             {/* Выбор типа комнаты */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="font-bold text-gray-900 mb-3">Выберите тип комнаты</h3>
+            <div className="bg-white rounded-xl border border-gray-200 p-6">
+              <h3 className="font-semibold text-gray-900 mb-3 text-sm">Выберите тип комнаты</h3>
               <select
                 value={selectedRoomType}
                 onChange={(e) => setSelectedRoomType(e.target.value)}
@@ -254,8 +254,8 @@ export default function GeneratePage() {
             </div>
 
             {/* Выбор качества */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="font-bold text-gray-900 mb-3">Выберите качество</h3>
+            <div className="bg-white rounded-xl border border-gray-200 p-6">
+              <h3 className="font-semibold text-gray-900 mb-3 text-sm">Выберите качество</h3>
               <select
                 value={selectedQuality}
                 onChange={(e) => setSelectedQuality(e.target.value)}
@@ -270,8 +270,8 @@ export default function GeneratePage() {
             </div>
 
             {/* Выбор тем */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="font-bold text-gray-900 mb-3">
+            <div className="bg-white rounded-xl border border-gray-200 p-6">
+              <h3 className="font-semibold text-gray-900 mb-3 text-sm">
                 Выберите темы комнаты (до 4)
               </h3>
               <div className="grid grid-cols-3 gap-3">
@@ -352,74 +352,67 @@ export default function GeneratePage() {
             )}
           </div>
 
-          {/* Правая панель - Превью */}
-          <div className="bg-gray-600 rounded-xl flex items-center justify-center min-h-[500px]">
-            {uploadedImage ? (
-              <img
-                src={uploadedImage}
-                alt="Preview"
-                className="w-full h-full object-contain rounded-xl"
-              />
-            ) : (
-              <div className="text-center">
-                <div className="w-24 h-24 mx-auto mb-4 bg-gray-500 rounded-lg flex items-center justify-center">
-                  <svg className="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
+          {/* Правая панель - Оригинал и результаты */}
+          <div className="space-y-6">
+            {/* Оригинальное изображение */}
+            {uploadedImage && (
+              <div>
+                <h3 className="text-sm font-semibold text-gray-700 mb-3">Оригинал</h3>
+                <div className="bg-gray-50 rounded-xl border border-gray-200 p-4">
+                  <img
+                    src={uploadedImage}
+                    alt="Original"
+                    className="w-full rounded-lg"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Сгенерированные изображения */}
+            {generatedImages.length > 0 && (
+              <div>
+                <h3 className="text-sm font-semibold text-gray-700 mb-3">Результаты ({generatedImages.length})</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  {generatedImages.map((image, index) => (
+                    <div key={index} className="bg-gray-50 rounded-xl border border-gray-200 p-4">
+                      <img
+                        src={image}
+                        alt={`Result ${index + 1}`}
+                        className="w-full rounded-lg mb-3"
+                      />
+                      <button
+                        onClick={() => {
+                          const link = document.createElement('a')
+                          link.href = image
+                          link.download = `room-design-${index + 1}.png`
+                          link.click()
+                        }}
+                        className="w-full px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                      >
+                        Скачать
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Плейсхолдер когда нет изображений */}
+            {!uploadedImage && generatedImages.length === 0 && (
+              <div className="bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 flex items-center justify-center min-h-[400px]">
+                <div className="text-center">
+                  <div className="w-16 h-16 mx-auto mb-3 bg-gray-200 rounded-lg flex items-center justify-center">
+                    <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <p className="text-sm text-gray-500">Загрузите изображение для начала</p>
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Результаты */}
-        {generatedImages.length > 0 && (
-          <div className="mt-12 animate-fadeIn">
-            <h2 className="text-3xl font-bold mb-8 text-center">
-              ✨ Ваши дизайны
-            </h2>
-            
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {generatedImages.map((image, index) => (
-                <div key={index} className="bg-white rounded-xl shadow-lg overflow-hidden">
-                  <div className="aspect-square bg-gray-100">
-                    <img
-                      src={image}
-                      alt={`Дизайн ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <button
-                      onClick={() => {
-                        const link = document.createElement('a')
-                        link.href = image
-                        link.download = `room-design-${index + 1}.png`
-                        link.click()
-                      }}
-                      className="w-full px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
-                    >
-                      Скачать
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-8 text-center">
-              <button
-                onClick={() => {
-                  setUploadedImage(null)
-                  setGeneratedImages([])
-                  setSelectedStyles([])
-                }}
-                className="px-8 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-all"
-              >
-                Создать новый дизайн
-              </button>
-            </div>
-          </div>
-        )}
       </main>
     </div>
   )
