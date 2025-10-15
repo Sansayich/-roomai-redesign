@@ -351,10 +351,10 @@ export default function GeneratePage() {
             {/* Кнопка генерации */}
             <button
               onClick={handleGenerate}
-              disabled={!uploadedImage || selectedStyles.length === 0 || isGenerating || (session && credits === 0)}
+              disabled={!uploadedImage || selectedStyles.length === 0 || isGenerating || (session !== null && credits === 0)}
               className={`
                 w-full py-3 rounded-lg font-semibold text-base transition-all
-                ${!uploadedImage || selectedStyles.length === 0 || isGenerating || (session && credits === 0)
+                ${!uploadedImage || selectedStyles.length === 0 || isGenerating || (session !== null && credits === 0)
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   : 'bg-blue-600 text-white hover:bg-blue-700'
                 }
