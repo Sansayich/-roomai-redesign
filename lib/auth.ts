@@ -37,8 +37,30 @@ export const authOptions: NextAuthOptions = {
       server: process.env.EMAIL_SERVER,
       from: process.env.EMAIL_FROM,
       async sendVerificationRequest({ identifier: email, url, provider }) {
-        const { host } = new URL(url)
         const { server, from } = provider
+        
+        // Генерируем короткий код (8 символов)
+        const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+        let code = ''
+        for (let i = 0; i < 8; i++) {
+          code += characters.charAt(Math.floor(Math.random() * characters.length))
+        }
+        
+        // Сохраняем короткий код в БД
+        const expires = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 часа
+        await prisma.shortVerificationCode.create({
+          data: {
+            code,
+            fullUrl: url,
+            email,
+            expires,
+          }
+        })
+        
+        // Создаем короткую ссылку
+        const baseUrl = process.env.NEXTAUTH_URL || 'https://room-gpt.ru'
+        const shortUrl = `${baseUrl}/verify?code=${code}`
+        const host = new URL(baseUrl).host
         
         const nodemailer = await import('nodemailer')
         const transport = nodemailer.createTransport(server)
@@ -47,8 +69,8 @@ export const authOptions: NextAuthOptions = {
           to: email,
           from: from,
           subject: `roomGPT Ссылка для входа`,
-          text: textTemplate({ url, host }),
-          html: emailTemplate({ url, host }),
+          text: textTemplate({ url: shortUrl, host }),
+          html: emailTemplate({ url: shortUrl, host }),
         })
       },
     }),

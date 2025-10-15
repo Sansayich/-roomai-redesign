@@ -77,6 +77,18 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model ShortVerificationCode {
+  id          String   @id @default(cuid())
+  code        String   @unique // Короткий код (6-8 символов)
+  fullUrl     String   @db.Text // Полный NextAuth callback URL
+  email       String
+  expires     DateTime
+  createdAt   DateTime @default(now())
+
+  @@index([code])
+  @@index([email])
+}
+
 model Generation {
   id                  String   @id @default(cuid())
   userId              String
