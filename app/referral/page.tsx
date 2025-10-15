@@ -159,7 +159,6 @@ export default function ReferralPage() {
                 </Link>
               </div>
             </div>
-          </div>
         </nav>
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
