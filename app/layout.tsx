@@ -12,7 +12,7 @@ const jost = Jost({
 })
 
 // Проверка staging окружения
-const isStaging = process.env.NODE_ENV === 'staging' || process.env.NEXTAUTH_URL?.includes('staging')
+const isStaging = process.env.NEXTAUTH_URL?.includes('staging') || false
 
 export const metadata: Metadata = {
   title: isStaging 

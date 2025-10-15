@@ -5,9 +5,9 @@ services:
     image: postgres:15-alpine
     container_name: roomai-postgres-staging
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-roomgpt}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-roomgpt_password}
-      POSTGRES_DB: ${POSTGRES_DB:-roomgpt_staging}
+      POSTGRES_USER: roomgpt
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: roomgpt_staging
     volumes:
       - postgres_data_staging:/var/lib/postgresql/data
     networks:
@@ -25,15 +25,17 @@ services:
     container_name: roomai-app-staging
     ports:
       - "3001:3000"
+    env_file:
+      - .env.staging
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-roomgpt}:${POSTGRES_PASSWORD:-roomgpt_password}@postgres-staging:5432/${POSTGRES_DB:-roomgpt_staging}?schema=public
+      DATABASE_URL: postgresql://roomgpt:${DATABASE_PASSWORD}@postgres-staging:5432/roomgpt_staging?schema=public
       NEXTAUTH_URL: ${NEXTAUTH_URL:-https://staging.room-gpt.ru}
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
       EMAIL_SERVER: ${EMAIL_SERVER}
       EMAIL_FROM: ${EMAIL_FROM}
       ADMIN_EMAIL: ${ADMIN_EMAIL}
-      REPLICATE_API_KEY: ${REPLICATE_API_KEY}
-      NODE_ENV: staging
+      REPLICATE_API_TOKEN: ${REPLICATE_API_TOKEN}
+      NODE_ENV: production
     depends_on:
       postgres-staging:
         condition: service_healthy
