@@ -99,7 +99,7 @@ function SignInForm() {
         <div className="max-w-lg w-full">
         {/* Badge сверху */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center px-4 py-2 bg-white rounded-full border border-blue-200 shadow-sm mb-6">
+          <div className="inline-flex items-center px-4 py-2 bg-white rounded-full border border-blue-200  mb-6">
             <span className="text-sm text-gray-700">
               Более <span className="font-bold text-blue-600">10,000 пользователей</span> уже используют roomGPT
             </span>
@@ -123,7 +123,7 @@ function SignInForm() {
         </div>
 
         {/* Форма входа */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-8">
+        <div className="bg-white rounded-2xl border border-gray-200  p-8">
           <form onSubmit={handleEmailSignIn} className="space-y-5">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
@@ -143,7 +143,7 @@ function SignInForm() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-blue-600 text-white py-3.5 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+              className="w-full bg-blue-600 text-white py-3.5 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed "
             >
               {isLoading ? 'Отправляем ссылку...' : 'Получить ссылку для входа'}
             </button>

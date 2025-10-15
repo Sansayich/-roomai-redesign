@@ -485,7 +485,7 @@ export default function GeneratePage() {
           onClick={() => setShowAuthModal(false)}
         >
           <div 
-            className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl transform transition-all"
+            className="bg-white rounded-2xl p-8 max-w-md w-full  transform transition-all"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="text-center">

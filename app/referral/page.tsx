@@ -176,7 +176,7 @@ export default function ReferralPage() {
             </p>
             <Link
               href="/auth/signin"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-xl hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-xl hover:bg-blue-700 transition-colors  hover:"
             >
               Начать зарабатывать
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -187,7 +187,7 @@ export default function ReferralPage() {
 
           {/* Преимущества */}
           <div className="grid md:grid-cols-3 gap-8 mb-16">
-            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+            <div className="bg-white rounded-2xl p-8  border border-gray-100">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6">
                 <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -199,7 +199,7 @@ export default function ReferralPage() {
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+            <div className="bg-white rounded-2xl p-8  border border-gray-100">
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-6">
                 <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -211,7 +211,7 @@ export default function ReferralPage() {
               </p>
             </div>
 
-            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+            <div className="bg-white rounded-2xl p-8  border border-gray-100">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
                 <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -225,7 +225,7 @@ export default function ReferralPage() {
           </div>
 
           {/* Как это работает */}
-          <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-xl mb-16">
+          <div className="bg-white rounded-3xl p-8 sm:p-12  mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-12 text-center">
               Как это работает?
             </h2>
@@ -349,7 +349,7 @@ export default function ReferralPage() {
         {/* Баланс и реферальная ссылка */}
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           {/* Баланс */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border-2 border-blue-100">
+          <div className="bg-white rounded-2xl  p-8 border-2 border-blue-100">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-700">Реферальный баланс</h2>
               <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -402,7 +402,7 @@ export default function ReferralPage() {
           </div>
 
           {/* Реферальная ссылка */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border-2 border-purple-100">
+          <div className="bg-white rounded-2xl  p-8 border-2 border-purple-100">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-700">Ваша реферальная ссылка</h2>
               <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -426,19 +426,19 @@ export default function ReferralPage() {
 
         {/* Статистика */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow p-6 text-center">
+          <div className="bg-white rounded-xl p-6 text-center">
             <div className="text-3xl font-bold text-blue-600 mb-2">
               {stats?.totalReferrals || 0}
             </div>
             <div className="text-gray-600">Приглашено пользователей</div>
           </div>
-          <div className="bg-white rounded-xl shadow p-6 text-center">
+          <div className="bg-white rounded-xl p-6 text-center">
             <div className="text-3xl font-bold text-green-600 mb-2">
               {stats?.totalEarnings.toFixed(2)}₽
             </div>
             <div className="text-gray-600">Заработано всего</div>
           </div>
-          <div className="bg-white rounded-xl shadow p-6 text-center">
+          <div className="bg-white rounded-xl p-6 text-center">
             <div className="text-3xl font-bold text-purple-600 mb-2">
               40%
             </div>
@@ -448,7 +448,7 @@ export default function ReferralPage() {
 
         {/* История начислений */}
         {stats?.earnings && stats.earnings.length > 0 && (
-          <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+          <div className="bg-white rounded-xl  p-6 mb-8">
             <h2 className="text-xl font-bold text-gray-900 mb-4">💸 История начислений</h2>
             <div className="overflow-x-auto">
               <table className="w-full">
@@ -485,7 +485,7 @@ export default function ReferralPage() {
 
         {/* История выплат */}
         {stats?.payoutRequests && stats.payoutRequests.length > 0 && (
-          <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="bg-white rounded-xl  p-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4">📋 Запросы на выплату</h2>
             <div className="overflow-x-auto">
               <table className="w-full">
