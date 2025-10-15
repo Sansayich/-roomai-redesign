@@ -3,6 +3,7 @@ import { Jost } from 'next/font/google'
 import './globals.css'
 import SessionProvider from '@/components/SessionProvider'
 import CookieConsent from '@/components/CookieConsent'
+import StagingNotice from '@/components/StagingNotice'
 import Script from 'next/script'
 
 const jost = Jost({ 
@@ -10,8 +11,13 @@ const jost = Jost({
   weight: ['300', '400', '500', '600', '700'],
 })
 
+// Проверка staging окружения
+const isStaging = process.env.NODE_ENV === 'staging' || process.env.NEXTAUTH_URL?.includes('staging')
+
 export const metadata: Metadata = {
-  title: 'RoomGPT на русском - нейросеть для дизайна интерьера без VPN с оплатой российскими картами',
+  title: isStaging 
+    ? '🚧 STAGING - RoomGPT' 
+    : 'RoomGPT на русском - нейросеть для дизайна интерьера без VPN с оплатой российскими картами',
   description: 'Нейросеть для дизайна интерьера на русском языке. RoomGPT - бесплатный онлайн сервис для создания дизайна комнаты, кухни, ванной, спальни с помощью ИИ. Без VPN, оплата российскими картами. 3 бесплатные генерации при регистрации.',
   keywords: [
     'roomgpt',
@@ -73,7 +79,12 @@ export const metadata: Metadata = {
     description: 'Создайте дизайн интерьера с помощью ИИ. Бесплатно, на русском языке, без VPN.',
     images: ['/og-image.jpg'],
   },
-  robots: {
+  robots: isStaging ? {
+    index: false,
+    follow: false,
+    noarchive: true,
+    nosnippet: true,
+  } : {
     index: true,
     follow: true,
     googleBot: {
@@ -101,6 +112,9 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className={jost.className}>
+        {/* Staging Notice - показываем только в staging окружении */}
+        {isStaging && <StagingNotice />}
+        
         {/* Yandex.Metrika counter */}
         <Script
           id="yandex-metrika"
