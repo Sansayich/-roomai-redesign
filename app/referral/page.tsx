@@ -44,14 +44,11 @@ export default function ReferralPage() {
   const [payoutMessage, setPayoutMessage] = useState('')
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/auth/signin')
-    }
-  }, [status, router])
-
-  useEffect(() => {
+    // Убрали редирект - страница доступна всем
     if (session?.user) {
       fetchStats()
+    } else {
+      setIsLoading(false)
     }
   }, [session])
 
@@ -129,7 +126,7 @@ export default function ReferralPage() {
     }
   }
 
-  if (status === 'loading' || isLoading) {
+  if (status === 'loading' || (isLoading && session)) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
         <div className="text-center">
@@ -140,10 +137,174 @@ export default function ReferralPage() {
     )
   }
 
+  // Если пользователь не авторизован - показываем лендинг партнерской программы
   if (!session) {
-    return null
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        {/* Навигация */}
+        <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+            <div className="flex justify-between items-center">
+              <Link href="/" className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                roomGPT
+              </Link>
+              <div className="flex items-center gap-4 sm:gap-6">
+                <Link href="/pricing" className="text-sm sm:text-base text-gray-700 hover:text-blue-600 transition-colors">
+                  Тарифы
+                </Link>
+                <Link 
+                  href="/auth/signin"
+                  className="px-4 sm:px-6 py-2 bg-blue-600 text-white text-sm sm:text-base rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Войти
+                </Link>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+          {/* Hero секция */}
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center px-4 py-2 bg-blue-100 rounded-full mb-6">
+              <span className="text-sm font-medium text-blue-700">💰 Зарабатывайте вместе с нами</span>
+            </div>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+              Партнерская программа <span className="text-blue-600">roomGPT</span>
+            </h1>
+            <p className="text-xl sm:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
+              Приглашайте друзей и получайте <span className="font-bold text-blue-600">40% с каждого платежа</span>
+            </p>
+            <Link
+              href="/auth/signin"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-xl hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl"
+            >
+              Начать зарабатывать
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
+          </div>
+
+          {/* Преимущества */}
+          <div className="grid md:grid-cols-3 gap-8 mb-16">
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">40% комиссия</h3>
+              <p className="text-gray-600">
+                Получайте 40% от каждого платежа ваших рефералов. Один из самых высоких процентов на рынке.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">Быстрые выплаты</h3>
+              <p className="text-gray-600">
+                Минимальная сумма для вывода всего 100₽. Выплаты на карту или СБП в течение 5 дней.
+              </p>
+            </div>
+
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">Без ограничений</h3>
+              <p className="text-gray-600">
+                Приглашайте неограниченное количество рефералов. Чем больше друзей, тем выше доход.
+              </p>
+            </div>
+          </div>
+
+          {/* Как это работает */}
+          <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-xl mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-12 text-center">
+              Как это работает?
+            </h2>
+            <div className="grid md:grid-cols-4 gap-8">
+              <div className="text-center">
+                <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl font-bold text-blue-600">1</span>
+                </div>
+                <h3 className="font-bold text-lg mb-2">Регистрация</h3>
+                <p className="text-gray-600 text-sm">Зарегистрируйтесь и получите уникальную реферальную ссылку</p>
+              </div>
+              <div className="text-center">
+                <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl font-bold text-purple-600">2</span>
+                </div>
+                <h3 className="font-bold text-lg mb-2">Поделитесь</h3>
+                <p className="text-gray-600 text-sm">Отправьте ссылку друзьям в соцсетях или мессенджерах</p>
+              </div>
+              <div className="text-center">
+                <div className="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl font-bold text-orange-600">3</span>
+                </div>
+                <h3 className="font-bold text-lg mb-2">Они покупают</h3>
+                <p className="text-gray-600 text-sm">Ваши друзья регистрируются и покупают кредиты</p>
+              </div>
+              <div className="text-center">
+                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl font-bold text-green-600">4</span>
+                </div>
+                <h3 className="font-bold text-lg mb-2">Вы зарабатываете</h3>
+                <p className="text-gray-600 text-sm">Получаете 40% с каждого их платежа на свой баланс</p>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-center text-white">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+              Готовы начать зарабатывать?
+            </h2>
+            <p className="text-xl mb-8 opacity-90">
+              Присоединяйтесь к партнерской программе прямо сейчас
+            </p>
+            <Link
+              href="/auth/signin"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-white text-blue-600 text-lg font-semibold rounded-xl hover:bg-gray-100 transition-colors"
+            >
+              Зарегистрироваться бесплатно
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
+          </div>
+        </main>
+
+        {/* Футер */}
+        <footer className="w-full py-6 sm:py-8 border-t border-gray-200 mt-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center text-gray-500 text-xs sm:text-sm space-y-3">
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-6">
+              <Link href="/terms" className="hover:text-gray-900">Публичная оферта</Link>
+              <Link href="/privacy" className="hover:text-gray-900">Политика конфиденциальности</Link>
+              <Link href="/refund" className="hover:text-gray-900">Возврат средств</Link>
+              <Link href="/referral" className="hover:text-gray-900">Партнерская программа</Link>
+            </div>
+            <div className="flex justify-center items-center gap-2">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <a href="mailto:hello@room-gpt.ru" className="hover:text-gray-900">hello@room-gpt.ru</a>
+            </div>
+            <p>© {new Date().getFullYear()} roomGPT. Все права защищены.</p>
+          </div>
+        </footer>
+      </div>
+    )
   }
 
+  // Авторизованный пользователь - показываем личный кабинет партнера
   const referralLink = stats?.referralCode 
     ? `${typeof window !== 'undefined' ? window.location.origin : ''}?ref=${stats.referralCode}`
     : ''
