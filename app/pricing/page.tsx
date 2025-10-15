@@ -15,18 +15,18 @@ export default function PricingPage() {
     },
     {
       name: 'Популярный',
-      price: '699',
-      credits: 100,
-      generations: '100',
-      storage: 'Хранение 30 дней',
-      popular: true,
-    },
-    {
-      name: 'Стандарт',
       price: '299',
       credits: 30,
       generations: '30',
       storage: 'Хранение 24 часа',
+      popular: true,
+    },
+    {
+      name: 'Максимум',
+      price: '699',
+      credits: 100,
+      generations: '100',
+      storage: 'Хранение 30 дней',
       popular: false,
     }
   ]
@@ -82,7 +82,7 @@ export default function PricingPage() {
               )}
 
               <div className="text-center mb-6">
-                <h3 className="text-xl font-semibold mb-4 text-gray-600">
+                <h3 className="text-xl font-semibold mb-4 text-blue-600">
                   {plan.credits} {plan.credits === 1 ? 'кредит' : plan.credits < 5 ? 'кредита' : 'кредитов'}
                 </h3>
                 <p className="text-sm mb-2 text-gray-700">
@@ -103,13 +103,7 @@ export default function PricingPage() {
               </div>
 
               <button
-                className={`
-                  w-full py-3 rounded-lg font-semibold transition-all
-                  ${plan.popular
-                    ? 'bg-white text-blue-600 hover:bg-gray-100'
-                    : 'bg-blue-600 text-white hover:bg-blue-700'
-                  }
-                `}
+                className="w-full py-3 rounded-lg font-semibold transition-all bg-blue-600 text-white hover:bg-blue-700"
               >
                 Оплатить
               </button>
