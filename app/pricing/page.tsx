@@ -68,35 +68,35 @@ export default function PricingPage() {
             <div
               key={index}
               className={`
-                relative bg-gray-50 rounded-xl border p-6
-                ${plan.popular ? 'border-blue-600 border-2 bg-blue-600 text-white' : 'border-gray-200'}
+                relative bg-white rounded-xl border p-6
+                ${plan.popular ? 'border-blue-600 border-2' : 'border-gray-200 bg-gray-50'}
                 transition-all hover:border-blue-300
               `}
             >
               {plan.popular && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-gray-700 text-white px-4 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
-                    Most Popular
+                  <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                    Популярный
                   </span>
                 </div>
               )}
 
               <div className="text-center mb-6">
-                <h3 className={`text-xl font-semibold mb-4 ${plan.popular ? 'text-white' : 'text-gray-600'}`}>
+                <h3 className="text-xl font-semibold mb-4 text-gray-600">
                   {plan.credits} {plan.credits === 1 ? 'кредит' : plan.credits < 5 ? 'кредита' : 'кредитов'}
                 </h3>
-                <p className={`text-sm mb-2 ${plan.popular ? 'text-white opacity-90' : 'text-gray-700'}`}>
+                <p className="text-sm mb-2 text-gray-700">
                   {plan.generations} генераций
                 </p>
-                <p className={`text-sm mb-2 ${plan.popular ? 'text-white opacity-90' : 'text-gray-700'}`}>
+                <p className="text-sm mb-2 text-gray-700">
                   Все стили доступны
                 </p>
-                <p className={`text-sm mb-6 font-medium ${plan.popular ? 'text-white' : 'text-blue-600'}`}>
+                <p className="text-sm mb-6 font-medium text-blue-600">
                   {plan.storage}
                 </p>
                 <div className="flex items-baseline justify-center gap-1 mb-6">
-                  <span className={`text-sm font-medium ${plan.popular ? 'text-white' : 'text-gray-900'}`}>₽</span>
-                  <span className={`text-5xl font-semibold ${plan.popular ? 'text-white' : 'text-gray-900'}`}>
+                  <span className="text-sm font-medium text-gray-900">₽</span>
+                  <span className="text-5xl font-semibold text-gray-900">
                     {plan.price}
                   </span>
                 </div>
