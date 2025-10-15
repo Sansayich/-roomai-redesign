@@ -2,7 +2,7 @@ import { prisma } from './prisma'
 
 /**
  * Начислить реферальное вознаграждение
- * Средства станут доступны через 14 дней (период возврата)
+ * Средства станут доступны через 7 дней (период возврата по оферте)
  */
 export async function addReferralEarning(
   userId: string,
@@ -13,9 +13,9 @@ export async function addReferralEarning(
 ) {
   const earnAmount = orderAmount * (percentage / 100)
   
-  // Дата доступности = текущая дата + 14 дней
+  // Дата доступности = текущая дата + 7 дней (срок возврата)
   const availableAt = new Date()
-  availableAt.setDate(availableAt.getDate() + 14)
+  availableAt.setDate(availableAt.getDate() + 7)
   
   await prisma.$transaction([
     // Создаем запись о начислении
@@ -46,20 +46,25 @@ export async function addReferralEarning(
 
 /**
  * Вычесть реферальное вознаграждение при возврате средств
- * Может привести к отрицательному балансу
+ * Используется только если возврат произошел в течение 7 дней (пока на холде)
  */
 export async function reverseReferralEarning(
   referralEmail: string,
   refundAmount: number
 ) {
-  // Находим все начисления по этому рефералу
+  const now = new Date()
+  
+  // Находим все начисления по этому рефералу, которые еще на холде
   const earnings = await prisma.referralEarning.findMany({
     where: {
       referralEmail,
-      isReversed: false, // Только те, что еще не были отменены
+      isReversed: false,
+      availableAt: {
+        gt: now // Только те, что еще не стали доступны
+      }
     },
     orderBy: {
-      createdAt: 'desc' // Сначала новые
+      createdAt: 'desc'
     }
   })
   
@@ -69,7 +74,6 @@ export async function reverseReferralEarning(
   for (const earning of earnings) {
     if (remainingRefund <= 0) break
     
-    // Сколько нужно вычесть из этого начисления
     const refundRatio = Math.min(remainingRefund / earning.orderAmount, 1)
     const amountToReverse = earning.amount * refundRatio
     
@@ -103,7 +107,7 @@ export async function reverseReferralEarning(
 
 /**
  * Получить доступный для вывода баланс
- * Учитывает только начисления старше 14 дней
+ * Учитывает только начисления старше 7 дней
  */
 export async function getAvailableBalance(userId: string): Promise<number> {
   const now = new Date()
@@ -121,21 +125,7 @@ export async function getAvailableBalance(userId: string): Promise<number> {
     }
   })
   
-  const availableEarnings = result._sum.amount || 0
-  
-  // Получаем текущий баланс пользователя
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { referralBalance: true }
-  })
-  
-  // Если баланс отрицательный, доступно 0
-  // Если баланс положительный, но меньше доступных начислений, показываем баланс
-  const currentBalance = user?.referralBalance || 0
-  
-  if (currentBalance < 0) return 0
-  
-  return Math.min(currentBalance, availableEarnings)
+  return result._sum.amount || 0
 }
 
 /**

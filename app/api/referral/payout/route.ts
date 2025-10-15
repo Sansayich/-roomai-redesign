@@ -48,23 +48,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Получаем доступный для вывода баланс (с учетом периода холдирования 14 дней)
+    // Получаем доступный для вывода баланс (с учетом периода холдирования 7 дней)
     const availableBalance = await getAvailableBalance(session.user.id)
 
-    // Проверка минимальной суммы для вывода (например, 100 рублей)
+    // Проверка минимальной суммы для вывода
     const MIN_PAYOUT_AMOUNT = 100
 
     if (availableBalance < MIN_PAYOUT_AMOUNT) {
       return NextResponse.json(
-        { error: `Минимальная сумма для вывода: ${MIN_PAYOUT_AMOUNT}₽. Доступно: ${availableBalance.toFixed(2)}₽. Часть средств находится на холде (14 дней с момента платежа).` },
-        { status: 400 }
-      )
-    }
-
-    // Проверка на отрицательный баланс
-    if (user.referralBalance < 0) {
-      return NextResponse.json(
-        { error: `У вас отрицательный баланс (${user.referralBalance.toFixed(2)}₽) из-за возвратов средств рефералами. Вывод будет доступен после компенсации.` },
+        { error: `Минимальная сумма для вывода: ${MIN_PAYOUT_AMOUNT}₽. Доступно: ${availableBalance.toFixed(2)}₽. Часть средств находится на холде (7 дней с момента платежа).` },
         { status: 400 }
       )
     }
