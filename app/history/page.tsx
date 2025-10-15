@@ -17,11 +17,16 @@ type Generation = {
   createdAt: string
 }
 
+type ImageState = {
+  [key: string]: boolean // true если изображение доступно, false если нет
+}
+
 export default function HistoryPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [generations, setGenerations] = useState<Generation[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [imageStates, setImageStates] = useState<ImageState>({})
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -48,6 +53,29 @@ export default function HistoryPage() {
       setIsLoading(false)
     }
   }
+
+  const checkImageAvailability = async (imageUrl: string, imageId: string) => {
+    try {
+      const response = await fetch(imageUrl, { method: 'HEAD' })
+      setImageStates(prev => ({ ...prev, [imageId]: response.ok }))
+    } catch (error) {
+      setImageStates(prev => ({ ...prev, [imageId]: false }))
+    }
+  }
+
+  useEffect(() => {
+    if (generations.length > 0) {
+      generations.forEach(generation => {
+        // Проверяем оригинал
+        checkImageAvailability(generation.originalImageUrl, `${generation.id}-original`)
+        
+        // Проверяем сгенерированные изображения
+        generation.generatedImages.forEach((imageUrl, index) => {
+          checkImageAvailability(imageUrl, `${generation.id}-generated-${index}`)
+        })
+      })
+    }
+  }, [generations])
 
   const downloadImage = (imageUrl: string, index: number) => {
     const link = document.createElement('a')
@@ -153,11 +181,21 @@ export default function HistoryPage() {
                   <div>
                     <p className="text-xs font-medium text-gray-600 mb-2">Оригинал</p>
                     <div className="bg-gray-50 rounded-lg p-2">
-                      <img
-                        src={generation.originalImageUrl}
-                        alt="Original"
-                        className="w-full rounded-lg"
-                      />
+                      {imageStates[`${generation.id}-original`] === false ? (
+                        <div className="aspect-video bg-gray-100 rounded-lg flex flex-col items-center justify-center p-4 text-center">
+                          <svg className="w-12 h-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                          </svg>
+                          <p className="text-sm font-medium text-gray-700 mb-1">Изображение удалено</p>
+                          <p className="text-xs text-gray-500">Срок хранения истек</p>
+                        </div>
+                      ) : (
+                        <img
+                          src={generation.originalImageUrl}
+                          alt="Original"
+                          className="w-full rounded-lg"
+                        />
+                      )}
                     </div>
                   </div>
 
@@ -168,17 +206,35 @@ export default function HistoryPage() {
                         Результат {index + 1}
                       </p>
                       <div className="bg-gray-50 rounded-lg p-2">
-                        <img
-                          src={imageUrl}
-                          alt={`Generated ${index + 1}`}
-                          className="w-full rounded-lg mb-2"
-                        />
-                        <button
-                          onClick={() => downloadImage(imageUrl, index)}
-                          className="w-full px-3 py-2 text-sm bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition"
-                        >
-                          Скачать
-                        </button>
+                        {imageStates[`${generation.id}-generated-${index}`] === false ? (
+                          <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-50 rounded-lg flex flex-col items-center justify-center p-4 text-center border-2 border-dashed border-gray-300">
+                            <svg className="w-12 h-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <p className="text-sm font-semibold text-gray-700 mb-1">Срок хранения истек</p>
+                            <p className="text-xs text-gray-500 mb-3">Изображение хранилось 24 часа</p>
+                            <Link
+                              href="/pricing"
+                              className="text-xs text-blue-600 hover:text-blue-700 font-medium underline"
+                            >
+                              Хранение 30 дней в тарифе "Популярный"
+                            </Link>
+                          </div>
+                        ) : (
+                          <>
+                            <img
+                              src={imageUrl}
+                              alt={`Generated ${index + 1}`}
+                              className="w-full rounded-lg mb-2"
+                            />
+                            <button
+                              onClick={() => downloadImage(imageUrl, index)}
+                              className="w-full px-3 py-2 text-sm bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+                            >
+                              Скачать
+                            </button>
+                          </>
+                        )}
                       </div>
                     </div>
                   ))}
