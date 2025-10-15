@@ -315,21 +315,20 @@ export default function ReferralPage() {
           <Link href="/" className="text-xl sm:text-2xl font-bold text-blue-600">
             roomGPT
           </Link>
-            <div className="flex items-center gap-6">
-              <Link href="/generate" className="text-gray-700 hover:text-blue-600 transition-colors">
-                Генерация
-              </Link>
-              <Link href="/history" className="text-gray-700 hover:text-blue-600 transition-colors">
-                История
-              </Link>
-              <Link href="/pricing" className="text-gray-700 hover:text-blue-600 transition-colors">
-                Тарифы
-              </Link>
-              <Link href="/referral" className="text-blue-600 font-medium">
-                Партнерам
-              </Link>
-              <UserMenu />
-            </div>
+          <div className="flex items-center gap-6">
+            <Link href="/generate" className="text-gray-700 hover:text-blue-600 transition-colors">
+              Генерация
+            </Link>
+            <Link href="/history" className="text-gray-700 hover:text-blue-600 transition-colors">
+              История
+            </Link>
+            <Link href="/pricing" className="text-gray-700 hover:text-blue-600 transition-colors">
+              Тарифы
+            </Link>
+            <Link href="/referral" className="text-blue-600 font-medium">
+              Партнерам
+            </Link>
+            <UserMenu />
           </div>
         </div>
       </nav>
