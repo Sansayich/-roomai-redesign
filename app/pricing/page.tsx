@@ -13,18 +13,18 @@ export default function PricingPage() {
       popular: false,
     },
     {
-      name: 'Стандарт',
-      price: '299',
-      credits: 30,
-      generations: '30',
-      popular: false,
-    },
-    {
       name: 'Популярный',
       price: '699',
       credits: 100,
       generations: '100',
       popular: true,
+    },
+    {
+      name: 'Стандарт',
+      price: '299',
+      credits: 30,
+      generations: '30',
+      popular: false,
     }
   ]
 
@@ -79,17 +79,17 @@ export default function PricingPage() {
               )}
 
               <div className="text-center mb-6">
-                <h3 className={`text-xl font-medium mb-4 ${plan.popular ? 'text-white' : 'text-gray-500'}`}>
+                <h3 className={`text-xl font-semibold mb-4 ${plan.popular ? 'text-white' : 'text-gray-600'}`}>
                   {plan.credits} {plan.credits === 1 ? 'кредит' : plan.credits < 5 ? 'кредита' : 'кредитов'}
                 </h3>
-                <p className={`text-sm mb-4 ${plan.popular ? 'text-blue-100' : 'text-gray-700'}`}>
+                <p className={`text-sm mb-4 ${plan.popular ? 'text-white opacity-90' : 'text-gray-700'}`}>
                   {plan.generations} генераций
                 </p>
-                <p className={`text-sm mb-6 ${plan.popular ? 'text-blue-100' : 'text-gray-700'}`}>
+                <p className={`text-sm mb-6 ${plan.popular ? 'text-white opacity-90' : 'text-gray-700'}`}>
                   Все стили доступны
                 </p>
                 <div className="flex items-baseline justify-center gap-1 mb-6">
-                  <span className="text-sm font-medium">₽</span>
+                  <span className={`text-sm font-medium ${plan.popular ? 'text-white' : 'text-gray-900'}`}>₽</span>
                   <span className={`text-5xl font-semibold ${plan.popular ? 'text-white' : 'text-gray-900'}`}>
                     {plan.price}
                   </span>
