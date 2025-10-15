@@ -46,13 +46,13 @@ export const authOptions: NextAuthOptions = {
           code += characters.charAt(Math.floor(Math.random() * characters.length))
         }
         
-        // Сохраняем короткий код в БД
+        // Сохраняем короткий код в существующей таблице VerificationToken
+        // identifier = короткий код, token = полный URL
         const expires = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 часа
-        await prisma.shortVerificationCode.create({
+        await prisma.verificationToken.create({
           data: {
-            code,
-            fullUrl: url,
-            email,
+            identifier: `short:${code}`,
+            token: url,
             expires,
           }
         })

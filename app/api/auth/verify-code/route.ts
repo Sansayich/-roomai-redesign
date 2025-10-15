@@ -13,12 +13,13 @@ export async function GET(req: NextRequest) {
       )
     }
 
-    // Ищем короткий код в БД
-    const verificationCode = await prisma.shortVerificationCode.findUnique({
-      where: { code: code.toUpperCase() }
+    // Ищем короткий код в таблице VerificationToken
+    const identifier = `short:${code.toUpperCase()}`
+    const verificationToken = await prisma.verificationToken.findFirst({
+      where: { identifier }
     })
 
-    if (!verificationCode) {
+    if (!verificationToken) {
       return NextResponse.json(
         { success: false, error: 'Код не найден' },
         { status: 404 }
@@ -26,10 +27,15 @@ export async function GET(req: NextRequest) {
     }
 
     // Проверяем срок действия
-    if (new Date() > verificationCode.expires) {
+    if (new Date() > verificationToken.expires) {
       // Удаляем истекший код
-      await prisma.shortVerificationCode.delete({
-        where: { code: code.toUpperCase() }
+      await prisma.verificationToken.delete({
+        where: {
+          identifier_token: {
+            identifier: verificationToken.identifier,
+            token: verificationToken.token
+          }
+        }
       })
       
       return NextResponse.json(
@@ -38,15 +44,23 @@ export async function GET(req: NextRequest) {
       )
     }
 
+    // Получаем полный URL
+    const fullUrl = verificationToken.token
+
     // Удаляем использованный код
-    await prisma.shortVerificationCode.delete({
-      where: { code: code.toUpperCase() }
+    await prisma.verificationToken.delete({
+      where: {
+        identifier_token: {
+          identifier: verificationToken.identifier,
+          token: verificationToken.token
+        }
+      }
     })
 
     // Возвращаем полный URL для редиректа
     return NextResponse.json({
       success: true,
-      redirectUrl: verificationCode.fullUrl
+      redirectUrl: fullUrl
     })
 
   } catch (error) {
