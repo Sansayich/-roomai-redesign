@@ -99,11 +99,10 @@ function SignInForm() {
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Редизайн вашей <span className="text-blue-600">комнаты</span> за секунды
           </h1>
-          <p className="text-lg text-gray-600 mb-2">
-            Войдите ниже, чтобы создать бесплатный аккаунт<br />
-            и сделать редизайн вашей комнаты прямо сейчас.
+          <p className="text-base sm:text-lg text-gray-600 mb-2 px-2">
+            Войдите ниже, чтобы создать бесплатный аккаунт и сделать редизайн вашей комнаты прямо сейчас.
           </p>
-          <p className="text-lg font-semibold text-gray-900">
+          <p className="text-base sm:text-lg font-semibold text-gray-900">
             Вы получите <span className="text-blue-600">3 бесплатных кредита</span> 🎁
           </p>
         </div>
