@@ -41,3 +41,6 @@ next-env.d.ts
 # Misc
 *.log
 .cache/
+
+# Generated images
+/public/generations/

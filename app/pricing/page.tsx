@@ -10,6 +10,7 @@ export default function PricingPage() {
       price: '99',
       credits: 10,
       generations: '10',
+      storage: 'Хранение 24 часа',
       popular: false,
     },
     {
@@ -17,6 +18,7 @@ export default function PricingPage() {
       price: '699',
       credits: 100,
       generations: '100',
+      storage: 'Хранение 30 дней',
       popular: true,
     },
     {
@@ -24,6 +26,7 @@ export default function PricingPage() {
       price: '299',
       credits: 30,
       generations: '30',
+      storage: 'Хранение 24 часа',
       popular: false,
     }
   ]
@@ -82,11 +85,14 @@ export default function PricingPage() {
                 <h3 className={`text-xl font-semibold mb-4 ${plan.popular ? 'text-white' : 'text-gray-600'}`}>
                   {plan.credits} {plan.credits === 1 ? 'кредит' : plan.credits < 5 ? 'кредита' : 'кредитов'}
                 </h3>
-                <p className={`text-sm mb-4 ${plan.popular ? 'text-white opacity-90' : 'text-gray-700'}`}>
+                <p className={`text-sm mb-2 ${plan.popular ? 'text-white opacity-90' : 'text-gray-700'}`}>
                   {plan.generations} генераций
                 </p>
-                <p className={`text-sm mb-6 ${plan.popular ? 'text-white opacity-90' : 'text-gray-700'}`}>
+                <p className={`text-sm mb-2 ${plan.popular ? 'text-white opacity-90' : 'text-gray-700'}`}>
                   Все стили доступны
+                </p>
+                <p className={`text-sm mb-6 font-medium ${plan.popular ? 'text-white' : 'text-blue-600'}`}>
+                  {plan.storage}
                 </p>
                 <div className="flex items-baseline justify-center gap-1 mb-6">
                   <span className={`text-sm font-medium ${plan.popular ? 'text-white' : 'text-gray-900'}`}>₽</span>
@@ -123,11 +129,24 @@ export default function PricingPage() {
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
                 <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Хранение изображений</h3>
+                  <p className="text-sm text-gray-600">
+                    <span className="font-medium text-gray-700">Мини/Стандарт:</span> 24 часа<br/>
+                    <span className="font-medium text-blue-600">Популярный:</span> 30 дней
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                <div>
                   <h3 className="font-semibold text-gray-900 mb-1">Поддержка по email</h3>
                   <p className="text-sm text-gray-600">Ответим на все ваши вопросы</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-3">
                 <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -145,16 +164,6 @@ export default function PricingPage() {
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-1">Скачивание результатов</h3>
                   <p className="text-sm text-gray-600">Все сгенерированные изображения доступны для загрузки</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                </svg>
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Скоро: Сохранение в личном кабинете</h3>
-                  <p className="text-sm text-gray-600">Все ваши генерации в одном месте</p>
                 </div>
               </div>
             </div>
@@ -180,6 +189,10 @@ export default function PricingPage() {
               {
                 q: 'Как работают кредиты?',
                 a: 'Каждая генерация изображения использует определенное количество кредитов в зависимости от выбранного качества. Высокое качество (ControlNet) - 2 кредита, стандартное качество - 1 кредит. Вы получаете 3 бесплатных кредита при регистрации!'
+              },
+              {
+                q: 'Как долго хранятся мои изображения?',
+                a: 'Для тарифов Мини и Стандарт изображения доступны 24 часа - обязательно скачайте их! Для тарифа "Популярный" изображения хранятся 30 дней на нашем сервере в истории генераций.'
               },
               {
                 q: 'В чем разница между качествами генерации?',

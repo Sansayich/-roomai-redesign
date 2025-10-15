@@ -3,6 +3,8 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import Replicate from 'replicate'
+import { saveGeneratedImages } from '@/lib/imageStorage'
+import { randomBytes } from 'crypto'
 
 // Инициализация Replicate
 const replicate = new Replicate({
@@ -147,6 +149,29 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Определяем, нужно ли сохранять изображения на сервере
+    // Только для тарифа "Популярный" (100 кредитов) сохраняем на 30 дней
+    const shouldSaveLocally = user.credits >= 100 // Пользователи с большими тарифами получают постоянное хранение
+    
+    let savedImages: { originalUrl: string; generatedUrls: string[] }
+    
+    if (shouldSaveLocally) {
+      // Сохраняем изображения локально для премиум-пользователей
+      try {
+        const generationId = randomBytes(16).toString('hex')
+        savedImages = await saveGeneratedImages(image, outputs, generationId)
+        console.log('Images saved locally for premium user')
+      } catch (saveError) {
+        console.error('Error saving images locally:', saveError)
+        // Если не удалось сохранить локально, используем временные URL
+        savedImages = { originalUrl: image, generatedUrls: outputs }
+      }
+    } else {
+      // Для обычных тарифов используем временные URL от Replicate (24-48 часов)
+      savedImages = { originalUrl: image, generatedUrls: outputs }
+      console.log('Using temporary URLs for basic plan user')
+    }
+
     // Списываем кредиты и сохраняем генерацию в БД
     await prisma.$transaction(async (tx) => {
       // Списываем кредиты
@@ -159,12 +184,12 @@ export async function POST(request: NextRequest) {
         }
       })
 
-      // Сохраняем генерацию
+      // Сохраняем генерацию с локальными URL
       await tx.generation.create({
         data: {
           userId: session.user.id,
-          originalImageUrl: image,
-          generatedImages: outputs,
+          originalImageUrl: savedImages.originalUrl,
+          generatedImages: savedImages.generatedUrls,
           style: styles.join(','),
           roomType,
           quality,
@@ -180,7 +205,7 @@ export async function POST(request: NextRequest) {
     })
 
     return NextResponse.json({ 
-      outputs,
+      outputs: savedImages.generatedUrls,
       credits: updatedUser?.credits || 0
     })
 
