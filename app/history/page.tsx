@@ -86,6 +86,34 @@ export default function HistoryPage() {
     document.body.removeChild(link)
   }
 
+  const getRoomTypeName = (roomType: string): string => {
+    const roomTypes: Record<string, string> = {
+      'living_room': 'Гостиная',
+      'bedroom': 'Спальня',
+      'kitchen': 'Кухня',
+      'bathroom': 'Ванная',
+      'office': 'Кабинет',
+      'dining_room': 'Столовая',
+    }
+    return roomTypes[roomType] || roomType
+  }
+
+  const getStyleName = (style: string): string => {
+    const styles: Record<string, string> = {
+      'modern': 'Современный',
+      'summer': 'Летний',
+      'professional': 'Профессиональный',
+      'tropical': 'Тропический',
+      'coastal': 'Прибрежный',
+      'vintage': 'Винтаж',
+      'industrial': 'Индустриальный',
+      'neoclassic': 'Неоклассика',
+      'tribal': 'Tribal',
+    }
+    // Если несколько стилей через запятую
+    return style.split(',').map(s => styles[s.trim()] || s).join(', ')
+  }
+
   if (status === 'loading' || isLoading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -157,7 +185,7 @@ export default function HistoryPage() {
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">
-                      {generation.roomType.replace('_', ' ')} - {generation.style}
+                      {getRoomTypeName(generation.roomType)} - {getStyleName(generation.style)}
                     </h3>
                     <p className="text-sm text-gray-500">
                       {new Date(generation.createdAt).toLocaleDateString('ru-RU', {
