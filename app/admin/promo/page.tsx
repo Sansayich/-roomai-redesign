@@ -130,6 +130,7 @@ export default function AdminPromoPage() {
               <div className="ml-10 flex items-center space-x-4">
                 <Link href="/admin" className="text-gray-600 hover:text-gray-900">Пользователи</Link>
                 <Link href="/admin/promo" className="text-gray-900 font-medium">Промокоды</Link>
+                <Link href="/admin/payouts" className="text-gray-600 hover:text-gray-900">Выплаты</Link>
               </div>
             </div>
             <div className="flex items-center">

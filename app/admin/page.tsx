@@ -136,6 +136,7 @@ export default function AdminPage() {
               <div className="flex gap-4">
                 <Link href="/admin" className="text-purple-600 font-medium">Пользователи</Link>
                 <Link href="/admin/promo" className="text-gray-600 hover:text-gray-900">Промокоды</Link>
+                <Link href="/admin/payouts" className="text-gray-600 hover:text-gray-900">Выплаты</Link>
               </div>
             </div>
             <Link href="/" className="text-purple-600 hover:text-purple-700">
