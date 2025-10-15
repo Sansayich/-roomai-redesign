@@ -64,21 +64,21 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       {/* Навигация */}
-      <nav className="w-full px-6 py-5 border-b border-gray-200">
+      <nav className="w-full px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-blue-600">
+          <Link href="/" className="text-xl sm:text-2xl font-bold text-blue-600">
             roomGPT
           </Link>
-          <div className="flex gap-6 items-center">
+          <div className="flex gap-3 sm:gap-6 items-center">
             <Link 
               href="/generate" 
-              className="text-gray-700 hover:text-gray-900 transition-colors"
+              className="hidden sm:inline text-gray-700 hover:text-gray-900 transition-colors"
             >
               Генерация
             </Link>
             <Link 
               href="/pricing" 
-              className="text-gray-700 hover:text-gray-900 transition-colors"
+              className="text-sm sm:text-base text-gray-700 hover:text-gray-900 transition-colors"
             >
               Тарифы
             </Link>
@@ -88,15 +88,15 @@ export default function Home() {
       </nav>
 
       {/* Основной контент */}
-      <main className="max-w-7xl mx-auto px-6 pt-16 pb-24">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-12 sm:pt-16 pb-16 sm:pb-24">
         <div className="text-center">
           {/* Заголовок */}
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gray-900">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-gray-900 leading-tight">
             Редизайн вашей <span className="text-blue-600">комнаты</span> за секунды
           </h1>
 
           {/* Подзаголовок */}
-          <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-8 sm:mb-12 max-w-2xl mx-auto px-2">
             Загрузите фото вашей комнаты и позвольте искусственному интеллекту создать потрясающий новый дизайн. 
             Получите <span className="font-semibold text-gray-900">3 бесплатных кредита</span> после регистрации.
           </p>
@@ -186,12 +186,12 @@ export default function Home() {
           </div>
 
           {/* SEO блок */}
-          <div className="mt-20 max-w-4xl mx-auto">
-            <div className="bg-gray-50 rounded-xl border border-gray-200 p-8">
-              <h2 className="text-2xl font-bold mb-4 text-gray-900">
+          <div className="mt-12 sm:mt-16 md:mt-20 max-w-4xl mx-auto">
+            <div className="bg-gray-50 rounded-xl border border-gray-200 p-6 sm:p-8">
+              <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-gray-900">
                 RoomGPT — нейросеть для дизайна интерьера на русском языке
               </h2>
-              <div className="space-y-4 text-gray-700">
+              <div className="space-y-3 sm:space-y-4 text-sm sm:text-base text-gray-700">
                 <p>
                   <strong>RoomGPT (room gpt)</strong> — это бесплатная нейросеть для дизайна интерьера, 
                   которая работает на русском языке без VPN. Наш сервис позволяет создать дизайн комнаты, 
@@ -228,9 +228,9 @@ export default function Home() {
       </main>
 
       {/* Футер */}
-      <footer className="w-full py-8 border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 text-center text-gray-500 text-sm space-y-3">
-          <div className="flex justify-center gap-6">
+      <footer className="w-full py-6 sm:py-8 border-t border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center text-gray-500 text-xs sm:text-sm space-y-3">
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-6">
             <Link href="/terms" className="hover:text-gray-900">Публичная оферта</Link>
             <Link href="/privacy" className="hover:text-gray-900">Политика конфиденциальности</Link>
             <Link href="/refund" className="hover:text-gray-900">Возврат средств</Link>

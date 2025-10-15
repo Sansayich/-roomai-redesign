@@ -86,16 +86,16 @@ export default function PricingPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Навигация */}
-      <nav className="w-full px-6 py-5 border-b border-gray-200">
+      <nav className="w-full px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-blue-600">
+          <Link href="/" className="text-xl sm:text-2xl font-bold text-blue-600">
             roomGPT
           </Link>
-          <div className="flex items-center gap-6">
-            <Link href="/generate" className="text-gray-700 hover:text-gray-900">
+          <div className="flex items-center gap-3 sm:gap-6">
+            <Link href="/generate" className="hidden sm:inline text-gray-700 hover:text-gray-900">
               Генерация
             </Link>
-            <Link href="/pricing" className="text-gray-900 font-medium">
+            <Link href="/pricing" className="text-sm sm:text-base text-gray-900 font-medium">
               Тарифы
             </Link>
             <UserMenu />
@@ -103,13 +103,13 @@ export default function PricingPage() {
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto px-6 py-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Заголовок */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
+        <div className="text-center mb-8 sm:mb-12">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 text-gray-900">
             Выберите свой <span className="text-blue-600">план</span>
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-2">
             Начните бесплатно или выберите план, который подходит для ваших потребностей
           </p>
         </div>
@@ -350,9 +350,9 @@ export default function PricingPage() {
       </main>
 
       {/* Футер */}
-      <footer className="w-full py-8 border-t border-gray-200 mt-16">
-        <div className="max-w-7xl mx-auto px-6 text-center text-gray-500 text-sm space-y-3">
-          <div className="flex justify-center gap-6">
+      <footer className="w-full py-6 sm:py-8 border-t border-gray-200 mt-12 sm:mt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center text-gray-500 text-xs sm:text-sm space-y-3">
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-6">
             <Link href="/terms" className="hover:text-gray-900">Публичная оферта</Link>
             <Link href="/privacy" className="hover:text-gray-900">Политика конфиденциальности</Link>
             <Link href="/refund" className="hover:text-gray-900">Возврат средств</Link>

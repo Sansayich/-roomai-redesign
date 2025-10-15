@@ -182,16 +182,16 @@ export default function GeneratePage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Навигация */}
-      <nav className="w-full px-6 py-5 border-b border-gray-200">
+      <nav className="w-full px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-blue-600">
+          <Link href="/" className="text-xl sm:text-2xl font-bold text-blue-600">
             roomGPT
           </Link>
-          <div className="flex items-center gap-6">
-            <Link href="/generate" className="text-gray-700 hover:text-gray-900">
+          <div className="flex items-center gap-3 sm:gap-6">
+            <Link href="/generate" className="text-sm sm:text-base text-gray-900 font-medium">
               Генерация
             </Link>
-            <Link href="/pricing" className="text-gray-700 hover:text-gray-900">
+            <Link href="/pricing" className="hidden sm:inline text-gray-700 hover:text-gray-900">
               Тарифы
             </Link>
             <UserMenu />
