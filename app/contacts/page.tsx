@@ -57,7 +57,7 @@ export default function ContactsPage() {
           <div className="space-y-4 text-gray-700">
             <div className="border-l-4 border-blue-600 pl-4">
               <h3 className="font-bold text-gray-900 mb-1">Наименование</h3>
-              <p>Индивидуальный предприниматель Степыгин Александр Александрович</p>
+              <p>Индивидуальный предприниматель Степыгин Александр Андреевич</p>
               <p className="text-sm text-gray-600 mt-1">(ИП Степыгин А.А.)</p>
             </div>
 

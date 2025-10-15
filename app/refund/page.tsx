@@ -177,7 +177,7 @@ export default function RefundPage() {
               Если у вас возникли вопросы по возврату средств или вы хотите оформить возврат, свяжитесь с нами:
             </p>
             <div className="bg-gray-50 rounded-xl border border-gray-200 p-6 mt-4">
-              <p><strong>ИП Степыгин Александр Александрович</strong></p>
+              <p><strong>ИП Степыгин Александр Андреевич</strong></p>
               <p className="mt-2">
                 <strong>Email:</strong>{' '}
                 <a href="mailto:hello@room-gpt.ru" className="text-blue-600 hover:underline">
