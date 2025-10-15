@@ -9,52 +9,22 @@ export default function PricingPage() {
       name: 'Мини',
       price: '99',
       credits: 10,
+      generations: '10',
       popular: false,
-      features: [
-        '10 кредитов',
-        '~10 генераций',
-        'Все стили доступны',
-        'Скачивание результатов'
-      ]
     },
     {
       name: 'Стандарт',
       price: '299',
       credits: 30,
+      generations: '30',
       popular: false,
-      features: [
-        '30 кредитов',
-        '~30 генераций',
-        'Все стили доступны',
-        'Скачивание результатов'
-      ]
     },
     {
       name: 'Популярный',
       price: '699',
       credits: 100,
+      generations: '100',
       popular: true,
-      features: [
-        '100 кредитов',
-        '~100 генераций',
-        'Все стили доступны',
-        'Приоритетная обработка',
-        'Скачивание результатов'
-      ]
-    },
-    {
-      name: 'Максимум',
-      price: '1199',
-      credits: 200,
-      popular: false,
-      features: [
-        '200 кредитов',
-        '~200 генераций',
-        'Все стили доступны',
-        'Приоритетная обработка',
-        'Скачивание результатов',
-        'Email поддержка'
-      ]
     }
   ]
 
@@ -90,70 +60,114 @@ export default function PricingPage() {
         </div>
 
         {/* Тарифы */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {plans.map((plan, index) => (
             <div
               key={index}
               className={`
                 relative bg-gray-50 rounded-xl border p-6
-                ${plan.popular ? 'border-blue-600 border-2 bg-white' : 'border-gray-200'}
-                transition-all hover:border-blue-300 hover:bg-white
+                ${plan.popular ? 'border-blue-600 border-2 bg-blue-600 text-white' : 'border-gray-200'}
+                transition-all hover:border-blue-300
               `}
             >
               {plan.popular && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                    Популярный
+                  <span className="bg-gray-700 text-white px-4 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
+                    Most Popular
                   </span>
                 </div>
               )}
 
               <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                  {plan.name}
+                <h3 className={`text-xl font-medium mb-4 ${plan.popular ? 'text-white' : 'text-gray-500'}`}>
+                  {plan.credits} {plan.credits === 1 ? 'кредит' : plan.credits < 5 ? 'кредита' : 'кредитов'}
                 </h3>
-                <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-5xl font-bold text-gray-900">
-                    {plan.price}₽
+                <p className={`text-sm mb-4 ${plan.popular ? 'text-blue-100' : 'text-gray-700'}`}>
+                  {plan.generations} генераций
+                </p>
+                <p className={`text-sm mb-6 ${plan.popular ? 'text-blue-100' : 'text-gray-700'}`}>
+                  Все стили доступны
+                </p>
+                <div className="flex items-baseline justify-center gap-1 mb-6">
+                  <span className="text-sm font-medium">₽</span>
+                  <span className={`text-5xl font-semibold ${plan.popular ? 'text-white' : 'text-gray-900'}`}>
+                    {plan.price}
                   </span>
                 </div>
-                <p className="text-gray-600 mt-2">
-                  {plan.credits} {plan.credits === 1 ? 'кредит' : plan.credits < 5 ? 'кредита' : 'кредитов'}
-                </p>
               </div>
-
-              <ul className="space-y-4 mb-8">
-                {plan.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-3">
-                    <svg
-                      className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <span className="text-gray-700">{feature}</span>
-                  </li>
-                ))}
-              </ul>
 
               <button
                 className={`
                   w-full py-3 rounded-lg font-semibold transition-all
                   ${plan.popular
-                    ? 'bg-blue-600 text-white hover:bg-blue-700'
-                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                    ? 'bg-white text-blue-600 hover:bg-gray-100'
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
                   }
                 `}
               >
-                Выбрать план
+                Оплатить
               </button>
             </div>
           ))}
+        </div>
+
+        {/* What's included */}
+        <div className="mt-16 max-w-5xl mx-auto">
+          <div className="border-t border-gray-200 pt-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-8">
+              Что включено
+            </h2>
+            <div className="grid md:grid-cols-2 gap-x-12 gap-y-6">
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Поддержка по email</h3>
+                  <p className="text-sm text-gray-600">Ответим на все ваши вопросы</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Коммерческое использование</h3>
+                  <p className="text-sm text-gray-600">Используйте изображения в любых проектах</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Скачивание результатов</h3>
+                  <p className="text-sm text-gray-600">Все сгенерированные изображения доступны для загрузки</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                </svg>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-1">Скоро: Сохранение в личном кабинете</h3>
+                  <p className="text-sm text-gray-600">Все ваши генерации в одном месте</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-10 text-center">
+              <p className="text-gray-600">
+                Интересует корпоративный тариф? Напишите на{' '}
+                <a href="mailto:hello@room-gpt.ru" className="text-blue-600 hover:underline font-medium">
+                  hello@room-gpt.ru
+                </a>
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* FAQ */}
