@@ -8,12 +8,11 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Переходим в директорию проекта
-cd /opt/roomai-staging || exit
+cd /opt/roomai || exit
 
-echo -e "${YELLOW}📦 Pulling latest code from staging branch...${NC}"
+echo -e "${YELLOW}📦 Pulling latest code from main branch...${NC}"
 git fetch origin
-git checkout staging
-git pull origin staging
+git pull origin main
 
 echo -e "${YELLOW}🛑 Stopping staging containers...${NC}"
 docker-compose -f docker-compose.staging.yml down
