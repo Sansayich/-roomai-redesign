@@ -172,16 +172,19 @@ function SignInForm() {
           </div>
         </div>
 
-          <p className="text-center text-sm text-gray-500 mt-6">
-            Продолжая, вы соглашаетесь с{' '}
-            <Link href="/terms" className="text-blue-600 hover:underline">
-              условиями использования
-            </Link>
-            {' '}и{' '}
-            <Link href="/privacy" className="text-blue-600 hover:underline">
-              политикой конфиденциальности
-            </Link>
-          </p>
+          <div className="text-center text-sm text-gray-500 mt-6 space-y-2">
+            <p>
+              Нажимая кнопку "Получить ссылку для входа", вы соглашаетесь с{' '}
+              <Link href="/terms" className="text-blue-600 hover:underline">
+                публичной офертой
+              </Link>
+              ,{' '}
+              <Link href="/privacy" className="text-blue-600 hover:underline">
+                политикой конфиденциальности
+              </Link>
+              {' '}и даёте согласие на обработку персональных данных.
+            </p>
+          </div>
         </div>
       </div>
 

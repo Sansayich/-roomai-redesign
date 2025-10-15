@@ -244,6 +244,12 @@ export default function PricingPage() {
                   >
                     Оплатить
                   </button>
+
+                  <div className="mt-3 text-center">
+                    <Link href="/payment-info" className="text-xs text-blue-600 hover:underline">
+                      Способы оплаты и безопасность
+                    </Link>
+                  </div>
             </div>
           ))}
         </div>
