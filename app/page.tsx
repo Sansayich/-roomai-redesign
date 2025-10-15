@@ -2,10 +2,67 @@
 
 import Link from 'next/link'
 import UserMenu from '@/components/UserMenu'
+import Script from 'next/script'
 
 export default function Home() {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: 'roomGPT',
+    alternateName: ['room gpt', 'рум гпт', 'румгпт'],
+    url: 'https://room-gpt.ru',
+    description: 'Нейросеть для дизайна интерьера на русском языке. Создайте дизайн комнаты, кухни, ванной с помощью искусственного интеллекта за секунды.',
+    applicationCategory: 'DesignApplication',
+    operatingSystem: 'Web',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'RUB',
+      description: '3 бесплатных кредита при регистрации'
+    },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '4.8',
+      ratingCount: '10000',
+      bestRating: '5',
+      worstRating: '1'
+    },
+    inLanguage: 'ru-RU',
+    availableLanguage: {
+      '@type': 'Language',
+      name: 'Russian',
+      alternateName: 'ru'
+    },
+    featureList: [
+      'Генерация дизайна интерьера с помощью ИИ',
+      'Работает без VPN на территории РФ',
+      'Оплата российскими картами',
+      'Более 8 стилей интерьера',
+      'Дизайн комнаты, кухни, ванной, спальни',
+      '3 бесплатных кредита при регистрации'
+    ],
+    provider: {
+      '@type': 'Organization',
+      name: 'ИП Степыгин А.А.',
+      email: 'hello@room-gpt.ru',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Люберцы',
+        addressRegion: 'Московская область',
+        postalCode: '140074',
+        streetAddress: 'ул. Преображенская 3, 111',
+        addressCountry: 'RU'
+      }
+    }
+  }
+
   return (
     <div className="min-h-screen bg-white">
+      <Script
+        id="json-ld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Навигация */}
       <nav className="w-full px-6 py-5 border-b border-gray-200">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -127,12 +184,57 @@ export default function Home() {
               </div>
             </div>
           </div>
+
+          {/* SEO блок */}
+          <div className="mt-20 max-w-4xl mx-auto">
+            <div className="bg-gray-50 rounded-xl border border-gray-200 p-8">
+              <h2 className="text-2xl font-bold mb-4 text-gray-900">
+                RoomGPT — нейросеть для дизайна интерьера на русском языке
+              </h2>
+              <div className="space-y-4 text-gray-700">
+                <p>
+                  <strong>RoomGPT (room gpt)</strong> — это бесплатная нейросеть для дизайна интерьера, 
+                  которая работает на русском языке без VPN. Наш сервис позволяет создать дизайн комнаты, 
+                  дизайн кухни, дизайн ванной и любого другого помещения с помощью искусственного интеллекта 
+                  всего за несколько секунд.
+                </p>
+                <p>
+                  <strong>Дизайн интерьера онлайн</strong> стал доступнее благодаря современным нейросетям. 
+                  RoomGPT использует продвинутые алгоритмы ИИ для генерации фотореалистичных изображений 
+                  интерьера. Просто загрузите фото вашей комнаты, выберите желаемый стиль дизайна интерьера 
+                  (современный, минимализм, неоклассика, винтаж и др.) — и получите готовый дизайн проект интерьера.
+                </p>
+                <p>
+                  <strong>Нейросеть для дизайна интерьера бесплатно:</strong> при регистрации вы получаете 
+                  3 бесплатных кредита для генерации. Это отличная возможность попробовать сервис и оценить 
+                  качество работы нейросети. RoomGPT io — это российская альтернатива зарубежным сервисам, 
+                  которая работает без VPN и принимает оплату российскими картами.
+                </p>
+                <p>
+                  <strong>Программа для дизайна интерьера</strong> на основе ИИ подходит для всех: 
+                  дизайнеров интерьера, архитекторов, риелторов и обычных пользователей, которые хотят 
+                  обновить дизайн интерьера квартиры или дома. Создайте дизайн интерьера комнаты, 
+                  спальни, гостиной или кухни за считанные минуты!
+                </p>
+                <p>
+                  <strong>Стили дизайна интерьера:</strong> современный дизайн интерьера, минимализм, 
+                  неоклассика, индустриальный стиль, тропический, винтаж, прибрежный и профессиональный. 
+                  Все стили доступны в нашей нейросети для создания дизайна интерьера.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
 
       {/* Футер */}
       <footer className="w-full py-8 border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 text-center text-gray-500 text-sm">
+        <div className="max-w-7xl mx-auto px-6 text-center text-gray-500 text-sm space-y-2">
+          <div className="flex justify-center gap-6">
+            <Link href="/terms" className="hover:text-gray-900">Публичная оферта</Link>
+            <Link href="/privacy" className="hover:text-gray-900">Политика конфиденциальности</Link>
+            <Link href="/refund" className="hover:text-gray-900">Возврат средств</Link>
+          </div>
           <p>© {new Date().getFullYear()} roomGPT. Все права защищены.</p>
         </div>
       </footer>

@@ -1,0 +1,28 @@
+# robots.txt для room-gpt.ru
+
+User-agent: *
+Allow: /
+Allow: /generate
+Allow: /pricing
+Allow: /terms
+Allow: /privacy
+Allow: /refund
+
+Disallow: /api/
+Disallow: /admin/
+Disallow: /auth/
+
+# Sitemap
+Sitemap: https://room-gpt.ru/sitemap.xml
+
+# Yandex
+User-agent: YandexBot
+Allow: /
+
+# Google
+User-agent: Googlebot
+Allow: /
+
+# Crawl-delay
+Crawl-delay: 1
+

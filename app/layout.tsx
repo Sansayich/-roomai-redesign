@@ -9,8 +9,83 @@ const jost = Jost({
 })
 
 export const metadata: Metadata = {
-  title: 'roomGPT - Редизайн вашей комнаты за секунды',
-  description: 'Используйте искусственный интеллект для создания нового дизайна вашей комнаты',
+  title: 'RoomGPT на русском - нейросеть для дизайна интерьера без VPN с оплатой российскими картами',
+  description: 'Нейросеть для дизайна интерьера на русском языке. RoomGPT - бесплатный онлайн сервис для создания дизайна комнаты, кухни, ванной, спальни с помощью ИИ. Без VPN, оплата российскими картами. 3 бесплатные генерации при регистрации.',
+  keywords: [
+    'roomgpt',
+    'roomgpt нейросеть',
+    'roomgpt на русском',
+    'roomgpt io',
+    'room gpt',
+    'room gpt нейросеть',
+    'room gpt дизайн',
+    'нейросеть для дизайна интерьера',
+    'нейросеть для дизайна интерьера бесплатно',
+    'дизайн интерьера',
+    'дизайн интерьера онлайн',
+    'дизайн интерьера квартиры',
+    'дизайн интерьера кухни',
+    'дизайн интерьера комнаты',
+    'дизайн интерьера 3d',
+    'дизайн интерьера фото',
+    'программа для дизайна интерьера',
+    'дизайн проект интерьера',
+    'нейросети дизайн интерьера онлайн',
+    'дизайн интерьера с помощью нейросети',
+    'современный дизайн интерьера',
+    'стили дизайна интерьера',
+    'дизайн ванной',
+    'дизайн кухни',
+  ],
+  authors: [{ name: 'roomGPT' }],
+  creator: 'roomGPT',
+  publisher: 'roomGPT',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL('https://room-gpt.ru'),
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'ru_RU',
+    url: 'https://room-gpt.ru',
+    title: 'RoomGPT на русском - нейросеть для дизайна интерьера без VPN',
+    description: 'Создайте дизайн интерьера с помощью нейросети. Бесплатно, на русском языке, без VPN. Дизайн комнаты, кухни, ванной, спальни онлайн за секунды.',
+    siteName: 'roomGPT',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'roomGPT - Нейросеть для дизайна интерьера',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'RoomGPT на русском - нейросеть для дизайна интерьера',
+    description: 'Создайте дизайн интерьера с помощью ИИ. Бесплатно, на русском языке, без VPN.',
+    images: ['/og-image.jpg'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    yandex: 'your-yandex-verification-code',
+    google: 'your-google-verification-code',
+  },
 }
 
 export default function RootLayout({

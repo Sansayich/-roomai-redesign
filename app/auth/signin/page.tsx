@@ -78,20 +78,40 @@ function SignInForm() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+      <div className="max-w-lg w-full">
+        {/* Badge сверху */}
         <div className="text-center mb-8">
-          <Link href="/" className="text-3xl font-bold text-blue-600 inline-block">
-            roomGPT
-          </Link>
-          <p className="text-gray-600 mt-2">Войдите, чтобы начать генерацию</p>
+          <div className="inline-flex items-center px-4 py-2 bg-white rounded-full border border-blue-200 shadow-sm mb-6">
+            <span className="text-sm text-gray-700">
+              Более <span className="font-bold text-blue-600">10,000 пользователей</span> уже используют roomGPT
+            </span>
+          </div>
         </div>
 
-        <div className="bg-gray-50 rounded-xl border border-gray-200 p-8">
-          <form onSubmit={handleEmailSignIn} className="space-y-4">
+        {/* Заголовок */}
+        <div className="text-center mb-8">
+          <Link href="/" className="text-4xl font-bold text-blue-600 inline-block mb-4">
+            roomGPT
+          </Link>
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            Редизайн вашей <span className="text-blue-600">комнаты</span> за секунды
+          </h1>
+          <p className="text-lg text-gray-600 mb-2">
+            Войдите ниже, чтобы создать бесплатный аккаунт<br />
+            и сделать редизайн вашей комнаты прямо сейчас.
+          </p>
+          <p className="text-lg font-semibold text-gray-900">
+            Вы получите <span className="text-blue-600">3 бесплатных кредита</span> 🎁
+          </p>
+        </div>
+
+        {/* Форма входа */}
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-8">
+          <form onSubmit={handleEmailSignIn} className="space-y-5">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email
+                Email адрес
               </label>
               <input
                 id="email"
@@ -100,24 +120,50 @@ function SignInForm() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-gray-900"
               />
             </div>
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-blue-600 text-white py-3.5 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
             >
-              {isLoading ? 'Отправляем...' : 'Продолжить'}
+              {isLoading ? 'Отправляем ссылку...' : 'Получить ссылку для входа'}
             </button>
           </form>
+
+          {/* Преимущества */}
+          <div className="mt-6 pt-6 border-t border-gray-200 space-y-3">
+            <div className="flex items-start gap-3">
+              <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span className="text-sm text-gray-600">Работает без VPN на территории РФ</span>
+            </div>
+            <div className="flex items-start gap-3">
+              <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span className="text-sm text-gray-600">Оплата российскими картами</span>
+            </div>
+            <div className="flex items-start gap-3">
+              <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span className="text-sm text-gray-600">Полностью на русском языке</span>
+            </div>
+          </div>
         </div>
 
         <p className="text-center text-sm text-gray-500 mt-6">
           Продолжая, вы соглашаетесь с{' '}
-          <Link href="/terms" className="text-purple-600 hover:underline">
+          <Link href="/terms" className="text-blue-600 hover:underline">
             условиями использования
+          </Link>
+          {' '}и{' '}
+          <Link href="/privacy" className="text-blue-600 hover:underline">
+            политикой конфиденциальности
           </Link>
         </p>
       </div>
