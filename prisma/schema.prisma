@@ -35,22 +35,38 @@ model Session {
 }
 
 model User {
-  id            String       @id @default(cuid())
-  name          String?
-  email         String?      @unique
-  emailVerified DateTime?
-  image         String?
-  credits       Int          @default(3)
-  utmSource     String?
-  utmMedium     String?
-  utmCampaign   String?
-  utmContent    String?
-  utmTerm       String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  accounts      Account[]
-  sessions      Session[]
-  generations   Generation[]
+  id                String            @id @default(cuid())
+  name              String?
+  email             String?           @unique
+  emailVerified     DateTime?
+  image             String?
+  credits           Int               @default(3)
+  utmSource         String?
+  utmMedium         String?
+  utmCampaign       String?
+  utmContent        String?
+  utmTerm           String?
+  
+  // Реферальная программа
+  referralCode      String?           @unique // Уникальный реферальный код
+  referredById      String?           // ID пригласившего пользователя
+  referralBalance   Float             @default(0) // Баланс для выплаты (в рублях)
+  
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  
+  accounts          Account[]
+  sessions          Session[]
+  generations       Generation[]
+  
+  // Реферальные связи
+  referredBy        User?             @relation("Referrals", fields: [referredById], references: [id], onDelete: SetNull)
+  referrals         User[]            @relation("Referrals")
+  earnings          ReferralEarning[]
+  payoutRequests    PayoutRequest[]
+  
+  @@index([referralCode])
+  @@index([referredById])
 }
 
 model VerificationToken {
@@ -91,5 +107,38 @@ model Promo {
   updatedAt         DateTime  @updatedAt
 
   @@index([code])
+}
+
+// Начисления от рефералов
+model ReferralEarning {
+  id              String   @id @default(cuid())
+  userId          String   // Кому начислено
+  referralId      String   // Кто совершил платеж
+  amount          Float    // Сумма начисления (в рублях)
+  orderAmount     Float    // Сумма заказа реферала
+  percentage      Float    // Процент (обычно 40)
+  createdAt       DateTime @default(now())
+  
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([referralId])
+  @@index([createdAt])
+}
+
+// Запросы на выплату
+model PayoutRequest {
+  id              String   @id @default(cuid())
+  userId          String
+  amount          Float    // Запрошенная сумма
+  status          String   @default("pending") // pending, paid, rejected
+  createdAt       DateTime @default(now())
+  processedAt     DateTime?
+  
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
 }
 

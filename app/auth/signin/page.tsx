@@ -17,14 +17,15 @@ function SignInForm() {
   const utmCampaign = searchParams.get('utm_campaign')
   const utmContent = searchParams.get('utm_content')
   const utmTerm = searchParams.get('utm_term')
+  const referralCode = searchParams.get('ref') // Реферальный код
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     
     try {
-      // Сохраняем UTM метки
-      if (utmSource || utmMedium || utmCampaign || utmContent || utmTerm) {
+      // Сохраняем UTM метки и реферальный код
+      if (utmSource || utmMedium || utmCampaign || utmContent || utmTerm || referralCode) {
         await fetch('/api/auth/save-utm', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -35,6 +36,7 @@ function SignInForm() {
             utmCampaign,
             utmContent,
             utmTerm,
+            referralCode,
           }),
         })
       }

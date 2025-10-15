@@ -81,6 +81,14 @@ export default function UserMenu() {
           </Link>
           
           <Link
+            href="/referral"
+            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition"
+            onClick={() => setIsOpen(false)}
+          >
+            💰 Партнерская программа
+          </Link>
+          
+          <Link
             href="/pricing"
             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition"
             onClick={() => setIsOpen(false)}

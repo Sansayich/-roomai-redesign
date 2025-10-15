@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, utmSource, utmMedium, utmCampaign, utmContent, utmTerm } = await req.json()
+    const { email, utmSource, utmMedium, utmCampaign, utmContent, utmTerm, referralCode } = await req.json()
 
     if (!email) {
       return NextResponse.json(
@@ -17,7 +17,19 @@ export async function POST(req: NextRequest) {
       where: { email }
     })
 
-    // Сохраняем UTM только для новых пользователей (или если они еще не установлены)
+    // Находим реферера по коду
+    let referrerId = null
+    if (referralCode) {
+      const referrer = await prisma.user.findUnique({
+        where: { referralCode: referralCode.toUpperCase() },
+        select: { id: true }
+      })
+      if (referrer) {
+        referrerId = referrer.id
+      }
+    }
+
+    // Сохраняем UTM и реферальный код только для новых пользователей (или если они еще не установлены)
     if (user && !user.utmSource) {
       await prisma.user.update({
         where: { email },
@@ -27,6 +39,7 @@ export async function POST(req: NextRequest) {
           utmCampaign: utmCampaign || null,
           utmContent: utmContent || null,
           utmTerm: utmTerm || null,
+          ...(referrerId && !user.referredById ? { referredById: referrerId } : {}),
         }
       })
     }
