@@ -9,7 +9,7 @@ export default function PricingPage() {
   const [promoData, setPromoData] = useState<{discountPercent?: number, discountAmount?: number} | null>(null)
   const [promoError, setPromoError] = useState('')
   const [isCheckingPromo, setIsCheckingPromo] = useState(false)
-  const [agreedToTerms, setAgreedToTerms] = useState<{ [key: string]: boolean }>({}) // Согласие с офертой
+  const [agreedToTerms, setAgreedToTerms] = useState(true) // Согласие с офертой - по умолчанию включено
 
   const checkPromoCode = async () => {
     if (!promoCode.trim()) return
@@ -216,42 +216,43 @@ export default function PricingPage() {
                 </div>
               </div>
 
-                  {/* Чекбокс согласия с офертой */}
-                  <div className="mb-4">
-                    <label className="flex items-start gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={agreedToTerms[plan.name] || false}
-                        onChange={(e) => setAgreedToTerms({ ...agreedToTerms, [plan.name]: e.target.checked })}
-                        className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                      />
-                      <span className="text-xs text-gray-600">
-                        Я согласен с{' '}
-                        <Link href="/terms" target="_blank" className="text-blue-600 hover:underline">
-                          Публичной офертой
-                        </Link>
-                        {' '}и{' '}
-                        <Link href="/privacy" target="_blank" className="text-blue-600 hover:underline">
-                          Политикой конфиденциальности
-                        </Link>
-                      </span>
-                    </label>
-                  </div>
-
                   <button
-                    disabled={!agreedToTerms[plan.name]}
+                    disabled={!agreedToTerms}
                     className="w-full py-3 rounded-lg font-semibold transition-all bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                   >
                     Оплатить
                   </button>
 
-                  <div className="mt-3 text-center">
-                    <Link href="/payment-info" className="text-xs text-blue-600 hover:underline">
+                  <div className="mt-3 text-center space-y-2">
+                    <img src="/oplata.png" alt="Способы оплаты" className="h-6 mx-auto" />
+                    <Link href="/payment-info" className="block text-xs text-gray-500 hover:text-gray-700">
                       Способы оплаты и безопасность
                     </Link>
                   </div>
             </div>
           ))}
+        </div>
+
+        {/* Общий чекбокс согласия */}
+        <div className="mt-8 max-w-2xl mx-auto">
+          <label className="flex items-start gap-3 cursor-pointer justify-center">
+            <input
+              type="checkbox"
+              checked={agreedToTerms}
+              onChange={(e) => setAgreedToTerms(e.target.checked)}
+              className="mt-1 w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            />
+            <span className="text-sm text-gray-700">
+              Я согласен с{' '}
+              <Link href="/terms" target="_blank" className="text-blue-600 hover:underline">
+                Публичной офертой
+              </Link>
+              {' '}и{' '}
+              <Link href="/privacy" target="_blank" className="text-blue-600 hover:underline">
+                Политикой конфиденциальности
+              </Link>
+            </span>
+          </label>
         </div>
 
         {/* What's included */}
@@ -362,6 +363,7 @@ export default function PricingPage() {
             <Link href="/terms" className="hover:text-gray-900">Публичная оферта</Link>
             <Link href="/privacy" className="hover:text-gray-900">Политика конфиденциальности</Link>
             <Link href="/refund" className="hover:text-gray-900">Возврат средств</Link>
+            <Link href="/contacts" className="hover:text-gray-900">Контакты и реквизиты</Link>
             <Link href="/referral" className="hover:text-gray-900">Партнерская программа</Link>
           </div>
           <div className="flex justify-center items-center gap-2">

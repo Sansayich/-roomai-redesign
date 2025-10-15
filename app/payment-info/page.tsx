@@ -177,6 +177,7 @@ export default function PaymentInfoPage() {
             <Link href="/terms" className="hover:text-gray-900">Публичная оферта</Link>
             <Link href="/privacy" className="hover:text-gray-900">Политика конфиденциальности</Link>
             <Link href="/refund" className="hover:text-gray-900">Возврат средств</Link>
+            <Link href="/contacts" className="hover:text-gray-900">Контакты и реквизиты</Link>
             <Link href="/payment-info" className="hover:text-gray-900">Способы оплаты</Link>
             <Link href="/referral" className="hover:text-gray-900">Партнерская программа</Link>
           </div>
