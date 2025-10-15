@@ -9,6 +9,7 @@ export default function PricingPage() {
   const [promoData, setPromoData] = useState<{discountPercent?: number, discountAmount?: number} | null>(null)
   const [promoError, setPromoError] = useState('')
   const [isCheckingPromo, setIsCheckingPromo] = useState(false)
+  const [agreedToTerms, setAgreedToTerms] = useState<{ [key: string]: boolean }>({}) // Согласие с офертой
 
   const checkPromoCode = async () => {
     if (!promoCode.trim()) return
@@ -215,11 +216,34 @@ export default function PricingPage() {
                 </div>
               </div>
 
-              <button
-                className="w-full py-3 rounded-lg font-semibold transition-all bg-blue-600 text-white hover:bg-blue-700"
-              >
-                Оплатить
-              </button>
+                  {/* Чекбокс согласия с офертой */}
+                  <div className="mb-4">
+                    <label className="flex items-start gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={agreedToTerms[plan.name] || false}
+                        onChange={(e) => setAgreedToTerms({ ...agreedToTerms, [plan.name]: e.target.checked })}
+                        className="mt-1 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                      />
+                      <span className="text-xs text-gray-600">
+                        Я согласен с{' '}
+                        <Link href="/terms" target="_blank" className="text-blue-600 hover:underline">
+                          Публичной офертой
+                        </Link>
+                        {' '}и{' '}
+                        <Link href="/privacy" target="_blank" className="text-blue-600 hover:underline">
+                          Политикой конфиденциальности
+                        </Link>
+                      </span>
+                    </label>
+                  </div>
+
+                  <button
+                    disabled={!agreedToTerms[plan.name]}
+                    className="w-full py-3 rounded-lg font-semibold transition-all bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                  >
+                    Оплатить
+                  </button>
             </div>
           ))}
         </div>

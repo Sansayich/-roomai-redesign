@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Jost } from 'next/font/google'
 import './globals.css'
 import SessionProvider from '@/components/SessionProvider'
+import CookieConsent from '@/components/CookieConsent'
 import Script from 'next/script'
 
 const jost = Jost({ 
@@ -128,11 +129,12 @@ export default function RootLayout({
         </noscript>
         {/* /Yandex.Metrika counter */}
         
-        <SessionProvider>
-          {children}
-        </SessionProvider>
-      </body>
-    </html>
-  )
+      <SessionProvider>
+        {children}
+        <CookieConsent />
+      </SessionProvider>
+    </body>
+  </html>
+)
 }
 
