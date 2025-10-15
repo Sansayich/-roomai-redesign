@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { getAvailableBalance } from '@/lib/referral'
 import nodemailer from 'nodemailer'
 
 export const dynamic = 'force-dynamic'
@@ -47,21 +48,32 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Получаем доступный для вывода баланс (с учетом периода холдирования 14 дней)
+    const availableBalance = await getAvailableBalance(session.user.id)
+
     // Проверка минимальной суммы для вывода (например, 100 рублей)
     const MIN_PAYOUT_AMOUNT = 100
 
-    if (user.referralBalance < MIN_PAYOUT_AMOUNT) {
+    if (availableBalance < MIN_PAYOUT_AMOUNT) {
       return NextResponse.json(
-        { error: `Минимальная сумма для вывода: ${MIN_PAYOUT_AMOUNT}₽` },
+        { error: `Минимальная сумма для вывода: ${MIN_PAYOUT_AMOUNT}₽. Доступно: ${availableBalance.toFixed(2)}₽. Часть средств находится на холде (14 дней с момента платежа).` },
         { status: 400 }
       )
     }
 
-    // Создаем запрос на выплату
+    // Проверка на отрицательный баланс
+    if (user.referralBalance < 0) {
+      return NextResponse.json(
+        { error: `У вас отрицательный баланс (${user.referralBalance.toFixed(2)}₽) из-за возвратов средств рефералами. Вывод будет доступен после компенсации.` },
+        { status: 400 }
+      )
+    }
+
+    // Создаем запрос на выплату (только доступная сумма)
     const payoutRequest = await prisma.payoutRequest.create({
       data: {
         userId: user.id,
-        amount: user.referralBalance,
+        amount: availableBalance,
         status: 'pending',
       }
     })
@@ -80,7 +92,8 @@ export async function POST(request: NextRequest) {
       
       <h3>Детали выплаты:</h3>
       <ul>
-        <li><strong>Сумма к выплате:</strong> ${user.referralBalance.toFixed(2)}₽</li>
+        <li><strong>Сумма к выплате:</strong> ${availableBalance.toFixed(2)}₽</li>
+        <li><strong>Общий баланс:</strong> ${user.referralBalance.toFixed(2)}₽</li>
         <li><strong>ID запроса:</strong> ${payoutRequest.id}</li>
         <li><strong>Дата запроса:</strong> ${new Date().toLocaleString('ru-RU')}</li>
       </ul>

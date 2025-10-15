@@ -114,15 +114,19 @@ model ReferralEarning {
   id              String   @id @default(cuid())
   userId          String   // Кому начислено
   referralId      String   // Кто совершил платеж
+  referralEmail   String?  // Email реферала (для отслеживания возвратов)
   amount          Float    // Сумма начисления (в рублях)
   orderAmount     Float    // Сумма заказа реферала
   percentage      Float    // Процент (обычно 40)
+  availableAt     DateTime // Дата когда средства станут доступны (createdAt + 14 дней)
+  isReversed      Boolean  @default(false) // Был ли возврат
   createdAt       DateTime @default(now())
   
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   @@index([userId])
   @@index([referralId])
+  @@index([availableAt])
   @@index([createdAt])
 }
 

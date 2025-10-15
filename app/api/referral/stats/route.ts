@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { getAvailableBalance, getPendingBalance } from '@/lib/referral'
 
 export const dynamic = 'force-dynamic'
 
@@ -76,6 +77,10 @@ export async function GET() {
       user.referralCode = referralCode
     }
 
+    // Получаем доступный и заблокированный балансы
+    const availableBalance = await getAvailableBalance(session.user.id)
+    const pendingBalance = await getPendingBalance(session.user.id)
+    
     // Подсчитываем общую статистику
     const totalEarnings = user.earnings.reduce((sum, earning) => sum + earning.amount, 0)
     const totalReferrals = user.referrals.length
@@ -83,6 +88,8 @@ export async function GET() {
     return NextResponse.json({
       referralCode: user.referralCode,
       referralBalance: user.referralBalance,
+      availableBalance, // Доступно для вывода
+      pendingBalance, // На холде (14 дней)
       totalEarnings,
       totalReferrals,
       referrals: user.referrals,

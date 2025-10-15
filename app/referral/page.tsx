@@ -9,6 +9,8 @@ import UserMenu from '@/components/UserMenu'
 type ReferralStats = {
   referralCode: string
   referralBalance: number
+  availableBalance: number
+  pendingBalance: number
   totalEarnings: number
   totalReferrals: number
   referrals: Array<{
@@ -190,17 +192,37 @@ export default function ReferralPage() {
           {/* Баланс */}
           <div className="bg-white rounded-2xl shadow-lg p-8 border-2 border-blue-100">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-700">Доступно к выводу</h2>
+              <h2 className="text-lg font-semibold text-gray-700">Реферальный баланс</h2>
               <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <div className="text-5xl font-bold text-gray-900 mb-6">
+            
+            {/* Общий баланс */}
+            <div className="text-5xl font-bold text-gray-900 mb-4">
               {stats?.referralBalance.toFixed(2)}₽
+            </div>
+            
+            {/* Разбивка */}
+            <div className="space-y-2 mb-6">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-600">✅ Доступно к выводу:</span>
+                <span className="font-semibold text-green-600">
+                  {stats?.availableBalance.toFixed(2)}₽
+                </span>
+              </div>
+              {(stats?.pendingBalance ?? 0) > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">⏳ На холде (14 дней):</span>
+                  <span className="font-semibold text-orange-600">
+                    {stats?.pendingBalance.toFixed(2)}₽
+                  </span>
+                </div>
+              )}
             </div>
             <button
               onClick={requestPayout}
-              disabled={isRequestingPayout || (stats?.referralBalance || 0) < 100}
+              disabled={isRequestingPayout || (stats?.availableBalance || 0) < 100}
               className="w-full py-3 px-6 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
             >
               {isRequestingPayout ? 'Отправка...' : 'Запросить выплату'}
@@ -214,9 +236,15 @@ export default function ReferralPage() {
                 {payoutMessage}
               </div>
             )}
-            <p className="mt-3 text-sm text-gray-500">
-              Минимальная сумма для вывода: 100₽
-            </p>
+            <div className="mt-3 text-sm text-gray-500 space-y-1">
+              <p>• Минимум для вывода: 100₽</p>
+              <p>• Средства доступны через 14 дней после платежа реферала</p>
+              {(stats?.referralBalance ?? 0) < 0 && (
+                <p className="text-red-600 font-medium">
+                  ⚠️ Отрицательный баланс из-за возвратов средств рефералами
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Реферальная ссылка */}
@@ -346,7 +374,7 @@ export default function ReferralPage() {
         {/* Как это работает */}
         <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-8 mt-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">📚 Как это работает?</h2>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-4 gap-6">
             <div className="bg-white rounded-lg p-6">
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
                 <span className="text-2xl">1️⃣</span>
@@ -360,20 +388,39 @@ export default function ReferralPage() {
               <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
                 <span className="text-2xl">2️⃣</span>
               </div>
-              <h3 className="font-bold text-gray-900 mb-2">Ваш друг регистрируется</h3>
+              <h3 className="font-bold text-gray-900 mb-2">Друг покупает</h3>
               <p className="text-gray-600 text-sm">
-                Когда кто-то регистрируется по вашей ссылке, он становится вашим рефералом
+                Когда кто-то регистрируется по вашей ссылке и совершает покупку, вам начисляется 40%
+              </p>
+            </div>
+            <div className="bg-white rounded-lg p-6">
+              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4">
+                <span className="text-2xl">3️⃣</span>
+              </div>
+              <h3 className="font-bold text-gray-900 mb-2">Ждете 14 дней</h3>
+              <p className="text-gray-600 text-sm">
+                Средства становятся доступны для вывода через 14 дней. Это защита от мошеннических возвратов
               </p>
             </div>
             <div className="bg-white rounded-lg p-6">
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                <span className="text-2xl">3️⃣</span>
+                <span className="text-2xl">4️⃣</span>
               </div>
-              <h3 className="font-bold text-gray-900 mb-2">Получайте 40%</h3>
+              <h3 className="font-bold text-gray-900 mb-2">Выводите деньги</h3>
               <p className="text-gray-600 text-sm">
-                С каждой покупки вашего реферала вы получаете 40% на ваш реферальный баланс
+                При накоплении от 100₽ запрашиваете выплату на карту или СБП
               </p>
             </div>
+          </div>
+          
+          {/* Важная информация */}
+          <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <h3 className="font-bold text-gray-900 mb-2">⚠️ Важно знать:</h3>
+            <ul className="text-sm text-gray-700 space-y-1">
+              <li>• Если реферал запросит возврат средств, соответствующая сумма будет вычтена из вашего баланса</li>
+              <li>• При отрицательном балансе новые начисления сначала компенсируют задолженность</li>
+              <li>• Мошеннические действия (самореферы, накрутка) приведут к блокировке без выплаты</li>
+            </ul>
           </div>
         </div>
       </main>

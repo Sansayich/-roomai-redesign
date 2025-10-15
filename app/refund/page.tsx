@@ -228,6 +228,7 @@ export default function RefundPage() {
             <Link href="/terms" className="hover:text-gray-900">Публичная оферта</Link>
             <Link href="/privacy" className="hover:text-gray-900">Политика конфиденциальности</Link>
             <Link href="/refund" className="hover:text-gray-900">Возврат средств</Link>
+            <Link href="/referral" className="hover:text-gray-900">Партнерская программа</Link>
           </div>
           <p>© {new Date().getFullYear()} roomGPT. Все права защищены.</p>
         </div>
