@@ -131,7 +131,13 @@ export default function AdminPage() {
       <nav className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-900">🔧 Админ-панель</h1>
+            <div className="flex items-center gap-6">
+              <h1 className="text-2xl font-bold text-gray-900">🔧 Админ-панель</h1>
+              <div className="flex gap-4">
+                <Link href="/admin" className="text-purple-600 font-medium">Пользователи</Link>
+                <Link href="/admin/promo" className="text-gray-600 hover:text-gray-900">Промокоды</Link>
+              </div>
+            </div>
             <Link href="/" className="text-purple-600 hover:text-purple-700">
               ← На главную
             </Link>

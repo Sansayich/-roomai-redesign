@@ -2,8 +2,59 @@
 
 import Link from 'next/link'
 import UserMenu from '@/components/UserMenu'
+import { useState } from 'react'
 
 export default function PricingPage() {
+  const [promoCode, setPromoCode] = useState('')
+  const [promoData, setPromoData] = useState<{discountPercent?: number, discountAmount?: number} | null>(null)
+  const [promoError, setPromoError] = useState('')
+  const [isCheckingPromo, setIsCheckingPromo] = useState(false)
+
+  const checkPromoCode = async () => {
+    if (!promoCode.trim()) return
+
+    setIsCheckingPromo(true)
+    setPromoError('')
+
+    try {
+      const response = await fetch('/api/promo/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: promoCode.trim() }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setPromoData(data)
+        // Сохраняем промокод в localStorage для неавторизованных пользователей
+        localStorage.setItem('appliedPromo', JSON.stringify(data))
+      } else {
+        setPromoError(data.error || 'Неверный промокод')
+        setPromoData(null)
+      }
+    } catch (error) {
+      setPromoError('Ошибка проверки промокода')
+      setPromoData(null)
+    } finally {
+      setIsCheckingPromo(false)
+    }
+  }
+
+  const calculateDiscountedPrice = (originalPrice: number) => {
+    if (!promoData) return originalPrice
+
+    if (promoData.discountPercent) {
+      return Math.round(originalPrice * (1 - promoData.discountPercent / 100))
+    }
+    
+    if (promoData.discountAmount) {
+      return Math.max(0, originalPrice - promoData.discountAmount)
+    }
+
+    return originalPrice
+  }
+
   const plans = [
     {
       name: 'Мини',
@@ -16,8 +67,8 @@ export default function PricingPage() {
     {
       name: 'Популярный',
       price: '299',
-      credits: 30,
-      generations: '30',
+      credits: 40,
+      generations: '40',
       storage: 'Хранение 24 часа',
       popular: true,
     },
@@ -62,6 +113,49 @@ export default function PricingPage() {
           </p>
         </div>
 
+        {/* Поле для промокода */}
+        <div className="max-w-md mx-auto mb-8">
+          <div className="bg-gray-50 rounded-xl border border-gray-200 p-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Есть промокод?
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={promoCode}
+                onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                placeholder="Введите промокод"
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                onKeyPress={(e) => e.key === 'Enter' && checkPromoCode()}
+              />
+              <button
+                onClick={checkPromoCode}
+                disabled={isCheckingPromo || !promoCode.trim()}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isCheckingPromo ? 'Проверка...' : 'Применить'}
+              </button>
+            </div>
+            
+            {promoData && (
+              <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-sm font-medium text-green-800">
+                  ✅ Промокод применен! Скидка{' '}
+                  {promoData.discountPercent ? `${promoData.discountPercent}%` : `${promoData.discountAmount}₽`}
+                </p>
+              </div>
+            )}
+
+            {promoError && (
+              <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm font-medium text-red-800">
+                  ❌ {promoError}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Тарифы */}
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {plans.map((plan, index) => (
@@ -94,11 +188,30 @@ export default function PricingPage() {
                 <p className="text-sm mb-6 font-medium text-blue-600">
                   {plan.storage}
                 </p>
-                <div className="flex items-baseline justify-center gap-1 mb-6">
-                  <span className="text-sm font-medium text-gray-900">₽</span>
-                  <span className="text-5xl font-semibold text-gray-900">
-                    {plan.price}
-                  </span>
+                <div className="mb-6">
+                  {promoData ? (
+                    <>
+                      <div className="flex items-baseline justify-center gap-1 mb-2">
+                        <span className="text-sm font-medium text-gray-400 line-through">₽</span>
+                        <span className="text-2xl font-semibold text-gray-400 line-through">
+                          {plan.price}
+                        </span>
+                      </div>
+                      <div className="flex items-baseline justify-center gap-1">
+                        <span className="text-sm font-medium text-blue-600">₽</span>
+                        <span className="text-5xl font-semibold text-blue-600">
+                          {calculateDiscountedPrice(parseInt(plan.price))}
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex items-baseline justify-center gap-1">
+                      <span className="text-sm font-medium text-gray-900">₽</span>
+                      <span className="text-5xl font-semibold text-gray-900">
+                        {plan.price}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -125,8 +238,8 @@ export default function PricingPage() {
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-1">Хранение изображений</h3>
                   <p className="text-sm text-gray-600">
-                    <span className="font-medium text-gray-700">Мини/Стандарт:</span> 24 часа<br/>
-                    <span className="font-medium text-blue-600">Популярный:</span> 30 дней
+                    <span className="font-medium text-gray-700">Мини/Популярный:</span> 24 часа<br/>
+                    <span className="font-medium text-blue-600">Максимум:</span> 30 дней
                   </p>
                 </div>
               </div>

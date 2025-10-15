@@ -78,3 +78,18 @@ model Generation {
   @@index([createdAt])
 }
 
+model Promo {
+  id                String    @id @default(cuid())
+  code              String    @unique
+  discountPercent   Int?      // Скидка в процентах (10, 20, 50)
+  discountAmount    Int?      // Фиксированная скидка в рублях
+  usageLimit        Int?      // Лимит использований (null = неограниченно)
+  usageCount        Int       @default(0)
+  expiresAt         DateTime? // Дата истечения (null = бессрочно)
+  isActive          Boolean   @default(true)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([code])
+}
+
