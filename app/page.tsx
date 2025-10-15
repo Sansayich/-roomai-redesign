@@ -234,6 +234,7 @@ export default function Home() {
             <Link href="/terms" className="hover:text-gray-900">Публичная оферта</Link>
             <Link href="/privacy" className="hover:text-gray-900">Политика конфиденциальности</Link>
             <Link href="/refund" className="hover:text-gray-900">Возврат средств</Link>
+            <Link href="/referral" className="hover:text-gray-900">Партнерская программа</Link>
           </div>
           <div className="flex justify-center items-center gap-2">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
