@@ -128,7 +128,7 @@ export default function ReferralPage() {
 
   if (status === 'loading' || (isLoading && session)) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Загрузка...</p>
@@ -140,14 +140,13 @@ export default function ReferralPage() {
   // Если пользователь не авторизован - показываем лендинг партнерской программы
   if (!session) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <div className="min-h-screen bg-white">
         {/* Навигация */}
-        <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
-            <div className="flex justify-between items-center">
-              <Link href="/" className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                roomGPT
-              </Link>
+        <nav className="w-full px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200">
+          <div className="max-w-7xl mx-auto flex justify-between items-center">
+            <Link href="/" className="text-xl sm:text-2xl font-bold text-blue-600">
+              roomGPT
+            </Link>
               <div className="flex items-center gap-4 sm:gap-6">
                 <Link href="/pricing" className="text-sm sm:text-base text-gray-700 hover:text-blue-600 transition-colors">
                   Тарифы
@@ -310,14 +309,13 @@ export default function ReferralPage() {
     : ''
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-white">
       {/* Навигация */}
-      <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex justify-between items-center">
-            <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              roomGPT
-            </Link>
+      <nav className="w-full px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <Link href="/" className="text-xl sm:text-2xl font-bold text-blue-600">
+            roomGPT
+          </Link>
             <div className="flex items-center gap-6">
               <Link href="/generate" className="text-gray-700 hover:text-blue-600 transition-colors">
                 Генерация
