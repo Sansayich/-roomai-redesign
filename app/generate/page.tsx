@@ -62,12 +62,7 @@ export default function GeneratePage() {
   const [generatedImages, setGeneratedImages] = useState<string[]>([])
   const [error, setError] = useState<string>('')
   const [credits, setCredits] = useState<number>(session?.user?.credits || 0)
-
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/auth/signin')
-    }
-  }, [status, router])
+  const [showAuthModal, setShowAuthModal] = useState(false)
 
   useEffect(() => {
     if (session?.user?.credits !== undefined) {
@@ -107,6 +102,12 @@ export default function GeneratePage() {
   })
 
   const handleGenerate = async () => {
+    // Проверка авторизации
+    if (!session) {
+      setShowAuthModal(true)
+      return
+    }
+
     if (!uploadedImage) {
       setError('Пожалуйста, загрузите изображение')
       return
@@ -164,21 +165,6 @@ export default function GeneratePage() {
   const selectedQualityObj = qualities.find(q => q.id === selectedQuality)
   const totalCost = selectedQualityObj ? selectedQualityObj.credits * selectedStyles.length : 0
 
-  if (status === 'loading') {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Загрузка...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (!session) {
-    return null
-  }
-
   return (
     <div className="min-h-screen bg-white">
       {/* Навигация */}
@@ -194,7 +180,16 @@ export default function GeneratePage() {
             <Link href="/pricing" className="hidden sm:inline text-gray-700 hover:text-gray-900">
               Тарифы
             </Link>
-            <UserMenu />
+            {session ? (
+              <UserMenu />
+            ) : (
+              <Link 
+                href="/auth/signin"
+                className="px-4 sm:px-6 py-2 bg-blue-600 text-white text-sm sm:text-base rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Войти
+              </Link>
+            )}
           </div>
         </div>
       </nav>
@@ -213,8 +208,26 @@ export default function GeneratePage() {
         <div className="grid md:grid-cols-[320px_1fr] gap-6 mb-12">
           {/* Левая панель - Форма */}
           <div className="space-y-4">
-            {/* Уведомление о кредитах */}
-            {credits === 0 && (
+            {/* Уведомление о кредитах или призыв к регистрации */}
+            {!session ? (
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4 text-center">
+                <div className="mb-2">
+                  <span className="text-2xl">🎁</span>
+                </div>
+                <p className="text-gray-900 font-bold mb-2">
+                  Получите 3 бесплатных кредита!
+                </p>
+                <p className="text-gray-600 text-sm mb-3">
+                  Зарегистрируйтесь и начните создавать дизайны прямо сейчас
+                </p>
+                <Link 
+                  href="/auth/signin" 
+                  className="inline-block px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Зарегистрироваться бесплатно
+                </Link>
+              </div>
+            ) : credits === 0 && (
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
                 <p className="text-gray-700 font-medium mb-2">
                   У вас не осталось кредитов.
@@ -338,10 +351,10 @@ export default function GeneratePage() {
             {/* Кнопка генерации */}
             <button
               onClick={handleGenerate}
-              disabled={!uploadedImage || selectedStyles.length === 0 || isGenerating || credits === 0}
+              disabled={!uploadedImage || selectedStyles.length === 0 || isGenerating || (session && credits === 0)}
               className={`
                 w-full py-3 rounded-lg font-semibold text-base transition-all
-                ${!uploadedImage || selectedStyles.length === 0 || isGenerating || credits === 0
+                ${!uploadedImage || selectedStyles.length === 0 || isGenerating || (session && credits === 0)
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   : 'bg-blue-600 text-white hover:bg-blue-700'
                 }
@@ -464,6 +477,60 @@ export default function GeneratePage() {
           <p>© {new Date().getFullYear()} roomGPT. Все права защищены.</p>
         </div>
       </footer>
+
+      {/* Модальное окно для неавторизованных пользователей */}
+      {showAuthModal && (
+        <div 
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          onClick={() => setShowAuthModal(false)}
+        >
+          <div 
+            className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl transform transition-all"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="text-center">
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              
+              <h2 className="text-2xl font-bold text-gray-900 mb-3">
+                Требуется регистрация
+              </h2>
+              
+              <p className="text-gray-600 mb-6">
+                Чтобы создавать дизайны с помощью нейросети, необходимо зарегистрироваться. Это быстро и бесплатно!
+              </p>
+
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 mb-6">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <span className="text-2xl">🎁</span>
+                  <span className="font-bold text-gray-900">3 бесплатных кредита</span>
+                </div>
+                <p className="text-sm text-gray-600">
+                  при регистрации — попробуйте все возможности!
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <Link
+                  href="/auth/signin"
+                  className="block w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Зарегистрироваться бесплатно
+                </Link>
+                <button
+                  onClick={() => setShowAuthModal(false)}
+                  className="block w-full py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Закрыть
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
