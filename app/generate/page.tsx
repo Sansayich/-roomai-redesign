@@ -443,11 +443,20 @@ export default function GeneratePage() {
                   {generationHistory.map((item) => (
                     <div key={item.id} className="bg-gray-50 rounded-xl border border-gray-200 p-4">
                       <div className="mb-3">
-                        <div className="text-xs text-gray-500 mb-1">
-                          {item.style} • {item.quality} • {item.roomType}
+                        <div className="text-sm font-medium text-gray-800 mb-1">
+                          {item.style}
                         </div>
-                        <div className="text-xs text-gray-400">
-                          {item.timestamp.toLocaleString('ru-RU')}
+                        <div className="text-xs text-gray-500">
+                          {item.quality} • {item.roomType}
+                        </div>
+                        <div className="text-xs text-gray-400 mt-1">
+                          {item.timestamp.toLocaleString('ru-RU', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
                         </div>
                       </div>
                       <div className="relative group">
