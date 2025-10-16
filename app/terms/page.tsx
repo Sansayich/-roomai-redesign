@@ -1,19 +1,11 @@
 import Link from 'next/link'
+import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-white">
-      <nav className="w-full px-6 py-5 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <Link href="/" className="text-xl sm:text-2xl font-bold text-blue-600">
-            roomGPT
-          </Link>
-          <Link href="/" className="text-gray-600 hover:text-gray-900">
-            ← На главную
-          </Link>
-        </div>
-      </nav>
+      <Navigation />
 
       <main className="max-w-4xl mx-auto px-6 py-12">
         <h1 className="text-4xl font-bold text-gray-900 mb-8">Публичная оферта</h1>
