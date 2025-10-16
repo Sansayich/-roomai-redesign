@@ -237,7 +237,7 @@ export default function GeneratePage() {
                   <span className="text-2xl">🎁</span>
                 </div>
                 <p className="text-gray-900 font-bold mb-2">
-                  Получите 3 бесплатных кредита!
+                  Получите 4 бесплатных кредита!
                 </p>
                 <p className="text-gray-600 text-sm mb-3">
                   Зарегистрируйтесь и начните создавать дизайны прямо сейчас
@@ -550,7 +550,7 @@ export default function GeneratePage() {
               <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 mb-6">
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <span className="text-2xl">🎁</span>
-                  <span className="font-bold text-gray-900">3 бесплатных кредита</span>
+                  <span className="font-bold text-gray-900">4 бесплатных кредита</span>
                 </div>
                 <p className="text-sm text-gray-600">
                   при регистрации — попробуйте все возможности!
