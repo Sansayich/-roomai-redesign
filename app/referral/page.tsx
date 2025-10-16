@@ -280,6 +280,8 @@ export default function ReferralPage() {
             </Link>
           </div>
         </main>
+
+        <Footer />
       </div>
     )
   }
