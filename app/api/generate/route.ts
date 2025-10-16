@@ -82,7 +82,29 @@ export async function POST(request: NextRequest) {
         let output: any
         
         if (quality === 'best') {
-          // Дорогая модель - ControlNet (берем второе изображение)
+          // Лучшее качество - Nano banana (сохраняет геометрию комнаты)
+          const model = 'google/nano-banana'
+          
+          output = await replicate.run(
+            model as any,
+            {
+              input: {
+                prompt: `Transform this ${getRoomTypePrompt(roomType)} into a ${getStylePrompt(styleId)} style. Preserve the exact room geometry, window positions, door locations, ceiling height, and architectural structure. Only change the interior design elements: furniture, colors, textures, lighting, and decorative items to match the ${styleId} aesthetic. Keep the same camera angle and room proportions.`,
+                image_input: [image],
+              },
+            }
+          )
+          
+          // Nano banana возвращает объект с методом url()
+          if (output && typeof output.url === 'function') {
+            outputs.push(output.url())
+          } else if (Array.isArray(output) && output.length > 0) {
+            outputs.push(output[0] as string)
+          } else if (typeof output === 'string') {
+            outputs.push(output)
+          }
+        } else {
+          // Хорошее качество - ControlNet
           const model = 'jagilley/controlnet-hough:854e8727697a057c525cdb45ab037f64ecca770a1769cc52287c2e56472a247b'
           
           output = await replicate.run(
@@ -104,28 +126,6 @@ export async function POST(request: NextRequest) {
             outputs.push(output[1] as string) // Второе изображение - финальный результат
           } else if (Array.isArray(output) && output.length > 0) {
             outputs.push(output[0] as string)
-          }
-        } else {
-          // Nano banana - Google Gemini 2.5 Flash Image (сохраняет геометрию комнаты)
-          const model = 'google/nano-banana'
-          
-          output = await replicate.run(
-            model as any,
-            {
-              input: {
-                prompt: `Transform this ${getRoomTypePrompt(roomType)} into a ${getStylePrompt(styleId)} style. Preserve the exact room geometry, window positions, door locations, ceiling height, and architectural structure. Only change the interior design elements: furniture, colors, textures, lighting, and decorative items to match the ${styleId} aesthetic. Keep the same camera angle and room proportions.`,
-                image_input: [image],
-              },
-            }
-          )
-          
-          // Nano banana возвращает объект с методом url()
-          if (output && typeof output.url === 'function') {
-            outputs.push(output.url())
-          } else if (Array.isArray(output) && output.length > 0) {
-            outputs.push(output[0] as string)
-          } else if (typeof output === 'string') {
-            outputs.push(output)
           }
         }
 

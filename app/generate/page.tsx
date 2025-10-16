@@ -36,8 +36,8 @@ const roomTypes: RoomType[] = [
 ]
 
 const qualities: Quality[] = [
-  { id: 'best', name: 'Лучшее (Высокое качество)', credits: 2 },
-  { id: 'good', name: 'Хорошее (Среднее качество)', credits: 1 },
+  { id: 'best', name: 'Лучшее (Nano Banana)', credits: 3 },
+  { id: 'good', name: 'Хорошее (ControlNet)', credits: 1 },
 ]
 
 const roomStyles: RoomStyle[] = [
@@ -61,9 +61,42 @@ export default function GeneratePage() {
   const [selectedQuality, setSelectedQuality] = useState<string>('best')
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedImages, setGeneratedImages] = useState<string[]>([])
+  const [generationHistory, setGenerationHistory] = useState<Array<{
+    id: string
+    originalImage: string
+    style: string
+    quality: string
+    roomType: string
+    generatedImage: string
+    timestamp: Date
+  }>>([])
   const [error, setError] = useState<string>('')
   const [credits, setCredits] = useState<number>(session?.user?.credits || 0)
   const [showAuthModal, setShowAuthModal] = useState(false)
+  const [selectedImageForZoom, setSelectedImageForZoom] = useState<string | null>(null)
+
+  // Функция для скачивания изображения
+  const downloadImage = async (imageUrl: string, filename: string) => {
+    try {
+      const response = await fetch(imageUrl)
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filename
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    } catch (error) {
+      console.error('Ошибка при скачивании:', error)
+    }
+  }
+
+  // Функция для увеличения изображения
+  const zoomImage = (imageUrl: string) => {
+    setSelectedImageForZoom(imageUrl)
+  }
 
   useEffect(() => {
     if (session?.user?.credits !== undefined) {
@@ -149,7 +182,21 @@ export default function GeneratePage() {
       }
 
       const data = await response.json()
-      setGeneratedImages(data.outputs || [])
+      const newOutputs = data.outputs || []
+      setGeneratedImages(newOutputs)
+      
+      // Добавляем в историю генераций
+      const newHistoryItems = selectedStyles.map((style, index) => ({
+        id: `${Date.now()}-${index}`,
+        originalImage: uploadedImage,
+        style: roomStyles.find(s => s.id === style)?.name || style,
+        quality: quality.name,
+        roomType: roomTypes.find(r => r.id === selectedRoomType)?.name || selectedRoomType,
+        generatedImage: newOutputs[index] || '',
+        timestamp: new Date()
+      }))
+      
+      setGenerationHistory(prev => [...prev, ...newHistoryItems])
       
       // Обновляем кредиты из ответа API
       if (data.credits !== undefined) {
@@ -388,26 +435,41 @@ export default function GeneratePage() {
               </div>
             )}
 
-            {/* Сгенерированные изображения */}
-            {generatedImages.length > 0 && (
+            {/* История генераций */}
+            {generationHistory.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold text-gray-700 mb-3">Результаты ({generatedImages.length})</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  {generatedImages.map((image, index) => (
-                    <div key={index} className="bg-gray-50 rounded-xl border border-gray-200 p-4">
-                      <img
-                        src={image}
-                        alt={`Result ${index + 1}`}
-                        className="w-full rounded-lg mb-3"
-                      />
+                <h3 className="text-sm font-semibold text-gray-700 mb-3">История генераций ({generationHistory.length})</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {generationHistory.map((item) => (
+                    <div key={item.id} className="bg-gray-50 rounded-xl border border-gray-200 p-4">
+                      <div className="mb-3">
+                        <div className="text-xs text-gray-500 mb-1">
+                          {item.style} • {item.quality} • {item.roomType}
+                        </div>
+                        <div className="text-xs text-gray-400">
+                          {item.timestamp.toLocaleString('ru-RU')}
+                        </div>
+                      </div>
+                      <div className="relative group">
+                        <img
+                          src={item.generatedImage}
+                          alt={`Generated ${item.style}`}
+                          className="w-full rounded-lg mb-3 cursor-pointer"
+                          onClick={() => zoomImage(item.generatedImage)}
+                        />
+                        {/* Иконка лупы с плюсиком */}
+                        <div 
+                          className="absolute top-2 right-2 bg-black bg-opacity-50 text-white p-2 rounded-full cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => zoomImage(item.generatedImage)}
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                          </svg>
+                        </div>
+                      </div>
                       <button
-                        onClick={() => {
-                          const link = document.createElement('a')
-                          link.href = image
-                          link.download = `room-design-${index + 1}.png`
-                          link.click()
-                        }}
-                        className="w-full px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                        onClick={() => downloadImage(item.generatedImage, `roomgpt-${item.style}-${Date.now()}.jpg`)}
+                        className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                       >
                         Скачать
                       </button>
@@ -436,6 +498,30 @@ export default function GeneratePage() {
       </main>
 
       <Footer />
+
+      {/* Модальное окно для увеличения изображения */}
+      {selectedImageForZoom && (
+        <div 
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          onClick={() => setSelectedImageForZoom(null)}
+        >
+          <div className="relative max-w-4xl max-h-full">
+            <img
+              src={selectedImageForZoom}
+              alt="Увеличенное изображение"
+              className="max-w-full max-h-full object-contain rounded-lg"
+            />
+            <button
+              onClick={() => setSelectedImageForZoom(null)}
+              className="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition-colors"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Модальное окно для неавторизованных пользователей */}
       {showAuthModal && (
