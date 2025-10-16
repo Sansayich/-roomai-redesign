@@ -33,6 +33,8 @@ services:
       EMAIL_FROM: ${EMAIL_FROM}
       ADMIN_EMAIL: ${ADMIN_EMAIL}
       REPLICATE_API_TOKEN: ${REPLICATE_API_TOKEN}
+      TOCHKA_LOGIN: ${TOCHKA_LOGIN}
+      TOCHKA_SECRET_KEY: ${TOCHKA_SECRET_KEY}
       NEXT_PUBLIC_IS_STAGING: "true"
       NODE_ENV: production
     env_file:
