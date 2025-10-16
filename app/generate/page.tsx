@@ -41,15 +41,15 @@ const qualities: Quality[] = [
 ]
 
 const roomStyles: RoomStyle[] = [
-  { id: 'modern', name: 'Modern', prompt: 'modern', imageUrl: '/themes/modern.jpg' },
-  { id: 'summer', name: 'Summer', prompt: 'summer', imageUrl: '/themes/summer.jpg' },
-  { id: 'professional', name: 'Professional', prompt: 'professional', imageUrl: '/themes/professional.jpg' },
-  { id: 'tropical', name: 'Tropical', prompt: 'tropical', imageUrl: '/themes/tropical.jpg' },
-  { id: 'coastal', name: 'Coastal', prompt: 'coastal', imageUrl: '/themes/coastal.jpg' },
-  { id: 'vintage', name: 'Vintage', prompt: 'vintage', imageUrl: '/themes/vintage.jpg' },
-  { id: 'industrial', name: 'Industrial', prompt: 'industrial', imageUrl: '/themes/industrial.jpg' },
-  { id: 'neoclassic', name: 'Neoclassic', prompt: 'neoclassic', imageUrl: '/themes/neoclassic.jpg' },
-  { id: 'tribal', name: 'Tribal', prompt: 'tribal', imageUrl: '/themes/tribal.jpg' },
+  { id: 'scandinavian', name: 'Скандинавский', prompt: 'scandinavian', imageUrl: '/themes/scandinavian.jpg' },
+  { id: 'minimalism', name: 'Минимализм', prompt: 'minimalism', imageUrl: '/themes/minimalism.jpg' },
+  { id: 'neoclassic', name: 'Неоклассика', prompt: 'neoclassic', imageUrl: '/themes/neoclassic.jpg' },
+  { id: 'loft', name: 'Лофт', prompt: 'loft', imageUrl: '/themes/loft.jpg' },
+  { id: 'classic', name: 'Классика', prompt: 'classic', imageUrl: '/themes/classic.jpg' },
+  { id: 'eclectic', name: 'Эклектика', prompt: 'eclectic', imageUrl: '/themes/eclectic.jpg' },
+  { id: 'japandi', name: 'Japandi', prompt: 'japandi', imageUrl: '/themes/japandi.jpg' },
+  { id: 'contemporary', name: 'Контемпорари', prompt: 'contemporary', imageUrl: '/themes/contemporary.jpg' },
+  { id: 'vintage', name: 'Бабушкин вариант', prompt: 'vintage', imageUrl: '/themes/vintage.jpg' },
 ]
 
 export default function GeneratePage() {

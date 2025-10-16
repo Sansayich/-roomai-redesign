@@ -221,15 +221,15 @@ export async function POST(request: NextRequest) {
 // Вспомогательные функции для создания промптов
 function getStylePrompt(styleId: string): string {
   const stylePrompts: Record<string, string> = {
-    modern: 'modern, contemporary, sleek, minimalist design',
-    summer: 'bright, airy, light summer colors, coastal vibes',
-    professional: 'professional office, corporate, clean and organized',
-    tropical: 'tropical paradise, lush plants, natural materials, exotic',
-    coastal: 'coastal, beach house, nautical, light and breezy',
-    vintage: 'vintage, retro, antique furniture, classic design',
-    industrial: 'industrial loft, exposed brick, metal and wood, urban',
-    neoclassic: 'neoclassical, elegant, luxurious, traditional European',
-    tribal: 'tribal, ethnic patterns, natural materials, earthy tones',
+    scandinavian: 'Scandinavian, light wood, white walls, cozy hygge atmosphere, natural materials, minimalist furniture',
+    minimalism: 'minimalist, clean lines, neutral colors, uncluttered space, simple furniture, zen-like atmosphere',
+    neoclassic: 'neoclassical, elegant columns, luxurious materials, symmetrical design, traditional European grandeur',
+    loft: 'industrial loft, exposed brick walls, high ceilings, metal and concrete, urban warehouse style',
+    classic: 'classic traditional, ornate furniture, rich fabrics, warm colors, timeless elegance, sophisticated',
+    eclectic: 'eclectic mix, bohemian style, colorful patterns, vintage and modern mix, artistic and creative',
+    japandi: 'Japandi style, Japanese minimalism meets Scandinavian, natural wood, clean lines, zen atmosphere',
+    contemporary: 'contemporary modern, sleek furniture, bold accents, current design trends, sophisticated',
+    vintage: 'vintage retro, 70s-80s style, warm colors, nostalgic furniture, cozy grandmother\'s house atmosphere',
   }
   
   return stylePrompts[styleId] || 'beautiful interior'
