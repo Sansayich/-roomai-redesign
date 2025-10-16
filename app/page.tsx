@@ -106,23 +106,32 @@ export default function Home() {
             <h2 className="text-3xl font-bold mb-8 text-gray-900">
               Доступные стили интерьера
             </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {[
-                { name: 'Современный', emoji: '🏢' },
-                { name: 'Минимализм', emoji: '⚪️' },
-                { name: 'Профессиональный', emoji: '💼' },
-                { name: 'Тропический', emoji: '🌴' },
-                { name: 'Индустриальный', emoji: '🏭' },
-                { name: 'Неоклассика', emoji: '🏛' },
-                { name: 'Винтаж', emoji: '📻' },
-                { name: 'Прибрежный', emoji: '🌊' },
+                { name: 'Скандинавский', imageUrl: '/images/styles/scandinavian.jpg' },
+                { name: 'Минимализм', imageUrl: '/images/styles/minimalism.jpg' },
+                { name: 'Неоклассика', imageUrl: '/images/styles/neoclassic.jpg' },
+                { name: 'Лофт', imageUrl: '/images/styles/loft.jpg' },
+                { name: 'Классика', imageUrl: '/images/styles/classic.jpg' },
+                { name: 'Эклектика', imageUrl: '/images/styles/eclectic.jpg' },
+                { name: 'Japandi', imageUrl: '/images/styles/japandi.jpg' },
+                { name: 'Контемпорари', imageUrl: '/images/styles/contemporary.jpg' },
+                { name: 'Бабушкин вариант', imageUrl: '/images/styles/vintage.jpg' },
               ].map((style, index) => (
                 <div
                   key={index}
-                  className="p-6 bg-gray-50 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-white transition-all cursor-pointer"
+                  className="relative rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-white transition-all cursor-pointer overflow-hidden"
                 >
-                  <div className="text-3xl mb-2">{style.emoji}</div>
-                  <div className="font-semibold text-gray-900 text-sm">{style.name}</div>
+                  <div className="aspect-[4/3] relative">
+                    <img
+                      src={style.imageUrl}
+                      alt={style.name}
+                      className="w-full h-full object-contain"
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-3">
+                      <div className="font-semibold text-gray-100 text-sm">{style.name}</div>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
