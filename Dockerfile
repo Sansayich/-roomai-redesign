@@ -7,7 +7,7 @@ WORKDIR /app
 
 # Копируем package.json и lock файлы
 COPY package.json package-lock.json* ./
-RUN npm install
+RUN npm ci --only=production
 
 # Stage 2: Builder
 FROM node:18-alpine AS builder
@@ -19,8 +19,8 @@ COPY . .
 # Отключаем телеметрию Next.js
 ENV NEXT_TELEMETRY_DISABLED 1
 
-# Генерируем Prisma Client
-RUN npx prisma generate --schema=./prisma/schema.prisma
+# Генерируем Prisma Client с фиксированной версией
+RUN ./node_modules/.bin/prisma generate --schema=./prisma/schema.prisma
 
 # Build приложения
 RUN npm run build
