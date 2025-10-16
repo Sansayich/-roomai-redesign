@@ -12,13 +12,6 @@ export default function Footer() {
           <Link href="/referral" className="hover:text-gray-900 text-xs sm:text-sm col-span-2 sm:col-span-1">Партнерская программа</Link>
         </div>
 
-        {/* Реквизиты компании */}
-        <div className="border-t border-gray-300 pt-3">
-          <p className="font-medium text-gray-700 mb-2">Реквизиты</p>
-          <p className="text-xs sm:text-sm">ИП Степыгин Александр Андреевич</p>
-          <p className="text-xs sm:text-sm">ИНН: 860221500587 | ОГРНИП: 325508100363022</p>
-          <p className="text-xs sm:text-sm break-words">Юр. адрес: 140074, Россия, Московская область, г. Люберцы, ул. Преображенская 3, 111</p>
-        </div>
 
         <div className="flex justify-center items-center gap-2">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

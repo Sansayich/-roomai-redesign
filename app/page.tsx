@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import UserMenu from '@/components/UserMenu'
+import Footer from '@/components/Footer'
 import Script from 'next/script'
 
 export default function Home() {
@@ -227,25 +228,7 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Футер */}
-      <footer className="w-full py-6 sm:py-8 border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center text-gray-500 text-xs sm:text-sm space-y-3">
-          <div className="flex flex-wrap justify-center gap-3 sm:gap-6">
-            <Link href="/terms" className="hover:text-gray-900">Публичная оферта</Link>
-            <Link href="/privacy" className="hover:text-gray-900">Политика конфиденциальности</Link>
-            <Link href="/refund" className="hover:text-gray-900">Возврат средств</Link>
-            <Link href="/contacts" className="hover:text-gray-900">Контакты и реквизиты</Link>
-            <Link href="/referral" className="hover:text-gray-900">Партнерская программа</Link>
-          </div>
-          <div className="flex justify-center items-center gap-2">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-            <a href="mailto:hello@room-gpt.ru" className="hover:text-gray-900">hello@room-gpt.ru</a>
-          </div>
-          <p>© {new Date().getFullYear()} roomGPT. Все права защищены.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
