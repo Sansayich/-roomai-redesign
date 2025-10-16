@@ -27,7 +27,7 @@ services:
       - "3001:3000"
     environment:
       DATABASE_URL: postgresql://roomgpt:${DATABASE_PASSWORD}@postgres-staging:5432/roomgpt_staging?schema=public
-      NEXTAUTH_URL: https://staging.room-gpt.ru
+      NEXTAUTH_URL: https://room-gpt.ru
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
       EMAIL_SERVER: ${EMAIL_SERVER}
       EMAIL_FROM: ${EMAIL_FROM}
