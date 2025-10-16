@@ -4,11 +4,6 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import crypto from 'crypto'
 
-// Функция для создания подписи заказа (для стандартной формы Точка Банка)
-function createOrderSignature(orderData: string, secretKey: string): string {
-  return crypto.createHmac('sha256', secretKey).update(orderData).digest('hex')
-}
-
 // Функция для генерации уникального ID
 function generatePaymentUid(): string {
   return crypto.randomBytes(8).toString('hex').toUpperCase()
@@ -81,54 +76,68 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Пользователь не найден' }, { status: 404 })
     }
 
-    // Подготавливаем данные для формы Точка Банка
-    const orderData = {
-      login: process.env.TOCHKA_LOGIN,
-      orderId: orderId,
-      amount: finalPrice.toFixed(2),
-      description: `Покупка ${plan.credits} кредитов для RoomGPT`,
-      returnUrl: `${process.env.NEXTAUTH_URL}/payment/success?paymentId=${payment.id}`,
-      failUrl: `${process.env.NEXTAUTH_URL}/payment/fail?paymentId=${payment.id}`,
-      notifyUrl: `${process.env.NEXTAUTH_URL}/api/payment/webhook`,
-      customerEmail: user.email || '',
-      customerPhone: user.name || '',
-      customerName: user.name || 'Пользователь RoomGPT'
+    // Создаем платеж через API Точка Банка
+    const tochkaLogin = process.env.TOCHKA_LOGIN
+    const tochkaSecretKey = process.env.TOCHKA_SECRET_KEY
+    
+    if (!tochkaLogin || !tochkaSecretKey) {
+      return NextResponse.json({ error: 'Не настроены данные Точка Банка' }, { status: 500 })
     }
 
-    // Создаем подпись заказа
-    const secretKey = process.env.TOCHKA_SECRET_KEY
-    if (!secretKey) {
-      return NextResponse.json({ error: 'Не настроен секретный ключ Точка Банка' }, { status: 500 })
+    // Данные для API Точка Банка
+    const paymentData = {
+      amount: finalPrice * 100, // Сумма в копейках
+      currency: 'RUB',
+      customerCode: orderId,
+      purpose: `Покупка ${plan.credits} кредитов для RoomGPT`,
+      redirectUrl: `${process.env.NEXTAUTH_URL}/payment/success?paymentId=${payment.id}`,
+      failRedirectUrl: `${process.env.NEXTAUTH_URL}/payment/fail?paymentId=${payment.id}`,
+      client: {
+        email: user.email || 'noreply@room-gpt.ru',
+        name: user.name || 'Пользователь RoomGPT'
+      },
+      items: [{
+        name: `${plan.credits} кредитов`,
+        amount: finalPrice * 100,
+        quantity: 1
+      }]
     }
 
-    // Формируем строку для подписи (все поля кроме signature)
-    const signatureString = [
-      orderData.login,
-      orderData.orderId,
-      orderData.amount,
-      orderData.description,
-      orderData.returnUrl,
-      orderData.failUrl,
-      orderData.notifyUrl,
-      orderData.customerEmail,
-      orderData.customerPhone,
-      orderData.customerName
-    ].join('|')
+    // Создаем платеж через API
+    const apiResponse = await fetch('https://enter.tochka.com/uapi/pay/v1/sites/' + tochkaLogin + '/payments', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + tochkaSecretKey
+      },
+      body: JSON.stringify(paymentData)
+    })
 
-    const signature = createOrderSignature(signatureString, secretKey)
+    if (!apiResponse.ok) {
+      const errorText = await apiResponse.text()
+      console.error('Tochka API error:', errorText)
+      return NextResponse.json({ error: 'Ошибка создания платежа в Точка Банке' }, { status: 500 })
+    }
 
-    // Возвращаем данные для создания формы
+    const apiResult = await apiResponse.json()
+
+    // Обновляем платеж с данными от Точка Банка
+    await prisma.payment.update({
+      where: { id: payment.id },
+      data: {
+        paymentId: apiResult.paymentUid,
+        paymentUrl: apiResult.paymentUrl
+      }
+    })
+
+    // Возвращаем данные для редиректа
     const responseData = {
       paymentId: payment.id,
       orderId: orderId,
       amount: finalPrice,
       credits: plan.credits,
       description: payment.description,
-      formData: {
-        ...orderData,
-        signature: signature
-      },
-      formUrl: 'https://enter.tochka.com/pay' // URL формы Точка Банка
+      paymentUrl: apiResult.paymentUrl // URL для редиректа на оплату
     }
 
     return NextResponse.json(responseData)
