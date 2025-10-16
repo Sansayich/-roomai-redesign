@@ -89,8 +89,13 @@ export async function POST(request: NextRequest) {
             model as any,
             {
               input: {
-                prompt: `Transform this ${getRoomTypePrompt(roomType)} into a ${getStylePrompt(styleId)} style. Preserve the exact room geometry, window positions, door locations, ceiling height, and architectural structure. Only change the interior design elements: furniture, colors, textures, lighting, and decorative items to match the ${styleId} aesthetic. Keep the same camera angle and room proportions.`,
+                prompt: `Transform this ${getRoomTypePrompt(roomType)} into a ${getStylePrompt(styleId)} style. Preserve the exact room geometry, window positions, door locations, ceiling height, and architectural structure. Only change the interior design elements: furniture, colors, textures, lighting, and decorative items to match the ${styleId} aesthetic. Keep the same camera angle and room proportions. High resolution, professional photography, detailed textures, realistic lighting.`,
                 image_input: [image],
+                strength: 0.8, // Более сильное изменение для лучшего качества
+                guidance_scale: 9.0, // Высокий guidance для лучшего соответствия промпту
+                num_inference_steps: 50, // Больше шагов для лучшего качества
+                width: 1024, // Высокое разрешение
+                height: 1024,
               },
             }
           )
@@ -112,11 +117,12 @@ export async function POST(request: NextRequest) {
             {
               input: {
                 image: image,
-                prompt: `A ${getStylePrompt(styleId)} ${getRoomTypePrompt(roomType)}, professional interior design, high quality, detailed, well-lit, modern photography`,
+                prompt: `A ${getStylePrompt(styleId)} ${getRoomTypePrompt(roomType)}, professional interior design, high quality, detailed, well-lit, modern photography, high resolution, detailed textures, realistic lighting`,
                 num_outputs: 1,
-                num_inference_steps: 50,
+                num_inference_steps: 30, // Меньше шагов для быстрой генерации
                 guidance_scale: 7.5,
-                negative_prompt: 'lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry',
+                image_resolution: '768', // Среднее разрешение для ControlNet
+                negative_prompt: 'lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, pixelated, low resolution',
               },
             }
           )

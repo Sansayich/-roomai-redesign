@@ -36,8 +36,8 @@ const roomTypes: RoomType[] = [
 ]
 
 const qualities: Quality[] = [
-  { id: 'best', name: 'Лучшее (Nano Banana)', credits: 3 },
-  { id: 'good', name: 'Хорошее (ControlNet)', credits: 1 },
+  { id: 'best', name: 'Лучшее - 3 кредита', credits: 3 },
+  { id: 'good', name: 'Хорошее - 1 кредит', credits: 1 },
 ]
 
 const roomStyles: RoomStyle[] = [
