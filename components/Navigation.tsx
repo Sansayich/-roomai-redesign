@@ -16,7 +16,7 @@ export default function Navigation() {
         <div className="flex gap-3 sm:gap-6 items-center">
           <Link 
             href="/generate" 
-            className="hidden sm:inline text-gray-700 hover:text-gray-900 transition-colors"
+            className="text-sm sm:text-base text-gray-700 hover:text-gray-900 transition-colors"
           >
             Генерация
           </Link>
