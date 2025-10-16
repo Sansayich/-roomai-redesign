@@ -91,12 +91,25 @@ export default function PricingPage() {
         throw new Error(data.error || 'Ошибка создания платежа')
       }
 
-      // Перенаправляем на страницу оплаты Точка Банка
-      if (data.paymentUrl) {
-        window.location.href = data.paymentUrl
-      } else {
-        throw new Error('Не получен URL для оплаты')
-      }
+      // Создаем форму для отправки в Точка Банк
+      const form = document.createElement('form')
+      form.method = 'POST'
+      form.action = data.formUrl
+      form.target = '_blank'
+
+      // Добавляем все поля формы
+      Object.entries(data.formData).forEach(([key, value]) => {
+        const input = document.createElement('input')
+        input.type = 'hidden'
+        input.name = key
+        input.value = value as string
+        form.appendChild(input)
+      })
+
+      // Отправляем форму
+      document.body.appendChild(form)
+      form.submit()
+      document.body.removeChild(form)
 
       // Показываем сообщение пользователю
       alert('Вы будете перенаправлены на страницу оплаты. После успешной оплаты кредиты будут автоматически добавлены на ваш счет.')
