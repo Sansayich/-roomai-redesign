@@ -101,6 +101,7 @@ export const metadata: Metadata = {
   },
   other: {
     'yandex-verification': '02e0d8beb8e2c52a',
+    'p:domain_verify': 'f6978a7e0513c41ff1982bb24f3dcb35',
   },
 }
 
