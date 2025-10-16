@@ -120,18 +120,16 @@ export default function Home() {
               ].map((style, index) => (
                 <div
                   key={index}
-                  className="relative rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-white transition-all cursor-pointer overflow-hidden"
+                  className="cursor-pointer"
                 >
-                  <div className="aspect-[4/3] relative">
+                  <div className="aspect-[4/3] mb-3">
                     <img
                       src={style.imageUrl}
                       alt={style.name}
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-contain rounded-xl"
                     />
-                    <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-3">
-                      <div className="font-semibold text-gray-100 text-sm">{style.name}</div>
-                    </div>
                   </div>
+                  <div className="font-semibold text-gray-900 text-sm text-center">{style.name}</div>
                 </div>
               ))}
             </div>
