@@ -94,8 +94,9 @@ export async function POST(request: NextRequest) {
                 strength: 0.8, // Более сильное изменение для лучшего качества
                 guidance_scale: 9.0, // Высокий guidance для лучшего соответствия промпту
                 num_inference_steps: 50, // Больше шагов для лучшего качества
-                width: 1024, // Горизонтальное разрешение
+                width: 1024, // Aspect ratio 4:3
                 height: 768,
+                format: 'png', // PNG формат
               },
             }
           )
