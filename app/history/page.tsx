@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import UserMenu from '@/components/UserMenu'
+import Navigation from '@/components/Navigation'
 
 type Generation = {
   id: string
@@ -131,26 +131,7 @@ export default function HistoryPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Навигация */}
-      <nav className="w-full px-6 py-5 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <Link href="/" className="text-xl sm:text-2xl font-bold text-blue-600">
-            roomGPT
-          </Link>
-          <div className="flex items-center gap-6">
-            <Link href="/generate" className="text-gray-700 hover:text-gray-900">
-              Генерация
-            </Link>
-            <Link href="/history" className="text-gray-900 font-medium">
-              История
-            </Link>
-            <Link href="/pricing" className="text-gray-700 hover:text-gray-900">
-              Тарифы
-            </Link>
-            <UserMenu />
-          </div>
-        </div>
-      </nav>
+      <Navigation />
 
       <main className="max-w-7xl mx-auto px-6 py-8">
         <div className="mb-8">

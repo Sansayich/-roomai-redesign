@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import UserMenu from '@/components/UserMenu'
+import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 
 type ReferralStats = {
@@ -142,25 +142,7 @@ export default function ReferralPage() {
   if (!session) {
     return (
       <div className="min-h-screen bg-white">
-        {/* Навигация */}
-        <nav className="w-full px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <Link href="/" className="text-xl sm:text-2xl font-bold text-blue-600">
-              roomGPT
-            </Link>
-              <div className="flex items-center gap-4 sm:gap-6">
-                <Link href="/pricing" className="text-sm sm:text-base text-gray-700 hover:text-blue-600 transition-colors">
-                  Тарифы
-                </Link>
-                <Link 
-                  href="/auth/signin"
-                  className="px-4 sm:px-6 py-2 bg-blue-600 text-white text-sm sm:text-base rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  Войти
-                </Link>
-              </div>
-            </div>
-        </nav>
+        <Navigation />
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
           {/* Hero секция */}
@@ -293,29 +275,7 @@ export default function ReferralPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Навигация */}
-      <nav className="w-full px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <Link href="/" className="text-xl sm:text-2xl font-bold text-blue-600">
-            roomGPT
-          </Link>
-          <div className="flex items-center gap-6">
-            <Link href="/generate" className="text-gray-700 hover:text-blue-600 transition-colors">
-              Генерация
-            </Link>
-            <Link href="/history" className="text-gray-700 hover:text-blue-600 transition-colors">
-              История
-            </Link>
-            <Link href="/pricing" className="text-gray-700 hover:text-blue-600 transition-colors">
-              Тарифы
-            </Link>
-            <Link href="/referral" className="text-blue-600 font-medium">
-              Партнерам
-            </Link>
-            <UserMenu />
-          </div>
-        </div>
-      </nav>
+      <Navigation />
 
       <main className="max-w-7xl mx-auto px-6 py-12">
         {/* Заголовок */}

@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import UserMenu from '@/components/UserMenu'
+import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import { useState } from 'react'
 
@@ -86,23 +86,7 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Навигация */}
-      <nav className="w-full px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <Link href="/" className="text-xl sm:text-2xl font-bold text-blue-600">
-            roomGPT
-          </Link>
-          <div className="flex items-center gap-3 sm:gap-6">
-            <Link href="/generate" className="hidden sm:inline text-gray-700 hover:text-gray-900">
-              Генерация
-            </Link>
-            <Link href="/pricing" className="text-sm sm:text-base text-gray-900 font-medium">
-              Тарифы
-            </Link>
-            <UserMenu />
-          </div>
-        </div>
-      </nav>
+      <Navigation />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         {/* Заголовок */}
