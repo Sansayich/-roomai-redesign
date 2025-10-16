@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
         ...orderData,
         signature: signature
       },
-      formUrl: 'https://enter.tochka.com/' // URL стандартной формы Точка Банка
+      formUrl: 'https://enter.tochka.com/payment' // URL стандартной формы Точка Банка
     }
 
     return NextResponse.json(responseData)
