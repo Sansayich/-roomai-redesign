@@ -227,7 +227,7 @@ export default function GeneratePage() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-[320px_1fr] gap-6 mb-12">
+        <div className="grid md:grid-cols-[400px_1fr] gap-6 mb-12">
           {/* Левая панель - Форма */}
           <div className="space-y-4">
             {/* Уведомление о кредитах или призыв к регистрации */}
@@ -345,11 +345,11 @@ export default function GeneratePage() {
                       }
                     `}
                   >
-                    <div className="aspect-square relative">
+                    <div className="aspect-[4/3] relative">
                       <img
                         src={style.imageUrl}
                         alt={style.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain"
                       />
                       <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2">
                         <span className="text-xs font-medium">
