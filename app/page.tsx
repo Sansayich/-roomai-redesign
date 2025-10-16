@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import UserMenu from '@/components/UserMenu'
+import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import Script from 'next/script'
 
@@ -64,29 +64,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      {/* Навигация */}
-      <nav className="w-full px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <Link href="/" className="text-xl sm:text-2xl font-bold text-blue-600">
-            roomGPT
-          </Link>
-          <div className="flex gap-3 sm:gap-6 items-center">
-            <Link 
-              href="/generate" 
-              className="hidden sm:inline text-gray-700 hover:text-gray-900 transition-colors"
-            >
-              Генерация
-            </Link>
-            <Link 
-              href="/pricing" 
-              className="text-sm sm:text-base text-gray-700 hover:text-gray-900 transition-colors"
-            >
-              Тарифы
-            </Link>
-            <UserMenu />
-          </div>
-        </div>
-      </nav>
+      <Navigation />
 
       {/* Основной контент */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-12 sm:pt-16 pb-16 sm:pb-24">

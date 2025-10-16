@@ -5,7 +5,7 @@ import { useDropzone } from 'react-dropzone'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import UserMenu from '@/components/UserMenu'
+import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 
 type RoomStyle = {
@@ -168,32 +168,7 @@ export default function GeneratePage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Навигация */}
-      <nav className="w-full px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <Link href="/" className="text-xl sm:text-2xl font-bold text-blue-600">
-            roomGPT
-          </Link>
-          <div className="flex items-center gap-3 sm:gap-6">
-            <Link href="/generate" className="text-sm sm:text-base text-gray-900 font-medium">
-              Генерация
-            </Link>
-            <Link href="/pricing" className="hidden sm:inline text-gray-700 hover:text-gray-900">
-              Тарифы
-            </Link>
-            {session ? (
-              <UserMenu />
-            ) : (
-              <Link 
-                href="/auth/signin"
-                className="px-4 sm:px-6 py-2 bg-blue-600 text-white text-sm sm:text-base rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Войти
-              </Link>
-            )}
-          </div>
-        </div>
-      </nav>
+      <Navigation />
 
       <main className="max-w-7xl mx-auto px-6 py-8">
         {/* Заголовок */}
