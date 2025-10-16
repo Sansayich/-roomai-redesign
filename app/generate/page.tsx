@@ -196,7 +196,7 @@ export default function GeneratePage() {
         timestamp: new Date()
       }))
       
-      setGenerationHistory(prev => [...prev, ...newHistoryItems])
+      setGenerationHistory(prev => [...newHistoryItems, ...prev])
       
       // Обновляем кредиты из ответа API
       if (data.credits !== undefined) {
@@ -330,7 +330,7 @@ export default function GeneratePage() {
               >
                 {qualities.map(quality => (
                   <option key={quality.id} value={quality.id}>
-                    {quality.name} – {quality.credits} credits
+                    {quality.name}
                   </option>
                 ))}
               </select>
