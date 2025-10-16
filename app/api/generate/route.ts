@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
           model as any,
           {
             input: {
-              prompt: `Transform this ${getRoomTypePrompt(roomType)} into a ${getStylePrompt(styleId)} style. Preserve the exact room geometry, window positions, door locations, ceiling height, and architectural structure. Only change the interior design elements: furniture, colors, textures, lighting, and decorative items to match the ${styleId} aesthetic. Keep the same camera angle and room proportions. High resolution, professional photography, detailed textures, realistic lighting.`,
+              prompt: getStylePrompt(styleId).replace('{room_type}', getRoomTypePrompt(roomType)),
               image_input: [image],
               strength: 0.8,
               guidance_scale: 9.0,
@@ -197,7 +197,58 @@ export async function POST(request: NextRequest) {
 // Вспомогательные функции для создания промптов
 function getStylePrompt(styleId: string): string {
   const stylePrompts: Record<string, string> = {
-    scandinavian: 'Scandinavian, light wood, white walls, cozy hygge atmosphere, natural materials, minimalist furniture',
+    scandinavian: `Interior redesign task: Transform this {room_type} into authentic Scandinavian style interior.
+
+STRICT PRESERVATION REQUIREMENTS:
+- Keep EXACT room geometry: all wall positions, angles, and dimensions
+- Maintain EXACT window locations, sizes, and shapes
+- Preserve EXACT door placements and sizes
+- Keep identical ceiling height and floor area
+- Maintain the same camera angle, perspective, and focal length
+- DO NOT change architectural structure or room layout
+
+COMPLETE TRANSFORMATION - Scandinavian Style:
+
+FLOORING: Light oak, birch, or ash wood flooring in natural blonde tones, matte finish
+
+WALLS: Pure white or soft off-white painted walls, smooth clean finish, no wallpaper
+
+FURNITURE SPECIFICATIONS:
+- Minimalist wooden furniture in light wood (oak, birch, pine)
+- Clean simple lines, functional Scandinavian design
+- Low-profile pieces with tapered wooden legs
+- Natural wood bed frame or sofa in light tones
+- Simple wooden shelving units, open storage
+- Avoid ornate details or heavy furniture
+
+COLOR PALETTE: White, soft grey, beige, light wood tones, occasional muted blue or green accent
+
+TEXTILES & SOFT FURNISHINGS:
+- Natural materials: linen, cotton, wool
+- Neutral bedding/upholstery in white, beige, light grey
+- Textured throws in chunky knit or sheepskin
+- Simple curtains in white linen or sheer fabric
+- Geometric or simple patterns only
+
+LIGHTING:
+- Warm ambient lighting, 2700-3000K color temperature
+- Simple pendant lights with minimal design (sphere, cone, or geometric shape)
+- Natural daylight from windows emphasized
+- Soft shadows, cozy atmosphere
+
+DECOR & ACCESSORIES:
+- Indoor plants: monstera, fiddle leaf fig, or snake plant in simple pots
+- Minimal decoration, every item functional
+- 1-2 pieces of simple wall art or prints
+- Candles in simple holders
+- Ceramic or wooden decorative objects
+- NO clutter, clean surfaces
+
+ATMOSPHERE: Cozy hygge feeling, bright and airy, warm and inviting, functional simplicity, connection to nature
+
+QUALITY: Photorealistic 3D render, professional interior photography, 4K resolution, accurate Scandinavian materials, natural soft lighting, proper depth of field, clean modern aesthetic
+
+Create a bright, minimalist, hygge-inspired Scandinavian interior that feels warm despite its simplicity.`,
     minimalism: 'minimalist, clean lines, neutral colors, uncluttered space, simple furniture, zen-like atmosphere',
     neoclassic: 'neoclassical, elegant columns, luxurious materials, symmetrical design, traditional European grandeur',
     loft: 'industrial loft, exposed brick walls, high ceilings, metal and concrete, urban warehouse style',
