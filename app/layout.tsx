@@ -3,7 +3,7 @@ import { Jost } from 'next/font/google'
 import './globals.css'
 import SessionProvider from '@/components/SessionProvider'
 import CookieConsent from '@/components/CookieConsent'
-import StagingNotice from '@/components/StagingNotice'
+import StagingDetector from '@/components/StagingDetector'
 import Script from 'next/script'
 
 const jost = Jost({ 
@@ -11,8 +11,8 @@ const jost = Jost({
   weight: ['300', '400', '500', '600', '700'],
 })
 
-// Проверка staging окружения
-const isStaging = process.env.NEXTAUTH_URL?.includes('staging') || false
+// Проверка staging окружения для метаданных
+const isStaging = false
 
 export const metadata: Metadata = {
   title: isStaging 
@@ -113,7 +113,7 @@ export default function RootLayout({
     <html lang="ru">
       <body className={jost.className}>
         {/* Staging Notice - показываем только в staging окружении */}
-        {isStaging && <StagingNotice />}
+        <StagingDetector />
         
         {/* Yandex.Metrika counter */}
         <Script
