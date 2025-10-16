@@ -109,31 +109,28 @@ export async function POST(request: NextRequest) {
             outputs.push(output)
           }
         } else {
-          // Хорошее качество - используем ту же модель что и для лучшего, но с другими параметрами
-          const model = 'google/nano-banana'
+          // Хорошее качество - ControlNet (как было раньше)
+          const model = 'jagilley/controlnet-hough:854e8727697a057c525cdb45ab037f64ecca770a1769cc52287c2e56472a247b'
           
           output = await replicate.run(
             model as any,
             {
               input: {
-                prompt: `Transform this ${getRoomTypePrompt(roomType)} into a ${getStylePrompt(styleId)} style. Preserve the room geometry and layout. Change interior design elements to match the ${styleId} aesthetic. Good quality, detailed, well-lit.`,
-                image_input: [image],
-                strength: 0.6, // Меньшая сила изменения для быстрой генерации
-                guidance_scale: 7.5, // Средний guidance
-                num_inference_steps: 30, // Меньше шагов для быстрой генерации
-                width: 768, // Среднее разрешение
-                height: 576,
+                image: image,
+                prompt: `A ${getStylePrompt(styleId)} ${getRoomTypePrompt(roomType)}, professional interior design, high quality, detailed, well-lit, modern photography`,
+                num_outputs: 1,
+                num_inference_steps: 50,
+                guidance_scale: 7.5,
+                negative_prompt: 'lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry',
               },
             }
           )
           
-          // Nano banana возвращает объект с методом url()
-          if (output && typeof output.url === 'function') {
-            outputs.push(output.url())
+          // ControlNet возвращает массив из 2 изображений - берем ВТОРОЕ!
+          if (Array.isArray(output) && output.length >= 2) {
+            outputs.push(output[1] as string) // Второе изображение - финальный результат
           } else if (Array.isArray(output) && output.length > 0) {
             outputs.push(output[0] as string)
-          } else if (typeof output === 'string') {
-            outputs.push(output)
           }
         }
 
