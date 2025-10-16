@@ -5,9 +5,9 @@ FROM node:18-alpine AS deps
 RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
-# Копируем package.json и lock файлы
-COPY package.json package-lock.json* ./
-RUN npm ci --only=production
+# Копируем package.json
+COPY package.json ./
+RUN npm install --omit=dev
 
 # Stage 2: Builder
 FROM node:18-alpine AS builder
