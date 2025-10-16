@@ -1,20 +1,11 @@
 import Link from 'next/link'
+import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 
 export default function PaymentInfoPage() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Навигация */}
-      <nav className="w-full px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <Link href="/" className="text-xl sm:text-2xl font-bold text-blue-600">
-            roomGPT
-          </Link>
-          <Link href="/pricing" className="text-sm sm:text-base text-gray-700 hover:text-gray-900">
-            Вернуться к тарифам
-          </Link>
-        </div>
-      </nav>
+      <Navigation />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8">Способы оплаты</h1>
