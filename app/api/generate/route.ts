@@ -81,58 +81,32 @@ export async function POST(request: NextRequest) {
         // Используем модель для редизайна интерьеров
         let output: any
         
-        if (quality === 'best') {
-          // Лучшее качество - Nano banana (сохраняет геометрию комнаты)
-          const model = 'google/nano-banana'
-          
-          output = await replicate.run(
-            model as any,
-            {
-              input: {
-                prompt: `Transform this ${getRoomTypePrompt(roomType)} into a ${getStylePrompt(styleId)} style. Preserve the exact room geometry, window positions, door locations, ceiling height, and architectural structure. Only change the interior design elements: furniture, colors, textures, lighting, and decorative items to match the ${styleId} aesthetic. Keep the same camera angle and room proportions. High resolution, professional photography, detailed textures, realistic lighting.`,
-                image_input: [image],
-                strength: 0.8, // Более сильное изменение для лучшего качества
-                guidance_scale: 9.0, // Высокий guidance для лучшего соответствия промпту
-                num_inference_steps: 50, // Больше шагов для лучшего качества
-                width: 1024, // Aspect ratio 4:3
-                height: 768,
-                format: 'png', // PNG формат
-              },
-            }
-          )
-          
-          // Nano banana возвращает объект с методом url()
-          if (output && typeof output.url === 'function') {
-            outputs.push(output.url())
-          } else if (Array.isArray(output) && output.length > 0) {
-            outputs.push(output[0] as string)
-          } else if (typeof output === 'string') {
-            outputs.push(output)
+        // Используем только nano banana для всех генераций
+        const model = 'google/nano-banana'
+        
+        output = await replicate.run(
+          model as any,
+          {
+            input: {
+              prompt: `Transform this ${getRoomTypePrompt(roomType)} into a ${getStylePrompt(styleId)} style. Preserve the exact room geometry, window positions, door locations, ceiling height, and architectural structure. Only change the interior design elements: furniture, colors, textures, lighting, and decorative items to match the ${styleId} aesthetic. Keep the same camera angle and room proportions. High resolution, professional photography, detailed textures, realistic lighting.`,
+              image_input: [image],
+              strength: 0.8,
+              guidance_scale: 9.0,
+              num_inference_steps: 50,
+              width: 1024, // Aspect ratio 4:3
+              height: 768,
+              format: 'png', // PNG формат
+            },
           }
-        } else {
-          // Хорошее качество - ControlNet (как было раньше)
-          const model = 'jagilley/controlnet-hough:854e8727697a057c525cdb45ab037f64ecca770a1769cc52287c2e56472a247b'
-          
-          output = await replicate.run(
-            model as any,
-            {
-              input: {
-                image: image,
-                prompt: `A ${getStylePrompt(styleId)} ${getRoomTypePrompt(roomType)}, professional interior design, high quality, detailed, well-lit, modern photography`,
-                num_outputs: 1,
-                num_inference_steps: 50,
-                guidance_scale: 7.5,
-                negative_prompt: 'lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry',
-              },
-            }
-          )
-          
-          // ControlNet возвращает массив из 2 изображений - берем ВТОРОЕ!
-          if (Array.isArray(output) && output.length >= 2) {
-            outputs.push(output[1] as string) // Второе изображение - финальный результат
-          } else if (Array.isArray(output) && output.length > 0) {
-            outputs.push(output[0] as string)
-          }
+        )
+        
+        // Nano banana возвращает объект с методом url()
+        if (output && typeof output.url === 'function') {
+          outputs.push(output.url())
+        } else if (Array.isArray(output) && output.length > 0) {
+          outputs.push(output[0] as string)
+        } else if (typeof output === 'string') {
+          outputs.push(output)
         }
 
         // Небольшая задержка между запросами

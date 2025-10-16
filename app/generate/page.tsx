@@ -36,8 +36,7 @@ const roomTypes: RoomType[] = [
 ]
 
 const qualities: Quality[] = [
-  { id: 'best', name: 'Лучшее - 3 кредита', credits: 3 },
-  { id: 'good', name: 'Хорошее - 1 кредит', credits: 1 },
+  { id: 'best', name: 'Генерация - 2 кредита', credits: 2 },
 ]
 
 const roomStyles: RoomStyle[] = [
@@ -320,20 +319,12 @@ export default function GeneratePage() {
               </select>
             </div>
 
-            {/* Выбор качества */}
-            <div className="bg-white rounded-xl border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-3 text-sm">Выберите качество</h3>
-              <select
-                value={selectedQuality}
-                onChange={(e) => setSelectedQuality(e.target.value)}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                {qualities.map(quality => (
-                  <option key={quality.id} value={quality.id}>
-                    {quality.name}
-                  </option>
-                ))}
-              </select>
+            {/* Информация о стоимости */}
+            <div className="bg-blue-50 rounded-xl border border-blue-200 p-6">
+              <h3 className="font-semibold text-gray-900 mb-3 text-sm">Стоимость генерации</h3>
+              <p className="text-sm text-gray-700">
+                Каждый выбранный стиль: <span className="font-semibold text-blue-600">2 кредита</span>
+              </p>
             </div>
 
             {/* Выбор тем */}
