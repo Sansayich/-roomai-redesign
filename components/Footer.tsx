@@ -4,20 +4,20 @@ export default function Footer() {
   return (
     <footer className="w-full py-6 sm:py-8 border-t border-gray-200 mt-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center text-gray-500 text-xs sm:text-sm space-y-3">
-        <div className="flex flex-wrap justify-center gap-3 sm:gap-6">
-          <Link href="/terms" className="hover:text-gray-900">Публичная оферта</Link>
-          <Link href="/privacy" className="hover:text-gray-900">Политика конфиденциальности</Link>
-          <Link href="/refund" className="hover:text-gray-900">Возврат средств</Link>
-          <Link href="/payment-info" className="hover:text-gray-900">Способы оплаты</Link>
-          <Link href="/referral" className="hover:text-gray-900">Партнерская программа</Link>
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap justify-center gap-2 sm:gap-6 text-center">
+          <Link href="/terms" className="hover:text-gray-900 text-xs sm:text-sm">Публичная оферта</Link>
+          <Link href="/privacy" className="hover:text-gray-900 text-xs sm:text-sm">Политика конфиденциальности</Link>
+          <Link href="/refund" className="hover:text-gray-900 text-xs sm:text-sm">Возврат средств</Link>
+          <Link href="/payment-info" className="hover:text-gray-900 text-xs sm:text-sm">Способы оплаты</Link>
+          <Link href="/referral" className="hover:text-gray-900 text-xs sm:text-sm col-span-2 sm:col-span-1">Партнерская программа</Link>
         </div>
 
         {/* Реквизиты компании */}
         <div className="border-t border-gray-300 pt-3">
           <p className="font-medium text-gray-700 mb-2">Реквизиты</p>
-          <p>ИП Степыгин Александр Александрович</p>
-          <p>ИНН: 860221500587 | ОГРНИП: 325508100363022</p>
-          <p>Юр. адрес: 140074, Россия, Московская область, г. Люберцы, ул. Преображенская 3, 111</p>
+          <p className="text-xs sm:text-sm">ИП Степыгин Александр Андреевич</p>
+          <p className="text-xs sm:text-sm">ИНН: 860221500587 | ОГРНИП: 325508100363022</p>
+          <p className="text-xs sm:text-sm break-words">Юр. адрес: 140074, Россия, Московская область, г. Люберцы, ул. Преображенская 3, 111</p>
         </div>
 
         <div className="flex justify-center items-center gap-2">
