@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Footer from '@/components/Footer'
 
 export default function RefundPage() {
   return (
@@ -222,18 +223,7 @@ export default function RefundPage() {
         </div>
       </main>
 
-      <footer className="w-full py-8 border-t border-gray-200 mt-16">
-        <div className="max-w-7xl mx-auto px-6 text-center text-gray-500 text-sm space-y-2">
-          <div className="flex justify-center gap-6">
-            <Link href="/terms" className="hover:text-gray-900">Публичная оферта</Link>
-            <Link href="/privacy" className="hover:text-gray-900">Политика конфиденциальности</Link>
-            <Link href="/refund" className="hover:text-gray-900">Возврат средств</Link>
-            <Link href="/contacts" className="hover:text-gray-900">Контакты и реквизиты</Link>
-            <Link href="/referral" className="hover:text-gray-900">Партнерская программа</Link>
-          </div>
-          <p>© {new Date().getFullYear()} roomGPT. Все права защищены.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

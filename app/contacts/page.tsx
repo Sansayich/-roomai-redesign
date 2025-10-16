@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Footer from '@/components/Footer'
 
 export default function ContactsPage() {
   return (
@@ -116,20 +117,7 @@ export default function ContactsPage() {
         </div>
       </main>
 
-      {/* Футер */}
-      <footer className="w-full py-6 sm:py-8 border-t border-gray-200 mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center text-gray-500 text-xs sm:text-sm space-y-3">
-          <div className="flex flex-wrap justify-center gap-3 sm:gap-6">
-            <Link href="/terms" className="hover:text-gray-900">Публичная оферта</Link>
-            <Link href="/privacy" className="hover:text-gray-900">Политика конфиденциальности</Link>
-            <Link href="/refund" className="hover:text-gray-900">Возврат средств</Link>
-            <Link href="/payment-info" className="hover:text-gray-900">Способы оплаты</Link>
-            <Link href="/contacts" className="hover:text-gray-900">Контакты и реквизиты</Link>
-            <Link href="/referral" className="hover:text-gray-900">Партнерская программа</Link>
-          </div>
-          <p>© {new Date().getFullYear()} roomGPT. Все права защищены.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
