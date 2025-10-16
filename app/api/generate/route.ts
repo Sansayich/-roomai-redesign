@@ -113,16 +113,16 @@ export async function POST(request: NextRequest) {
             model as any,
             {
               input: {
-                image: image,
                 prompt: `Transform this ${getRoomTypePrompt(roomType)} into a ${getStylePrompt(styleId)} style. Preserve the exact room geometry, window positions, door locations, ceiling height, and architectural structure. Only change the interior design elements: furniture, colors, textures, lighting, and decorative items to match the ${styleId} aesthetic. Keep the same camera angle and room proportions.`,
-                strength: 0.7, // Умеренная сила изменения для сохранения геометрии
-                guidance_scale: 7.5,
-                num_inference_steps: 30,
+                image_input: [image],
               },
             }
           )
           
-          if (Array.isArray(output) && output.length > 0) {
+          // Nano banana возвращает объект с методом url()
+          if (output && typeof output.url === 'function') {
+            outputs.push(output.url())
+          } else if (Array.isArray(output) && output.length > 0) {
             outputs.push(output[0] as string)
           } else if (typeof output === 'string') {
             outputs.push(output)
