@@ -112,8 +112,8 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className={jost.className}>
-        {/* Staging Notice - показываем только в staging окружении */}
-        <StagingDetector />
+        {/* Staging Notice - отключен */}
+        {/* <StagingDetector /> */}
         
         {/* Yandex.Metrika counter */}
         <Script
