@@ -345,10 +345,17 @@ export default function GeneratePage() {
                       }
                     `}
                   >
-                    <div className="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                      <span className="text-xs font-medium text-gray-500">
-                        {style.name}
-                      </span>
+                    <div className="aspect-square relative">
+                      <img
+                        src={style.imageUrl}
+                        alt={style.name}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2">
+                        <span className="text-xs font-medium">
+                          {style.name}
+                        </span>
+                      </div>
                     </div>
                     {selectedStyles.includes(style.id) && (
                       <div className="absolute top-1 right-1 w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center">
