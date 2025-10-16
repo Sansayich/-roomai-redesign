@@ -106,22 +106,18 @@ export async function POST(request: NextRequest) {
             outputs.push(output[0] as string)
           }
         } else {
-          // Дешевая модель - adirik/interior-design
-          const model = 'adirik/interior-design:76604baddc85b1b4616e1c6475eca080da339c8875bd4996705440484a6eac38'
+          // Nano banana - Google Gemini 2.5 Flash Image (сохраняет геометрию комнаты)
+          const model = 'google/nano-banana'
           
           output = await replicate.run(
             model as any,
             {
               input: {
                 image: image,
-                prompt: `${getStylePrompt(styleId)} ${getRoomTypePrompt(roomType)}`,
-                a_prompt: 'best quality, extremely detailed, professional interior design, high resolution',
-                n_prompt: 'longbody, lowres, bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality',
-                num_samples: 1,
-                image_resolution: '512',
-                ddim_steps: 30,
-                scale: 7,
-                seed: Math.floor(Math.random() * 2147483647),
+                prompt: `Transform this ${getRoomTypePrompt(roomType)} into a ${getStylePrompt(styleId)} style. Preserve the exact room geometry, window positions, door locations, ceiling height, and architectural structure. Only change the interior design elements: furniture, colors, textures, lighting, and decorative items to match the ${styleId} aesthetic. Keep the same camera angle and room proportions.`,
+                strength: 0.7, // Умеренная сила изменения для сохранения геометрии
+                guidance_scale: 7.5,
+                num_inference_steps: 30,
               },
             }
           )
