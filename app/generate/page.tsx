@@ -339,11 +339,11 @@ export default function GeneratePage() {
                     onClick={() => toggleStyle(style.id)}
                     className="text-left"
                   >
-                    <div className="aspect-[4/3] mb-2 relative">
+                    <div className="aspect-[4/3] mb-2 relative rounded-xl overflow-hidden">
                       <img
                         src={style.imageUrl}
                         alt={style.name}
-                        className="w-full h-full object-contain rounded-xl"
+                        className="w-full h-full object-cover"
                       />
                       {selectedStyles.includes(style.id) && (
                         <div className="absolute top-2 right-2 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">

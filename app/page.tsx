@@ -122,11 +122,11 @@ export default function Home() {
                   key={index}
                   className="cursor-pointer"
                 >
-                  <div className="aspect-[4/3] mb-3">
+                  <div className="aspect-[4/3] mb-3 rounded-xl overflow-hidden">
                     <img
                       src={style.imageUrl}
                       alt={style.name}
-                      className="w-full h-full object-contain rounded-xl"
+                      className="w-full h-full object-cover"
                     />
                   </div>
                   <div className="font-semibold text-gray-900 text-sm text-center">{style.name}</div>
