@@ -64,6 +64,7 @@ model User {
   referrals         User[]            @relation("Referrals")
   earnings          ReferralEarning[]
   payoutRequests    PayoutRequest[]
+  payments          Payment[]
   
   @@index([referralCode])
   @@index([referredById])
@@ -143,6 +144,31 @@ model PayoutRequest {
   
   @@index([userId])
   @@index([status])
+  @@index([createdAt])
+}
+
+// Платежи
+model Payment {
+  id              String   @id @default(cuid())
+  userId          String
+  amount          Float    // Сумма платежа в рублях
+  credits         Int      // Количество кредитов
+  status          String   @default("pending") // pending, succeeded, failed, canceled
+  paymentMethod   String?  // Способ оплаты (card, sbp, etc.)
+  paymentId       String?  // ID платежа в платежной системе
+  paymentUrl      String?  @db.Text // URL для оплаты
+  description     String?  // Описание платежа
+  promoCode       String?  // Использованный промокод
+  discountAmount  Float?   // Размер скидки
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  paidAt          DateTime?
+  
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([status])
+  @@index([paymentId])
   @@index([createdAt])
 }
 

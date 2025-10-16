@@ -4,13 +4,16 @@ import Link from 'next/link'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import { useState } from 'react'
+import { useSession } from 'next-auth/react'
 
 export default function PricingPage() {
+  const { data: session } = useSession()
   const [promoCode, setPromoCode] = useState('')
   const [promoData, setPromoData] = useState<{discountPercent?: number, discountAmount?: number} | null>(null)
   const [promoError, setPromoError] = useState('')
   const [isCheckingPromo, setIsCheckingPromo] = useState(false)
-  const [agreedToTerms, setAgreedToTerms] = useState(true) // Согласие с офертой - по умолчанию включено
+  const [agreedToTerms, setAgreedToTerms] = useState(true)
+  const [isProcessingPayment, setIsProcessingPayment] = useState<string | null>(null)
 
   const checkPromoCode = async () => {
     if (!promoCode.trim()) return
@@ -57,26 +60,91 @@ export default function PricingPage() {
     return originalPrice
   }
 
+  const handlePayment = async (planId: string, planName: string) => {
+    if (!session) {
+      // Перенаправляем на страницу входа
+      window.location.href = '/auth/signin'
+      return
+    }
+
+    if (!agreedToTerms) {
+      alert('Необходимо согласиться с условиями использования')
+      return
+    }
+
+    setIsProcessingPayment(planId)
+
+    try {
+      // Создаем платеж
+      const response = await fetch('/api/payment/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          planId: planId,
+          promoCode: promoCode || null
+        })
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Ошибка создания платежа')
+      }
+
+      // Создаем форму для отправки в Точка Банк
+      const form = document.createElement('form')
+      form.method = 'POST'
+      form.action = data.formUrl
+      form.target = '_blank'
+
+      // Добавляем все поля формы
+      Object.entries(data.formData).forEach(([key, value]) => {
+        const input = document.createElement('input')
+        input.type = 'hidden'
+        input.name = key
+        input.value = value as string
+        form.appendChild(input)
+      })
+
+      // Отправляем форму
+      document.body.appendChild(form)
+      form.submit()
+      document.body.removeChild(form)
+
+      // Показываем сообщение пользователю
+      alert('Вы будете перенаправлены на страницу оплаты. После успешной оплаты кредиты будут автоматически добавлены на ваш счет.')
+
+    } catch (error) {
+      console.error('Payment error:', error)
+      alert('Ошибка при создании платежа: ' + error.message)
+    } finally {
+      setIsProcessingPayment(null)
+    }
+  }
+
   const plans = [
     {
+      id: 'mini',
       name: 'Мини',
-      price: '99',
+      price: 99,
       credits: 10,
       generations: '10',
       storage: 'Хранение 24 часа',
       popular: false,
     },
     {
+      id: 'basic',
       name: 'Популярный',
-      price: '299',
+      price: 299,
       credits: 40,
       generations: '40',
       storage: 'Хранение 24 часа',
       popular: true,
     },
     {
+      id: 'pro',
       name: 'Максимум',
-      price: '699',
+      price: 699,
       credits: 100,
       generations: '100',
       storage: 'Хранение 30 дней',
@@ -186,7 +254,7 @@ export default function PricingPage() {
                       <div className="flex items-baseline justify-center gap-1">
                         <span className="text-sm font-medium text-blue-600">₽</span>
                         <span className="text-5xl font-semibold text-blue-600">
-                          {calculateDiscountedPrice(parseInt(plan.price))}
+                          {calculateDiscountedPrice(plan.price)}
                         </span>
                       </div>
                     </>
@@ -202,10 +270,11 @@ export default function PricingPage() {
               </div>
 
                   <button
-                    disabled={!agreedToTerms}
+                    onClick={() => handlePayment(plan.id, plan.name)}
+                    disabled={!agreedToTerms || isProcessingPayment === plan.id}
                     className="w-full py-3 rounded-lg font-semibold transition-all bg-blue-600 text-white hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                   >
-                    Оплатить
+                    {isProcessingPayment === plan.id ? 'Обработка...' : 'Оплатить'}
                   </button>
 
                   <div className="mt-3 text-center space-y-2">
