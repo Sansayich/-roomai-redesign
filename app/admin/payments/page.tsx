@@ -48,7 +48,7 @@ export default function AdminPaymentsPage() {
   useEffect(() => {
     if (status === 'loading') return
 
-    if (!session?.user?.email || session.user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+    if (!session?.user?.email) {
       router.push('/')
       return
     }

@@ -52,7 +52,7 @@ const roomStyles: RoomStyle[] = [
 ]
 
 export default function GeneratePage() {
-  const { data: session, status } = useSession()
+  const { data: session, status, update } = useSession()
   const router = useRouter()
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
   const [selectedStyles, setSelectedStyles] = useState<string[]>([])
@@ -200,6 +200,8 @@ export default function GeneratePage() {
       // Обновляем кредиты из ответа API
       if (data.credits !== undefined) {
         setCredits(data.credits)
+        // Обновляем сессию чтобы кредиты обновились в Navigation
+        await update()
       }
     } catch (err) {
       setError('Произошла ошибка при генерации. Попробуйте еще раз.')
