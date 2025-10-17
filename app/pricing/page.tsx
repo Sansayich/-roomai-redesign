@@ -94,9 +94,6 @@ export default function PricingPage() {
       // Перенаправляем пользователя на страницу оплаты Точка Банка
       window.location.href = data.paymentUrl
 
-      // Показываем сообщение пользователю
-      alert('Вы будете перенаправлены на страницу оплаты. После успешной оплаты кредиты будут автоматически добавлены на ваш счет.')
-
     } catch (error) {
       console.error('Payment error:', error)
       const errorMsg = error instanceof Error ? error.message : 'Неизвестная ошибка'
@@ -112,7 +109,7 @@ export default function PricingPage() {
       name: 'Мини',
       price: 99,
       credits: 10,
-      generations: '10',
+      generations: '5',
       storage: 'Хранение 24 часа',
       popular: false,
     },
@@ -121,7 +118,7 @@ export default function PricingPage() {
       name: 'Популярный',
       price: 299,
       credits: 40,
-      generations: '40',
+      generations: '20',
       storage: 'Хранение 24 часа',
       popular: true,
     },
@@ -130,7 +127,7 @@ export default function PricingPage() {
       name: 'Максимум',
       price: 699,
       credits: 100,
-      generations: '100',
+      generations: '50',
       storage: 'Хранение 30 дней',
       popular: false,
     }
