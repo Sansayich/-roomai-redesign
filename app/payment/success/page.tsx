@@ -1,104 +1,8 @@
 import Link from 'next/link'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
 
-// Отключаем кэширование для этой страницы
-export const dynamic = 'force-dynamic'
-export const revalidate = 0
-
-async function checkAndConfirmPayment(userId: string) {
-  console.log('🔍 Checking payment for user:', userId)
-  
-  // Находим последний pending платеж
-  const payment = await prisma.payment.findFirst({
-    where: { 
-      userId: userId,
-      status: 'pending'
-    },
-    orderBy: {
-      createdAt: 'desc'
-    }
-  })
-
-  if (!payment || !payment.paymentId) {
-    console.log('❌ No pending payments found for user:', userId)
-    return { success: false, message: 'Платежей в обработке не найдено' }
-  }
-
-  console.log('📋 Found pending payment:', payment.id, 'operationId:', payment.paymentId)
-
-  // Проверяем статус через API Точка Банка
-  try {
-    const tochkaApiUrl = `https://enter.tochka.com/uapi/acquiring/v1.0/payments/${payment.paymentId}`
-    const tochkaResponse = await fetch(tochkaApiUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.TOCHKA_JWT_TOKEN}`
-      }
-    })
-
-    if (!tochkaResponse.ok) {
-      return { success: false, message: 'Ошибка проверки статуса' }
-    }
-
-    const tochkaData = await tochkaResponse.json()
-    const operationStatus = tochkaData.Data?.Operation?.[0]?.status
-
-    if (operationStatus === 'APPROVED') {
-      console.log('✅ Payment APPROVED, adding credits...')
-      
-      // Начисляем кредиты
-      await prisma.user.update({
-        where: { id: payment.userId },
-        data: {
-          credits: { increment: payment.credits }
-        }
-      })
-
-      // Обновляем статус платежа
-      await prisma.payment.update({
-        where: { id: payment.id },
-        data: {
-          status: 'succeeded',
-          paidAt: new Date()
-        }
-      })
-
-      console.log(`🎉 SUCCESS! ${payment.credits} credits added to user ${payment.userId}`)
-      return { success: true, credits: payment.credits }
-    }
-
-    console.log('⏳ Payment status:', operationStatus)
-    return { success: false, message: `Статус платежа: ${operationStatus}` }
-  } catch (error) {
-    console.error('❌ Payment check error:', error)
-    return { success: false, message: 'Ошибка проверки платежа' }
-  }
-}
-
-export default async function PaymentSuccessPage() {
-  console.log('🚀 Payment success page loaded')
-  const session = await getServerSession(authOptions)
-  
-  let credits = null
-  let error = null
-
-  if (session?.user?.id) {
-    console.log('👤 User authenticated:', session.user.email)
-    const result = await checkAndConfirmPayment(session.user.id)
-    if (result.success) {
-      credits = result.credits
-    } else {
-      error = result.message
-    }
-  } else {
-    console.log('❌ No session found')
-  }
-
+export default function PaymentSuccessPage() {
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
@@ -106,28 +10,19 @@ export default async function PaymentSuccessPage() {
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-12">
         <div className="text-center">
           <div className="mb-8">
-            <div className={`w-16 h-16 ${credits ? 'bg-green-100' : 'bg-yellow-100'} rounded-full flex items-center justify-center mx-auto mb-4`}>
-              <svg className={`w-8 h-8 ${credits ? 'text-green-600' : 'text-yellow-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={credits ? "M5 13l4 4L19 7" : "M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"} />
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
             <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              {credits ? 'Платеж успешно завершен!' : 'Оплата получена!'}
+              Платеж успешно завершен!
             </h1>
-            {credits && (
-              <p className="text-lg text-gray-600 mb-4">
-                <strong>{credits} кредитов</strong> добавлено на ваш счет!
-              </p>
-            )}
-            {error && (
-              <p className="text-md text-yellow-600 mb-4">
-                {error}
-              </p>
-            )}
+            <p className="text-lg text-gray-600 mb-4">
+              Спасибо за оплату! Кредиты будут начислены на ваш счет в течение нескольких минут.
+            </p>
             <p className="text-md text-gray-500 mb-8">
-              {credits 
-                ? 'Теперь вы можете использовать их для генерации изображений.'
-                : 'Обновите страницу через несколько секунд, если кредиты еще не отображаются.'}
+              Если кредиты не появились, пожалуйста, свяжитесь с поддержкой.
             </p>
           </div>
 
@@ -136,7 +31,7 @@ export default async function PaymentSuccessPage() {
               Что дальше?
             </h2>
             <ul className="text-left text-green-700 space-y-2">
-              <li>• Кредиты {credits ? 'уже' : 'автоматически добавятся'} на вашем счету</li>
+              <li>• Кредиты автоматически добавятся на ваш счет</li>
               <li>• Вы можете сразу начать генерировать изображения</li>
               <li>• Все сгенерированные изображения сохраняются в истории</li>
               <li>• Кредиты не сгорают и остаются у вас навсегда</li>
