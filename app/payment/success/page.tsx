@@ -158,6 +158,12 @@ export default function PaymentSuccessPage() {
             </ul>
           </div>
 
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
+            <p className="text-sm text-blue-800 text-center">
+              💡 <strong>Совет:</strong> Если кредиты не отобразились сразу, обновите страницу (F5)
+            </p>
+          </div>
+
           <div className="space-y-4">
             <Link
               href="/generate"

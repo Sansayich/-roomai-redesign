@@ -15,17 +15,31 @@ export async function POST(req: NextRequest) {
     // Находим реферера по коду
     let referrerId = null
     if (referralCode) {
+      console.log('🔍 Looking for referrer with code:', referralCode.toUpperCase())
       const referrer = await prisma.user.findUnique({
         where: { referralCode: referralCode.toUpperCase() },
-        select: { id: true }
+        select: { id: true, email: true }
       })
       if (referrer) {
         referrerId = referrer.id
+        console.log('✅ Referrer found:', referrer.email, 'ID:', referrer.id)
+      } else {
+        console.log('⚠️ Referrer not found for code:', referralCode.toUpperCase())
       }
     }
 
     // Сохраняем UTM и реферальный код во временной таблице для новых пользователей
     // Это будет применено при создании пользователя в lib/auth.ts
+    const utmDataToSave = {
+      utmSource,
+      utmMedium,
+      utmCampaign,
+      utmContent,
+      utmTerm,
+      referrerId
+    }
+    console.log('💾 Saving UTM data for email:', email, utmDataToSave)
+    
     await prisma.verificationToken.upsert({
       where: {
         identifier_token: {
@@ -35,25 +49,11 @@ export async function POST(req: NextRequest) {
       },
       create: {
         identifier: `utm:${email}`,
-        token: JSON.stringify({
-          utmSource,
-          utmMedium,
-          utmCampaign,
-          utmContent,
-          utmTerm,
-          referrerId
-        }),
+        token: JSON.stringify(utmDataToSave),
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 часа
       },
       update: {
-        token: JSON.stringify({
-          utmSource,
-          utmMedium,
-          utmCampaign,
-          utmContent,
-          utmTerm,
-          referrerId
-        }),
+        token: JSON.stringify(utmDataToSave),
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000)
       }
     })

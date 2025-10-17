@@ -103,6 +103,7 @@ export const authOptions: NextAuthOptions = {
         
         if (utmToken) {
           utmData = JSON.parse(utmToken.token)
+          console.log('✅ UTM data found for user:', user.email, utmData)
           // Удаляем токен после использования
           await prisma.verificationToken.delete({
             where: {
@@ -112,9 +113,11 @@ export const authOptions: NextAuthOptions = {
               }
             }
           }).catch(() => {})
+        } else {
+          console.log('⚠️ No UTM token found for user:', user.email)
         }
       } catch (e) {
-        console.log('No UTM data found for user')
+        console.log('❌ Error fetching UTM data for user:', user.email, e)
       }
       
       await prisma.user.update({
