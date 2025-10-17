@@ -11,6 +11,7 @@ export default function PaymentSuccessPage() {
   const [isChecking, setIsChecking] = useState(true)
   const [credits, setCredits] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [alreadyProcessed, setAlreadyProcessed] = useState(false)
 
   useEffect(() => {
     if (!session?.user) {
@@ -18,8 +19,14 @@ export default function PaymentSuccessPage() {
       return
     }
 
-    // Ждем 2 секунды и проверяем последний pending платеж
+    // Проверяем только один раз (защита от повторных вызовов при обновлении страницы)
+    let hasRun = false
+
+    // Ждем 2 секунды и проверяем последний платеж
     const timer = setTimeout(async () => {
+      if (hasRun) return
+      hasRun = true
+
       try {
         const response = await fetch('/api/payment/confirm-last', {
           method: 'POST',
@@ -30,6 +37,7 @@ export default function PaymentSuccessPage() {
 
         if (data.success) {
           setCredits(data.credits)
+          setAlreadyProcessed(data.alreadyProcessed || false)
         } else {
           setError(data.message || 'Не удалось подтвердить платеж')
         }

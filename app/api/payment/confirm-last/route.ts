@@ -11,11 +11,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, message: 'Необходима авторизация' }, { status: 401 })
     }
 
-    // Находим последний pending платеж пользователя
+    // Находим последний платеж пользователя (любой статус)
     const payment = await prisma.payment.findFirst({
       where: { 
-        userId: session.user.id,
-        status: 'pending'
+        userId: session.user.id
       },
       orderBy: {
         createdAt: 'desc'
@@ -25,11 +24,30 @@ export async function POST(request: NextRequest) {
     if (!payment) {
       return NextResponse.json({ 
         success: false, 
-        message: 'Платежей в обработке не найдено' 
+        message: 'Платежей не найдено' 
       }, { status: 404 })
     }
 
-    console.log('Checking last pending payment:', payment.id, 'operationId:', payment.paymentId)
+    console.log('Checking last payment:', payment.id, 'status:', payment.status, 'operationId:', payment.paymentId)
+
+    // ВАЖНО: Если платеж уже обработан, сразу возвращаем успех (идемпотентность)
+    if (payment.status === 'succeeded') {
+      console.log('✅ Payment already processed:', payment.id)
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Кредиты уже начислены', 
+        credits: payment.credits,
+        alreadyProcessed: true
+      })
+    }
+
+    // Если платеж не pending, значит он отменен или отклонен
+    if (payment.status !== 'pending') {
+      return NextResponse.json({ 
+        success: false, 
+        message: `Платеж в статусе: ${payment.status}` 
+      })
+    }
 
     // Проверяем статус платежа через API Точка Банка
     if (!payment.paymentId) {
