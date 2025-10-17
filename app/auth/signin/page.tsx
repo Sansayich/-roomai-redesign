@@ -25,31 +25,30 @@ function SignInForm() {
     setIsLoading(true)
     
     try {
-      // Сохраняем UTM метки и реферальный код в cookies
-      if (referralCode) {
-        document.cookie = `ref_code=${referralCode.toUpperCase()};path=/;max-age=86400;samesite=lax`
-        console.log('🔗 Saved referral code to cookie:', referralCode.toUpperCase())
-      }
-      
-      // Сохраняем UTM метки и реферальный код в API
+      // ВАЖНО: Сначала сохраняем UTM данные с правильным email
       if (utmSource || utmMedium || utmCampaign || utmContent || utmTerm || referralCode) {
-        console.log('📤 Sending UTM data to API...')
-        const response = await fetch('/api/auth/save-utm', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email,
-            utmSource,
-            utmMedium,
-            utmCampaign,
-            utmContent,
-            utmTerm,
-            referralCode,
-          }),
-        })
-        console.log('📥 UTM API response:', response.status)
+        console.log('📤 Sending UTM data to API for email:', email)
+        try {
+          const response = await fetch('/api/auth/save-utm', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email,
+              utmSource,
+              utmMedium,
+              utmCampaign,
+              utmContent,
+              utmTerm,
+              referralCode,
+            }),
+          })
+          console.log('📥 UTM API response:', response.status, await response.text())
+        } catch (utmError) {
+          console.error('UTM save error:', utmError)
+        }
       }
 
+      // Затем отправляем запрос на вход
       const result = await signIn('email', {
         email,
         redirect: false,
