@@ -36,7 +36,9 @@ export async function POST(req: NextRequest) {
       utmCampaign,
       utmContent,
       utmTerm,
-      referrerId
+      referrerId,
+      email, // Добавляем email для уникальности
+      timestamp: Date.now() // Добавляем timestamp для уникальности
     }
     console.log('💾 Saving UTM data for email:', email, utmDataToSave)
     
@@ -47,11 +49,11 @@ export async function POST(req: NextRequest) {
       }
     })
     
-    // Создаем новую запись
+    // Создаем новую запись с уникальным токеном
     await prisma.verificationToken.create({
       data: {
         identifier: `utm:${email}`,
-        token: JSON.stringify(utmDataToSave),
+        token: JSON.stringify(utmDataToSave), // Теперь включает email и timestamp для уникальности
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 часа
       }
     })
