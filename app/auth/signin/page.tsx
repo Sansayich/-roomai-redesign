@@ -12,13 +12,38 @@ function SignInForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [isEmailSent, setIsEmailSent] = useState(false)
 
-  // Извлекаем UTM метки из URL
-  const utmSource = searchParams.get('utm_source')
-  const utmMedium = searchParams.get('utm_medium')
-  const utmCampaign = searchParams.get('utm_campaign')
-  const utmContent = searchParams.get('utm_content')
-  const utmTerm = searchParams.get('utm_term')
-  const referralCode = searchParams.get('ref') // Реферальный код
+  // Извлекаем UTM метки из URL или из localStorage
+  let utmSource = searchParams.get('utm_source')
+  let utmMedium = searchParams.get('utm_medium')
+  let utmCampaign = searchParams.get('utm_campaign')
+  let utmContent = searchParams.get('utm_content')
+  let utmTerm = searchParams.get('utm_term')
+  let referralCode = searchParams.get('ref')
+  
+  // Если в URL нет параметров, проверяем localStorage
+  if (!utmSource && !utmMedium && !utmCampaign && !utmContent && !utmTerm && !referralCode) {
+    try {
+      const savedUtmData = localStorage.getItem('utm_data')
+      if (savedUtmData) {
+        const utmData = JSON.parse(savedUtmData)
+        // Проверяем, что данные не старше 7 дней
+        if (Date.now() - utmData.timestamp < 7 * 24 * 60 * 60 * 1000) {
+          utmSource = utmData.utmSource
+          utmMedium = utmData.utmMedium
+          utmCampaign = utmData.utmCampaign
+          utmContent = utmData.utmContent
+          utmTerm = utmData.utmTerm
+          referralCode = utmData.ref
+          console.log('📊 Loaded UTM data from localStorage:', utmData)
+        } else {
+          // Удаляем устаревшие данные
+          localStorage.removeItem('utm_data')
+        }
+      }
+    } catch (e) {
+      console.error('Error reading utm_data from localStorage:', e)
+    }
+  }
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault()

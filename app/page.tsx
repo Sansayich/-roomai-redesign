@@ -4,8 +4,35 @@ import Link from 'next/link'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import Script from 'next/script'
+import { useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 
-export default function Home() {
+function HomePage() {
+  const searchParams = useSearchParams()
+  
+  // Сохраняем реферальный код и UTM-метки в localStorage при загрузке главной страницы
+  useEffect(() => {
+    const ref = searchParams.get('ref')
+    const utmSource = searchParams.get('utm_source')
+    const utmMedium = searchParams.get('utm_medium')
+    const utmCampaign = searchParams.get('utm_campaign')
+    const utmContent = searchParams.get('utm_content')
+    const utmTerm = searchParams.get('utm_term')
+    
+    if (ref || utmSource || utmMedium || utmCampaign || utmContent || utmTerm) {
+      const utmData = {
+        ref,
+        utmSource,
+        utmMedium,
+        utmCampaign,
+        utmContent,
+        utmTerm,
+        timestamp: Date.now()
+      }
+      localStorage.setItem('utm_data', JSON.stringify(utmData))
+      console.log('📊 Saved UTM data to localStorage:', utmData)
+    }
+  }, [searchParams])
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
@@ -215,6 +242,21 @@ export default function Home() {
 
       <Footer />
     </div>
+  )
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Загрузка...</p>
+        </div>
+      </div>
+    }>
+      <HomePage />
+    </Suspense>
   )
 }
 
