@@ -40,21 +40,19 @@ export async function POST(req: NextRequest) {
     }
     console.log('💾 Saving UTM data for email:', email, utmDataToSave)
     
-    await prisma.verificationToken.upsert({
+    // Сначала удаляем старые записи для этого email
+    await prisma.verificationToken.deleteMany({
       where: {
-        identifier_token: {
-          identifier: `utm:${email}`,
-          token: 'utm-data'
-        }
-      },
-      create: {
+        identifier: `utm:${email}`
+      }
+    })
+    
+    // Создаем новую запись
+    await prisma.verificationToken.create({
+      data: {
         identifier: `utm:${email}`,
         token: JSON.stringify(utmDataToSave),
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 часа
-      },
-      update: {
-        token: JSON.stringify(utmDataToSave),
-        expires: new Date(Date.now() + 24 * 60 * 60 * 1000)
       }
     })
 

@@ -69,7 +69,7 @@ export default function ReferralPage() {
 
   const copyReferralLink = () => {
     if (stats?.referralCode) {
-      const link = `${window.location.origin}/auth/signin?ref=${stats.referralCode}`
+      const link = `${window.location.origin}?ref=${stats.referralCode}`
       navigator.clipboard.writeText(link)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
