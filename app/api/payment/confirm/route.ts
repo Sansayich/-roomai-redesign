@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Получаем статус операции из Точка Банка
-    const tochkaApiUrl = `https://enter.tochka.com/uapi/acquiring/v1.0/operations/${payment.paymentId}`
+    const tochkaApiUrl = `https://enter.tochka.com/uapi/acquiring/v1.0/payments/${payment.paymentId}`
     
     const tochkaResponse = await fetch(tochkaApiUrl, {
       method: 'GET',
@@ -69,7 +69,15 @@ export async function POST(request: NextRequest) {
     }
 
     const tochkaData = await tochkaResponse.json()
-    const operationStatus = tochkaData.Data.status
+    
+    // Статус находится в Data.Operation[0].status
+    if (!tochkaData.Data?.Operation?.[0]) {
+      return NextResponse.json({ 
+        error: 'Неверная структура ответа от Точка Банка' 
+      }, { status: 500 })
+    }
+    
+    const operationStatus = tochkaData.Data.Operation[0].status
 
     // Обновляем статус платежа
     if (operationStatus === 'APPROVED') {
