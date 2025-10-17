@@ -101,13 +101,16 @@ export async function POST(request: NextRequest) {
 
     if (!tochkaResponse.ok) {
       const errorText = await tochkaResponse.text()
-      console.error('Tochka API error:', errorText)
+      console.error('Tochka API error:', tochkaResponse.status, errorText)
       return NextResponse.json({ 
-        error: 'Ошибка создания платежа в Точка Банке' 
+        error: 'Ошибка создания платежа в Точка Банке',
+        status: tochkaResponse.status,
+        details: errorText
       }, { status: 500 })
     }
 
     const tochkaData = await tochkaResponse.json()
+    console.log('Tochka API success:', JSON.stringify(tochkaData))
 
     // Обновляем платеж с данными от Точка Банка
     await prisma.payment.update({
@@ -132,6 +135,10 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Payment creation error:', error)
-    return NextResponse.json({ error: 'Ошибка создания платежа' }, { status: 500 })
+    const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка'
+    return NextResponse.json({ 
+      error: 'Ошибка создания платежа', 
+      details: errorMessage 
+    }, { status: 500 })
   }
 }

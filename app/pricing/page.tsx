@@ -99,7 +99,8 @@ export default function PricingPage() {
 
     } catch (error) {
       console.error('Payment error:', error)
-      alert('Ошибка при создании платежа: ' + (error instanceof Error ? error.message : 'Неизвестная ошибка'))
+      const errorMsg = error instanceof Error ? error.message : 'Неизвестная ошибка'
+      alert(`Ошибка при создании платежа:\n${errorMsg}\n\nПожалуйста, попробуйте еще раз или свяжитесь с поддержкой.`)
     } finally {
       setIsProcessingPayment(null)
     }
