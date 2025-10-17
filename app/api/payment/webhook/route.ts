@@ -1,77 +1,70 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import crypto from 'crypto'
-
-// Функция для проверки подписи уведомления
-function verifyNotificationSignature(data: any, signature: string, secretKey: string): boolean {
-  const signatureString = [
-    data.login,
-    data.orderId,
-    data.amount,
-    data.status,
-    data.transactionId || '',
-    data.paymentMethod || '',
-    data.paymentSystem || ''
-  ].join('|')
-  
-  const expectedSignature = crypto.createHmac('sha256', secretKey).update(signatureString).digest('hex')
-  return signature === expectedSignature
-}
 
 export async function POST(request: NextRequest) {
   try {
-    const formData = await request.formData()
+    // Получаем JSON данные от Точка Банка
+    const webhookData = await request.json()
     
-    // Получаем данные из формы
-    const notificationData = {
-      login: formData.get('login') as string,
-      orderId: formData.get('orderId') as string,
-      amount: formData.get('amount') as string,
-      status: formData.get('status') as string,
-      transactionId: formData.get('transactionId') as string,
-      paymentMethod: formData.get('paymentMethod') as string,
-      paymentSystem: formData.get('paymentSystem') as string,
-      signature: formData.get('signature') as string
+    console.log('Webhook received from Tochka Bank:', JSON.stringify(webhookData))
+
+    // Структура webhook от Точка Банка Open API:
+    // {
+    //   "Data": {
+    //     "operationId": "uuid",
+    //     "status": "APPROVED" | "DECLINED" | "CANCELED",
+    //     "amount": 99.0,
+    //     "paymentType": "card" | "sbp",
+    //     ...
+    //   }
+    // }
+
+    const { Data } = webhookData
+    
+    if (!Data || !Data.operationId) {
+      console.error('Invalid webhook data structure')
+      return NextResponse.json({ error: 'Invalid data' }, { status: 400 })
     }
 
-    console.log('Webhook notification:', notificationData)
-
-    // Проверяем подпись
-    const secretKey = process.env.TOCHKA_SECRET_KEY
-    if (!secretKey) {
-      console.error('TOCHKA_SECRET_KEY not configured')
-      return NextResponse.json({ error: 'Webhook not configured' }, { status: 500 })
-    }
-
-    if (!verifyNotificationSignature(notificationData, notificationData.signature, secretKey)) {
-      console.error('Invalid notification signature')
-      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
-    }
-
-    // Находим платеж в базе данных
+    // Находим платеж в базе данных по operationId
     const payment = await prisma.payment.findFirst({
-      where: { paymentId: notificationData.orderId },
+      where: { paymentId: Data.operationId },
       include: { user: true }
     })
 
     if (!payment) {
-      console.error('Payment not found:', notificationData.orderId)
+      console.error('Payment not found:', Data.operationId)
       return NextResponse.json({ error: 'Payment not found' }, { status: 404 })
     }
 
+    // Проверяем, не обработан ли уже этот платеж
+    if (payment.status === 'succeeded') {
+      console.log('Payment already processed:', Data.operationId)
+      return NextResponse.json({ success: true, message: 'Already processed' })
+    }
+
+    // Маппим статусы Точка Банка на наши
+    let newStatus = 'pending'
+    if (Data.status === 'APPROVED') {
+      newStatus = 'succeeded'
+    } else if (Data.status === 'DECLINED') {
+      newStatus = 'failed'
+    } else if (Data.status === 'CANCELED') {
+      newStatus = 'canceled'
+    }
+
     // Обновляем статус платежа
-    const newStatus = notificationData.status.toLowerCase()
     await prisma.payment.update({
       where: { id: payment.id },
       data: {
         status: newStatus,
-        paidAt: newStatus === 'success' ? new Date() : null,
-        paymentMethod: notificationData.paymentMethod || null
+        paidAt: newStatus === 'succeeded' ? new Date() : null,
+        paymentMethod: Data.paymentType || null
       }
     })
 
     // Если платеж успешен, начисляем кредиты
-    if (newStatus === 'success') {
+    if (newStatus === 'succeeded') {
       await prisma.user.update({
         where: { id: payment.userId },
         data: {
@@ -109,7 +102,7 @@ export async function POST(request: NextRequest) {
         })
       }
 
-      console.log(`Payment ${notificationData.orderId} completed successfully. Credits added: ${payment.credits}`)
+      console.log(`Payment ${Data.operationId} completed successfully. Credits added: ${payment.credits}`)
     }
 
     return NextResponse.json({ success: true })
