@@ -5,7 +5,13 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
+// Отключаем кэширование для этой страницы
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 async function checkAndConfirmPayment(userId: string) {
+  console.log('🔍 Checking payment for user:', userId)
+  
   // Находим последний pending платеж
   const payment = await prisma.payment.findFirst({
     where: { 
@@ -18,8 +24,11 @@ async function checkAndConfirmPayment(userId: string) {
   })
 
   if (!payment || !payment.paymentId) {
+    console.log('❌ No pending payments found for user:', userId)
     return { success: false, message: 'Платежей в обработке не найдено' }
   }
+
+  console.log('📋 Found pending payment:', payment.id, 'operationId:', payment.paymentId)
 
   // Проверяем статус через API Точка Банка
   try {
@@ -40,6 +49,8 @@ async function checkAndConfirmPayment(userId: string) {
     const operationStatus = tochkaData.Data?.Operation?.[0]?.status
 
     if (operationStatus === 'APPROVED') {
+      console.log('✅ Payment APPROVED, adding credits...')
+      
       // Начисляем кредиты
       await prisma.user.update({
         where: { id: payment.userId },
@@ -57,29 +68,35 @@ async function checkAndConfirmPayment(userId: string) {
         }
       })
 
+      console.log(`🎉 SUCCESS! ${payment.credits} credits added to user ${payment.userId}`)
       return { success: true, credits: payment.credits }
     }
 
+    console.log('⏳ Payment status:', operationStatus)
     return { success: false, message: `Статус платежа: ${operationStatus}` }
   } catch (error) {
-    console.error('Payment check error:', error)
+    console.error('❌ Payment check error:', error)
     return { success: false, message: 'Ошибка проверки платежа' }
   }
 }
 
 export default async function PaymentSuccessPage() {
+  console.log('🚀 Payment success page loaded')
   const session = await getServerSession(authOptions)
   
   let credits = null
   let error = null
 
   if (session?.user?.id) {
+    console.log('👤 User authenticated:', session.user.email)
     const result = await checkAndConfirmPayment(session.user.id)
     if (result.success) {
       credits = result.credits
     } else {
       error = result.message
     }
+  } else {
+    console.log('❌ No session found')
   }
 
   return (
