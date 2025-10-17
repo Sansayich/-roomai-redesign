@@ -107,23 +107,34 @@ export async function POST(request: NextRequest) {
       // Обрабатываем реферальную программу если есть
       const user = await prisma.user.findUnique({
         where: { id: payment.userId },
-        select: { referredBy: true }
+        select: { referredById: true, email: true }
       })
 
-      if (user?.referredBy) {
+      if (user?.referredById) {
         // Рассчитываем комиссию реферала (40%)
         const referralEarning = Math.floor(payment.amount * 0.4)
-        const releaseDate = new Date()
-        releaseDate.setDate(releaseDate.getDate() + 7) // 7 дней холд
+        const availableAt = new Date()
+        availableAt.setDate(availableAt.getDate() + 7) // 7 дней холд
 
         await prisma.referralEarning.create({
           data: {
-            referrerId: user.referredBy,
-            referredUserId: payment.userId,
+            userId: user.referredById,
+            referralId: payment.userId,
+            referralEmail: user.email,
             amount: referralEarning,
-            status: 'pending',
-            releaseDate: releaseDate,
-            paymentId: payment.id
+            orderAmount: payment.amount,
+            percentage: 40,
+            availableAt: availableAt
+          }
+        })
+
+        // Обновляем баланс реферера
+        await prisma.user.update({
+          where: { id: user.referredById },
+          data: {
+            referralBalance: {
+              increment: referralEarning
+            }
           }
         })
       }
