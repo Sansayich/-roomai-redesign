@@ -92,7 +92,7 @@ export const authOptions: NextAuthOptions = {
       await prisma.user.update({
         where: { id: user.id },
         data: { 
-          credits: 3,
+          credits: 4,
           referralCode,
         },
       });
