@@ -135,6 +135,7 @@ export default function AdminPage() {
               <h1 className="text-2xl font-bold text-gray-900">🔧 Админ-панель</h1>
               <div className="flex gap-4">
                 <Link href="/admin" className="text-purple-600 font-medium">Пользователи</Link>
+                <Link href="/admin/payments" className="text-gray-600 hover:text-gray-900">Платежи</Link>
                 <Link href="/admin/promo" className="text-gray-600 hover:text-gray-900">Промокоды</Link>
                 <Link href="/admin/payouts" className="text-gray-600 hover:text-gray-900">Выплаты</Link>
               </div>
