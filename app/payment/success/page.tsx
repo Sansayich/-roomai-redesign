@@ -4,36 +4,27 @@ import Link from 'next/link'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
 
 export default function PaymentSuccessPage() {
-  const searchParams = useSearchParams()
-  const paymentId = searchParams.get('paymentId')
   const [isChecking, setIsChecking] = useState(true)
   const [credits, setCredits] = useState<number | null>(null)
   const [alreadyProcessed, setAlreadyProcessed] = useState(false)
 
   useEffect(() => {
     // Даем webhook 2 секунды, чтобы успеть обработать платеж
-    // Затем проверяем статус и начисляем кредиты если webhook не сработал
+    // Затем проверяем последний pending платеж пользователя
     const timer = setTimeout(async () => {
-      if (!paymentId) {
-        setIsChecking(false)
-        return
-      }
-
       try {
-        const response = await fetch('/api/payment/confirm', {
+        const response = await fetch('/api/payment/confirm-last', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ paymentId })
+          headers: { 'Content-Type': 'application/json' }
         })
 
         const data = await response.json()
 
         if (data.success) {
           setCredits(data.credits)
-          if (data.message?.includes('Already processed')) {
+          if (data.message?.includes('уже начислены')) {
             setAlreadyProcessed(true)
           }
         }
@@ -45,7 +36,7 @@ export default function PaymentSuccessPage() {
     }, 2000) // Ждем 2 секунды
 
     return () => clearTimeout(timer)
-  }, [paymentId])
+  }, [])
 
   if (isChecking) {
     return (
