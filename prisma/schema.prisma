@@ -119,7 +119,7 @@ model ReferralEarning {
   amount          Float    // Сумма начисления (в рублях)
   orderAmount     Float    // Сумма заказа реферала
   percentage      Float    // Процент (обычно 40)
-  availableAt     DateTime // Дата когда средства станут доступны (createdAt + 14 дней)
+  availableAt     DateTime // Дата когда средства станут доступны (createdAt + 7 дней)
   isReversed      Boolean  @default(false) // Был ли возврат
   createdAt       DateTime @default(now())
   

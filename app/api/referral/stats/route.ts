@@ -89,7 +89,7 @@ export async function GET() {
       referralCode: user.referralCode,
       referralBalance: user.referralBalance,
       availableBalance, // Доступно для вывода
-      pendingBalance, // На холде (14 дней)
+      pendingBalance, // На холде (7 дней)
       totalEarnings,
       totalReferrals,
       referrals: user.referrals,

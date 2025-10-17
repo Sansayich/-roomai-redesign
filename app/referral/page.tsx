@@ -314,7 +314,7 @@ export default function ReferralPage() {
               </div>
               {(stats?.pendingBalance ?? 0) > 0 && (
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">⏳ На холде (14 дней):</span>
+                  <span className="text-gray-600">⏳ На холде (7 дней):</span>
                   <span className="font-semibold text-orange-600">
                     {stats?.pendingBalance.toFixed(2)}₽
                   </span>
