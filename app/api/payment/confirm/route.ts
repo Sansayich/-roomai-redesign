@@ -69,15 +69,19 @@ export async function POST(request: NextRequest) {
     }
 
     const tochkaData = await tochkaResponse.json()
+    console.log('Tochka API response:', JSON.stringify(tochkaData))
     
     // Статус находится в Data.Operation[0].status
     if (!tochkaData.Data?.Operation?.[0]) {
+      console.error('Invalid Tochka response structure:', tochkaData)
       return NextResponse.json({ 
-        error: 'Неверная структура ответа от Точка Банка' 
+        error: 'Неверная структура ответа от Точка Банка',
+        details: JSON.stringify(tochkaData)
       }, { status: 500 })
     }
     
     const operationStatus = tochkaData.Data.Operation[0].status
+    console.log('Payment status from Tochka:', operationStatus, 'for paymentId:', payment.id)
 
     // Обновляем статус платежа
     if (operationStatus === 'APPROVED') {
@@ -124,6 +128,8 @@ export async function POST(request: NextRequest) {
         })
       }
 
+      console.log(`✅ Payment ${payment.id} confirmed. ${payment.credits} credits added to user ${payment.userId}`)
+      
       return NextResponse.json({
         success: true,
         status: 'succeeded',
