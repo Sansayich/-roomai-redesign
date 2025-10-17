@@ -25,9 +25,16 @@ function SignInForm() {
     setIsLoading(true)
     
     try {
-      // Сохраняем UTM метки и реферальный код
+      // Сохраняем UTM метки и реферальный код в cookies
+      if (referralCode) {
+        document.cookie = `ref_code=${referralCode.toUpperCase()};path=/;max-age=86400;samesite=lax`
+        console.log('🔗 Saved referral code to cookie:', referralCode.toUpperCase())
+      }
+      
+      // Сохраняем UTM метки и реферальный код в API
       if (utmSource || utmMedium || utmCampaign || utmContent || utmTerm || referralCode) {
-        await fetch('/api/auth/save-utm', {
+        console.log('📤 Sending UTM data to API...')
+        const response = await fetch('/api/auth/save-utm', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -40,6 +47,7 @@ function SignInForm() {
             referralCode,
           }),
         })
+        console.log('📥 UTM API response:', response.status)
       }
 
       const result = await signIn('email', {

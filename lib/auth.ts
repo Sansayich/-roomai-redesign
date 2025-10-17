@@ -86,18 +86,17 @@ export const authOptions: NextAuthOptions = {
   },
   events: {
     async createUser({ user }: any) {
+      console.log('🎉 Creating new user:', user.email)
+      
       // Генерируем уникальный реферальный код
       const referralCode = await generateReferralCode()
       
       // Проверяем есть ли сохраненные UTM данные
       let utmData: any = {}
       try {
-        const utmToken = await prisma.verificationToken.findUnique({
+        const utmToken = await prisma.verificationToken.findFirst({
           where: {
-            identifier_token: {
-              identifier: `utm:${user.email}`,
-              token: 'utm-data'
-            }
+            identifier: `utm:${user.email}`
           }
         })
         
@@ -105,12 +104,9 @@ export const authOptions: NextAuthOptions = {
           utmData = JSON.parse(utmToken.token)
           console.log('✅ UTM data found for user:', user.email, utmData)
           // Удаляем токен после использования
-          await prisma.verificationToken.delete({
+          await prisma.verificationToken.deleteMany({
             where: {
-              identifier_token: {
-                identifier: `utm:${user.email}`,
-                token: 'utm-data'
-              }
+              identifier: `utm:${user.email}`
             }
           }).catch(() => {})
         } else {
@@ -119,6 +115,12 @@ export const authOptions: NextAuthOptions = {
       } catch (e) {
         console.log('❌ Error fetching UTM data for user:', user.email, e)
       }
+      
+      console.log('💾 Updating user with data:', {
+        credits: 4,
+        referralCode,
+        referredById: utmData.referrerId || null
+      })
       
       await prisma.user.update({
         where: { id: user.id },
@@ -133,6 +135,8 @@ export const authOptions: NextAuthOptions = {
           referredById: utmData.referrerId || null,
         },
       });
+      
+      console.log('✅ User created successfully:', user.email)
     },
   },
   pages: {
