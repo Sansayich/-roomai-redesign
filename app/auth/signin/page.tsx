@@ -26,8 +26,8 @@ function SignInForm() {
       const savedUtmData = localStorage.getItem('utm_data')
       if (savedUtmData) {
         const utmData = JSON.parse(savedUtmData)
-        // Проверяем, что данные не старше 7 дней
-        if (Date.now() - utmData.timestamp < 7 * 24 * 60 * 60 * 1000) {
+        // Проверяем, что данные не старше 30 дней
+        if (Date.now() - utmData.timestamp < 30 * 24 * 60 * 60 * 1000) {
           utmSource = utmData.utmSource
           utmMedium = utmData.utmMedium
           utmCampaign = utmData.utmCampaign
