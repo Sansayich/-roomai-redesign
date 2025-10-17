@@ -205,7 +205,7 @@ Use natural textiles throughout in neutral tones: white, beige, and soft grey in
 
 Light the space with warm ambient illumination at 2700K, featuring simple pendant lights or lamps with geometric or spherical shapes. The atmosphere should feel cozy and inviting with that signature hygge warmth—bright, airy, yet incredibly comfortable. Keep surfaces clean with minimal decoration: perhaps one or two simple art prints, candles in understated holders, and a few carefully chosen functional objects.
 
-Create a photorealistic interior photograph that captures the essence of Scandinavian living—functional simplicity, natural materials, and that perfect balance of minimalism and warmth.`,
+Create a photorealistic interior photograph that captures the essence of Scandinavian living—functional simplicity, natural materials, and that perfect balance of minimalism and warmth. Optimize the image for print and digital viewing (300 dpi).`,
     minimalism: `Transform this {room_type} into a pure minimalist sanctuary while preserving the exact architectural structure. Maintain all wall positions, window locations, door placements, and the original camera angle precisely.
 
 Create an ultra-clean space with light grey polished concrete or white oak flooring and perfectly smooth white or light grey walls. Replace all furniture and furnishings with only the absolute essential pieces for a {room_type}: select low-profile or floating furniture with geometric forms, straight lines, and handleless design. Every piece should serve a clear function with zero decorative elements—pure form following function.
@@ -216,7 +216,7 @@ Illuminate the space with recessed ceiling lights or minimal track lighting crea
 
 Leave surfaces completely empty except for perhaps one carefully chosen plant in a minimal white planter. The space should embody "less is more" philosophy with maximum negative space, creating a zen-like atmosphere that feels serene, spacious, and meditative. Empty space is the design.
 
-Render as a photorealistic architectural photograph showcasing ultra-clean surfaces, sharp details, and that sophisticated modern aesthetic where emptiness becomes beautiful.`,
+Render as a photorealistic architectural photograph showcasing ultra-clean surfaces, sharp details, and that sophisticated modern aesthetic where emptiness becomes beautiful. Optimize the image for print and digital viewing (300 dpi).`,
     neoclassic: `Transform this {room_type} into an elegant neoclassical interior while keeping the exact room geometry intact. Preserve all architectural boundaries, window and door positions, and maintain the same viewing angle.
 
 Reimagine the walls in soft sophisticated neutrals—cream, taupe, or soft grey—enhanced with decorative crown molding at the ceiling, subtle wainscoting or wall panels, and elegant architectural details. Install herringbone parquet flooring in warm natural wood tones that gleam with refinement. Add a decorative ceiling rose medallion at the center.
@@ -227,7 +227,7 @@ Layer luxurious fabrics throughout in a palette of cream, champagne gold, taupe,
 
 Crown the space with a crystal chandelier or elegant multi-arm fixture as the lighting centerpiece, complemented by table lamps with fabric shades. The lighting should be warm and golden at 2700K, creating soft romantic illumination. Adorn walls with a large decorative mirror in an ornate gilded frame and classic artwork in traditional frames.
 
-Create a photorealistic interior photograph that captures timeless European elegance—sophisticated, refined, with balanced symmetry and that graceful classical beauty that never goes out of style.`,
+Create a photorealistic interior photograph that captures timeless European elegance—sophisticated, refined, with balanced symmetry and that graceful classical beauty that never goes out of style. Optimize the image for print and digital viewing (300 dpi).`,
     loft: `Transform this {room_type} into a bright industrial loft while maintaining the precise room structure. Keep all walls, windows, doors, and architectural features in their exact original positions with unchanged camera perspective.
 
 Create an urban warehouse aesthetic that's surprisingly light and airy. Feature one wall in white-painted exposed brick or light grey concrete texture, while other walls remain white or light grey painted. Install light wood plank flooring or polished concrete in pale grey tones. Leave ceiling elements exposed—beams, pipes, or ductwork painted white or light grey to maintain brightness while celebrating raw industrial character.
@@ -238,7 +238,7 @@ Keep the color palette crisp: white, light grey, natural light wood, and black m
 
 Install Edison bulb pendant lights with visible black cords and metal fixtures, creating warm ambient lighting at 2700K that softens the industrial materials. Add one or two large leafy plants in simple concrete or metal pots to bring life to the industrial space.
 
-Render as a photorealistic interior photograph capturing contemporary urban living—the perfect balance of raw industrial materials and bright, livable modern comfort with an airy spacious feel.`,
+Render as a photorealistic interior photograph capturing contemporary urban living—the perfect balance of raw industrial materials and bright, livable modern comfort with an airy spacious feel. Optimize the image for print and digital viewing (300 dpi).`,
     classic: `Transform this {room_type} into a richly appointed traditional interior while preserving exact room dimensions and architecture. Maintain all structural elements, window and door locations, and original camera angle precisely.
 
 Create walls in warm rich tones or elegant neutrals—burgundy, navy, forest green, or warm cream—enhanced with decorative chair rail molding, wainscoting, and substantial crown molding. Install classic herringbone parquet in rich medium-to-dark wood tones, or lay a traditional Oriental or Persian-style area rug with intricate patterns.
@@ -251,7 +251,7 @@ Install a traditional crystal chandelier or ornate multi-arm fixture as the cent
 
 Adorn walls with oil paintings or classic art in ornate gilded frames, large decorative mirrors, and abundant coordinated accessories. Display crystal, porcelain, fresh flowers in ornate vases, books, and decorative objects—creating that collected, layered look of traditional elegance.
 
-Create a photorealistic interior photograph showcasing timeless sophisticated luxury—warm, rich, formal yet comfortable, with that old-world charm and established elegance.`,
+Create a photorealistic interior photograph showcasing timeless sophisticated luxury—warm, rich, formal yet comfortable, with that old-world charm and established elegance. Optimize the image for print and digital viewing (300 dpi).`,
     eclectic: `Transform this {room_type} into a vibrant eclectic bohemian interior while keeping exact room architecture unchanged. Preserve all walls, windows, doors, and structural boundaries with the same camera perspective.
 
 Paint walls in warm interesting colors like greige, terracotta, mustard, or sage green, or create a dramatic gallery wall covering one section with diverse artwork, textiles, and wall hangings in various frames and styles—mixing prints, paintings, photography, and tapestries in a curated chaos.
@@ -264,7 +264,7 @@ Hang a Moroccan pendant light, bohemian chandelier, or mix of vintage lamps with
 
 Fill every surface with personality: multiple plants in varied decorative pots (ceramic, woven, terracotta), stacked books used as decor, global-inspired objects like lanterns and baskets, crystals, mirrors in interesting frames, and personal collections displayed proudly. The space should feel artistic, traveled, and full of stories.
 
-Create a photorealistic interior photograph capturing fearless eclectic style—personal, globally inspired, with that perfect organized chaos where diverse elements create unexpected harmony.`,
+Create a photorealistic interior photograph capturing fearless eclectic style—personal, globally inspired, with that perfect organized chaos where diverse elements create unexpected harmony. Optimize the image for print and digital viewing (300 dpi).`,
     japandi: `Transform this {room_type} into a serene Japandi interior while maintaining exact room structure. Keep all architectural elements, walls, windows, and doors in their precise original positions with unchanged perspective.
 
 Create a calm foundation with natural light oak, ash, or birch wood flooring in matte finish and off-white or warm beige painted walls—smooth, clean, and minimal. This aesthetic blends Japanese zen simplicity with Scandinavian warmth.
@@ -277,7 +277,7 @@ Light the space with paper pendant lamps in Japanese lantern style or bamboo fix
 
 Keep decoration minimal and intentional, embracing wabi-sabi aesthetic: one or two handcrafted ceramic pieces in organic shapes, a bonsai tree or simple greenery in a ceramic pot, maybe natural objects like stones or driftwood. Empty space is as important as filled space—every item deliberately placed with purpose.
 
-Create a photorealistic interior photograph capturing peaceful Japandi living—zen calm meets hygge warmth, functional beauty, sustainable simplicity, where Japanese minimalism and Scandinavian coziness unite perfectly.`,
+Create a photorealistic interior photograph capturing peaceful Japandi living—zen calm meets hygge warmth, functional beauty, sustainable simplicity, where Japanese minimalism and Scandinavian coziness unite perfectly. Optimize the image for print and digital viewing (300 dpi).`,
     contemporary: `Transform this {room_type} into a sophisticated contemporary interior while preserving exact architectural layout. Maintain all wall positions, windows, doors, and structural elements with the same camera angle.
 
 Install modern wood-look flooring in medium grey-brown tones or large format tiles, creating a clean contemporary foundation. Paint walls in sophisticated neutrals like soft greige, warm grey, or taupe, possibly featuring one accent wall in a bold color like navy, emerald, charcoal, or terracotta for visual drama.
@@ -290,7 +290,7 @@ Install a statement modern lighting fixture as focal point—perhaps a geometric
 
 Style with contemporary accessories: a large modern mirror in round, geometric, or organic shape, contemporary abstract artwork or photography, large leafy plants in modern planters, and decorative objects with sculptural quality. Keep it curated and intentional, not cluttered.
 
-Create a photorealistic interior photograph showcasing sophisticated modern living—current and stylish, comfortable yet refined, with that designer look that feels both on-trend and timeless.`,
+Create a photorealistic interior photograph showcasing sophisticated modern living—current and stylish, comfortable yet refined, with that designer look that feels both on-trend and timeless. Optimize the image for print and digital viewing (300 dpi).`,
     vintage: `Transform this {room_type} into an extreme authentic Soviet babushka apartment from the 1970s-1980s while keeping exact room structure. Preserve all walls, windows, doors, and architectural elements with the same camera perspective—only the interior design will change dramatically into nostalgic USSR maximalism.
 
 Cover walls with faded floral wallpaper in dated patterns—large roses or geometric designs from the Soviet era—or paint them in typical USSR colors like olive green, pale blue, or cream, showing age with slight peeling at corners. Install worn dark parquet flooring with visible scratches and gaps, or old linolinum with faded patterns showing decades of use.
@@ -307,7 +307,7 @@ Now the critical part—absolute maximum clutter on every surface: porcelain fig
 
 The atmosphere must scream sentimental cramped maximalism—warm but dated, kitschy, authentically lived-in for decades with every corner displaying something, every surface covered with memories and treasures accumulated over a lifetime. This is babushka's domain where time stopped in the 1980s and nothing ever changes.
 
-Create a photorealistic interior photograph with authentic aged vintage textures showing wear and patina, warm nostalgic yellow-toned lighting, incredibly detailed clutter filling every space, and that unmistakable USSR-era aesthetic that immediately evokes "Soviet grandmother's apartment" with equal parts humor, nostalgia, and affection.`,
+Create a photorealistic interior photograph with authentic aged vintage textures showing wear and patina, warm nostalgic yellow-toned lighting, incredibly detailed clutter filling every space, and that unmistakable USSR-era aesthetic that immediately evokes "Soviet grandmother's apartment" with equal parts humor, nostalgia, and affection. Optimize the image for print and digital viewing (300 dpi).`,
   }
   
   return stylePrompts[styleId] || 'beautiful interior'
