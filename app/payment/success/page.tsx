@@ -1,70 +1,85 @@
-'use client'
-
 import Link from 'next/link'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
-import { useEffect, useState } from 'react'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { prisma } from '@/lib/prisma'
 
-export default function PaymentSuccessPage() {
-  const [isChecking, setIsChecking] = useState(true)
-  const [credits, setCredits] = useState<number | null>(null)
-  const [alreadyProcessed, setAlreadyProcessed] = useState(false)
+async function checkAndConfirmPayment(userId: string) {
+  // Находим последний pending платеж
+  const payment = await prisma.payment.findFirst({
+    where: { 
+      userId: userId,
+      status: 'pending'
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  })
 
-  useEffect(() => {
-    // Даем webhook 2 секунды, чтобы успеть обработать платеж
-    // Затем проверяем последний pending платеж пользователя
-    const timer = setTimeout(async () => {
-      try {
-        const response = await fetch('/api/payment/confirm-last', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' }
-        })
+  if (!payment || !payment.paymentId) {
+    return { success: false, message: 'Платежей в обработке не найдено' }
+  }
 
-        const data = await response.json()
-
-        if (data.success) {
-          setCredits(data.credits)
-          if (data.message?.includes('уже начислены')) {
-            setAlreadyProcessed(true)
-          }
-        }
-      } catch (err) {
-        console.error('Error confirming payment:', err)
-      } finally {
-        setIsChecking(false)
+  // Проверяем статус через API Точка Банка
+  try {
+    const tochkaApiUrl = `https://enter.tochka.com/uapi/acquiring/v1.0/payments/${payment.paymentId}`
+    const tochkaResponse = await fetch(tochkaApiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.TOCHKA_JWT_TOKEN}`
       }
-    }, 2000) // Ждем 2 секунды
+    })
 
-    return () => clearTimeout(timer)
-  }, [])
+    if (!tochkaResponse.ok) {
+      return { success: false, message: 'Ошибка проверки статуса' }
+    }
 
-  if (isChecking) {
-    return (
-      <div className="min-h-screen bg-white">
-        <Navigation />
-        
-        <main className="max-w-2xl mx-auto px-4 sm:px-6 py-12">
-          <div className="text-center">
-            <div className="mb-8">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-                <svg className="w-8 h-8 text-blue-600 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-              </div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                Обрабатываем платеж...
-              </h1>
-              <p className="text-lg text-gray-600">
-                Пожалуйста, подождите несколько секунд
-              </p>
-            </div>
-          </div>
-        </main>
+    const tochkaData = await tochkaResponse.json()
+    const operationStatus = tochkaData.Data?.Operation?.[0]?.status
 
-        <Footer />
-      </div>
-    )
+    if (operationStatus === 'APPROVED') {
+      // Начисляем кредиты
+      await prisma.user.update({
+        where: { id: payment.userId },
+        data: {
+          credits: { increment: payment.credits }
+        }
+      })
+
+      // Обновляем статус платежа
+      await prisma.payment.update({
+        where: { id: payment.id },
+        data: {
+          status: 'succeeded',
+          paidAt: new Date()
+        }
+      })
+
+      return { success: true, credits: payment.credits }
+    }
+
+    return { success: false, message: `Статус платежа: ${operationStatus}` }
+  } catch (error) {
+    console.error('Payment check error:', error)
+    return { success: false, message: 'Ошибка проверки платежа' }
+  }
+}
+
+export default async function PaymentSuccessPage() {
+  const session = await getServerSession(authOptions)
+  
+  let credits = null
+  let error = null
+
+  if (session?.user?.id) {
+    const result = await checkAndConfirmPayment(session.user.id)
+    if (result.success) {
+      credits = result.credits
+    } else {
+      error = result.message
+    }
   }
 
   return (
@@ -74,26 +89,28 @@ export default function PaymentSuccessPage() {
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-12">
         <div className="text-center">
           <div className="mb-8">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            <div className={`w-16 h-16 ${credits ? 'bg-green-100' : 'bg-yellow-100'} rounded-full flex items-center justify-center mx-auto mb-4`}>
+              <svg className={`w-8 h-8 ${credits ? 'text-green-600' : 'text-yellow-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={credits ? "M5 13l4 4L19 7" : "M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"} />
               </svg>
             </div>
             <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              Платеж успешно завершен!
+              {credits ? 'Платеж успешно завершен!' : 'Оплата получена!'}
             </h1>
             {credits && (
               <p className="text-lg text-gray-600 mb-4">
                 <strong>{credits} кредитов</strong> добавлено на ваш счет!
               </p>
             )}
-            {alreadyProcessed && (
-              <p className="text-sm text-gray-500 mb-4">
-                (Кредиты были начислены автоматически через webhook)
+            {error && (
+              <p className="text-md text-yellow-600 mb-4">
+                {error}
               </p>
             )}
             <p className="text-md text-gray-500 mb-8">
-              Теперь вы можете использовать их для генерации изображений.
+              {credits 
+                ? 'Теперь вы можете использовать их для генерации изображений.'
+                : 'Обновите страницу через несколько секунд, если кредиты еще не отображаются.'}
             </p>
           </div>
 
@@ -102,7 +119,7 @@ export default function PaymentSuccessPage() {
               Что дальше?
             </h2>
             <ul className="text-left text-green-700 space-y-2">
-              <li>• Кредиты уже на вашем счету</li>
+              <li>• Кредиты {credits ? 'уже' : 'автоматически добавятся'} на вашем счету</li>
               <li>• Вы можете сразу начать генерировать изображения</li>
               <li>• Все сгенерированные изображения сохраняются в истории</li>
               <li>• Кредиты не сгорают и остаются у вас навсегда</li>
