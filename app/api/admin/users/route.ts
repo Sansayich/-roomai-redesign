@@ -31,6 +31,11 @@ export async function GET() {
         createdAt: 'desc'
       },
       include: {
+        referredBy: {
+          select: {
+            email: true
+          }
+        },
         _count: {
           select: {
             generations: true

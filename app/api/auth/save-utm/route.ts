@@ -12,11 +12,6 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Проверяем существует ли пользователь
-    const user = await prisma.user.findUnique({
-      where: { email }
-    })
-
     // Находим реферера по коду
     let referrerId = null
     if (referralCode) {
@@ -29,7 +24,45 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Сохраняем UTM и реферальный код только для новых пользователей (или если они еще не установлены)
+    // Сохраняем UTM и реферальный код во временной таблице для новых пользователей
+    // Это будет применено при создании пользователя в lib/auth.ts
+    await prisma.verificationToken.upsert({
+      where: {
+        identifier_token: {
+          identifier: `utm:${email}`,
+          token: 'utm-data'
+        }
+      },
+      create: {
+        identifier: `utm:${email}`,
+        token: JSON.stringify({
+          utmSource,
+          utmMedium,
+          utmCampaign,
+          utmContent,
+          utmTerm,
+          referrerId
+        }),
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 часа
+      },
+      update: {
+        token: JSON.stringify({
+          utmSource,
+          utmMedium,
+          utmCampaign,
+          utmContent,
+          utmTerm,
+          referrerId
+        }),
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000)
+      }
+    })
+
+    // Если пользователь уже существует, обновляем его данные
+    const user = await prisma.user.findUnique({
+      where: { email }
+    })
+
     if (user && !user.utmSource) {
       await prisma.user.update({
         where: { email },

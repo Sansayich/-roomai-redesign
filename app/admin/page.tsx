@@ -14,6 +14,9 @@ type User = {
   utmMedium: string | null
   utmCampaign: string | null
   createdAt: string
+  referredBy: {
+    email: string
+  } | null
   _count: {
     generations: number
   }
@@ -192,6 +195,7 @@ export default function AdminPage() {
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Имя</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Партнер</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">UTM</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Кредиты</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Генераций</th>
@@ -204,6 +208,13 @@ export default function AdminPage() {
                 <tr key={user.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 text-sm text-gray-900">{user.email}</td>
                   <td className="px-6 py-4 text-sm text-gray-600">{user.name || '—'}</td>
+                  <td className="px-6 py-4 text-sm text-gray-600">
+                    {user.referredBy ? (
+                      <span className="text-purple-600 font-medium">{user.referredBy.email}</span>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
                   <td className="px-6 py-4 text-sm text-gray-600">
                     {user.utmSource ? (
                       <div className="space-y-1">

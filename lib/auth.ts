@@ -89,11 +89,45 @@ export const authOptions: NextAuthOptions = {
       // Генерируем уникальный реферальный код
       const referralCode = await generateReferralCode()
       
+      // Проверяем есть ли сохраненные UTM данные
+      let utmData: any = {}
+      try {
+        const utmToken = await prisma.verificationToken.findUnique({
+          where: {
+            identifier_token: {
+              identifier: `utm:${user.email}`,
+              token: 'utm-data'
+            }
+          }
+        })
+        
+        if (utmToken) {
+          utmData = JSON.parse(utmToken.token)
+          // Удаляем токен после использования
+          await prisma.verificationToken.delete({
+            where: {
+              identifier_token: {
+                identifier: `utm:${user.email}`,
+                token: 'utm-data'
+              }
+            }
+          }).catch(() => {})
+        }
+      } catch (e) {
+        console.log('No UTM data found for user')
+      }
+      
       await prisma.user.update({
         where: { id: user.id },
         data: { 
           credits: 4,
           referralCode,
+          utmSource: utmData.utmSource || null,
+          utmMedium: utmData.utmMedium || null,
+          utmCampaign: utmData.utmCampaign || null,
+          utmContent: utmData.utmContent || null,
+          utmTerm: utmData.utmTerm || null,
+          referredById: utmData.referrerId || null,
         },
       });
     },
